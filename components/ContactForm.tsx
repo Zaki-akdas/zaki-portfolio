@@ -3,7 +3,7 @@ import {useState, FormEvent} from 'react';
 import {Send, CheckCircle, AlertCircle} from 'lucide-react';
 
 // Replace this with your Formspree form ID from https://formspree.io
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mnpawgla';
 
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
