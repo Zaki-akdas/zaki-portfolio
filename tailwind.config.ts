@@ -8,48 +8,44 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        space: {
-          900: '#050510',
-          800: '#0a0a1a',
-          700: '#10102a',
-          600: '#1a1a3a',
-        },
-        nebula: {
-          purple: '#6c3ce0',
-          blue: '#3b82f6',
-          pink: '#ec4899',
-          cyan: '#06b6d4',
-        },
-        star: '#e8e0ff',
+        'space-bg': '#030014',
+        'space-purple': '#7042f8',
+        'space-purple-light': '#b49bff',
+        'space-border': '#2A0E61',
+        'space-card': 'rgba(3, 0, 20, 0.37)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        inter: ['Inter', 'sans-serif'],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
-        'float-slow': 'float 8s ease-in-out infinite',
+        'float-delay': 'float 8s ease-in-out -2s infinite',
+        'drift': 'drift 20s ease-in-out infinite alternate',
+        'marquee': 'marquee 25s linear infinite',
+        'marquee2': 'marquee2 25s linear infinite',
         'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
         'spin-slow': 'spin 20s linear infinite',
-        'twinkle': 'twinkle 3s ease-in-out infinite',
-        'drift': 'drift 20s ease-in-out infinite alternate',
       },
       keyframes: {
         float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-12px)' },
-        },
-        pulseGlow: {
-          '0%, 100%': { opacity: '0.4' },
-          '50%': { opacity: '0.8' },
-        },
-        twinkle: {
-          '0%, 100%': { opacity: '0.3' },
-          '50%': { opacity: '1' },
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
         },
         drift: {
           '0%': { transform: 'translate(0, 0) scale(1)' },
           '100%': { transform: 'translate(-30px, 20px) scale(1.1)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        marquee2: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
         },
       },
     },

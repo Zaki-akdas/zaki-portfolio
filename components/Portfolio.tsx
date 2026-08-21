@@ -1,7 +1,7 @@
 'use client';
 import {useEffect, useState, useRef} from 'react';
 import {motion, useInView, useScroll, useTransform, AnimatePresence} from 'framer-motion';
-import {ArrowUpRight, Mail, MessageCircle, Send, CheckCircle, AlertCircle, Code2, Globe, ShoppingCart, Brain, Wrench, Layers, ChevronDown, Menu, X, ExternalLink} from 'lucide-react';
+import {ArrowUpRight, Mail, MessageCircle, Send, CheckCircle, AlertCircle, Menu, X, Star, ExternalLink, Sparkles} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
@@ -9,40 +9,42 @@ const Planet = dynamic(() => import('./Planet'), {ssr: false, loading: () => <di
 const Starfield = dynamic(() => import('./Starfield'), {ssr: false});
 
 /* ─── Data ─── */
-const services = [
-  {icon: Globe, title: 'Business Websites', desc: 'Professional responsive sites that establish trust and create a clear path to enquiry.', color: '#6c3ce0'},
-  {icon: Code2, title: 'Web Applications', desc: 'Modern interfaces and connected product features for practical ideas.', color: '#3b82f6'},
-  {icon: ShoppingCart, title: 'E-commerce', desc: 'Clear shopping experiences built around product discovery and action.', color: '#ec4899'},
-  {icon: Wrench, title: 'Custom Tools', desc: 'Dashboards and workflows shaped around a real operational need.', color: '#06b6d4'},
-  {icon: Brain, title: 'AI Integrations', desc: 'Useful AI features connected to products and business workflows.', color: '#a78bfa'},
-  {icon: Layers, title: 'Product Refinement', desc: 'Responsive improvements and thoughtful evolution of an existing site.', color: '#f59e0b'},
-];
-
-const tech = [
-  {name: 'HTML', color: '#e34c26'}, {name: 'CSS', color: '#1572b6'},
-  {name: 'JavaScript', color: '#f7df1e'}, {name: 'TypeScript', color: '#3178c6'},
-  {name: 'React', color: '#61dafb'}, {name: 'Next.js', color: '#ffffff'},
-  {name: 'Tailwind CSS', color: '#06b6d4'}, {name: 'Node.js', color: '#68a063'},
-  {name: 'PostgreSQL', color: '#336791'}, {name: 'MongoDB', color: '#47a248'},
-  {name: 'Supabase', color: '#3ecf8e'}, {name: 'Git', color: '#f05032'},
-  {name: 'OpenAI', color: '#10a37f'}, {name: 'Gemini', color: '#8b5cf6'},
-  {name: 'Three.js', color: '#049ef4'},
+const skills = [
+  {name: 'HTML', icon: '🌐', color: '#e34c26'},
+  {name: 'CSS', icon: '🎨', color: '#1572b6'},
+  {name: 'JavaScript', icon: '⚡', color: '#f7df1e'},
+  {name: 'TypeScript', icon: '📘', color: '#3178c6'},
+  {name: 'React', icon: '⚛️', color: '#61dafb'},
+  {name: 'Next.js', icon: '▲', color: '#ffffff'},
+  {name: 'Tailwind CSS', icon: '💨', color: '#06b6d4'},
+  {name: 'Node.js', icon: '🟢', color: '#68a063'},
+  {name: 'PostgreSQL', icon: '🐘', color: '#336791'},
+  {name: 'MongoDB', icon: '🍃', color: '#47a248'},
+  {name: 'Supabase', icon: '⚡', color: '#3ecf8e'},
+  {name: 'Git', icon: '🔀', color: '#f05032'},
+  {name: 'OpenAI', icon: '🤖', color: '#10a37f'},
+  {name: 'Three.js', icon: '🎮', color: '#049ef4'},
+  {name: 'Framer Motion', icon: '🎬', color: '#bb4bff'},
 ];
 
 /* ─── Reveal wrapper ─── */
-function Reveal({children, className = '', delay = 0, direction = 'up'}: {children: React.ReactNode; className?: string; delay?: number; direction?: 'up' | 'down' | 'left' | 'right'}) {
+function Reveal({children, className = '', delay = 0}: {children: React.ReactNode; className?: string; delay?: number}) {
   const ref = useRef(null);
-  const isInView = useInView(ref, {once: true, margin: '0px 0px -20px 0px'});
-  const variants = {
-    up: {hidden: {opacity: 0, y: 50}, visible: {opacity: 1, y: 0}},
-    down: {hidden: {opacity: 0, y: -50}, visible: {opacity: 1, y: 0}},
-    left: {hidden: {opacity: 0, x: -50}, visible: {opacity: 1, x: 0}},
-    right: {hidden: {opacity: 0, x: 50}, visible: {opacity: 1, x: 0}},
-  };
+  const isInView = useInView(ref, {once: true, margin: '-50px'});
   return (
-    <motion.div ref={ref} initial="hidden" animate={isInView ? 'visible' : 'hidden'} variants={variants[direction]} transition={{duration: 0.7, delay, ease: [0.16, 1, 0.3, 1]}} className={className}>
+    <motion.div ref={ref} initial={{opacity: 0, y: 40}} animate={isInView ? {opacity: 1, y: 0} : {opacity: 0, y: 40}} transition={{duration: 0.6, delay, ease: [0.16, 1, 0.3, 1]}} className={className}>
       {children}
     </motion.div>
+  );
+}
+
+/* ─── Welcome Badge ─── */
+function WelcomeBadge({text}: {text: string}) {
+  return (
+    <div className="welcome-box">
+      <Sparkles size={18} className="text-[#b49bff]" />
+      <span className="welcome-text">{text}</span>
+    </div>
   );
 }
 
@@ -77,15 +79,15 @@ function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Name</label><input required type="text" placeholder="Your name" value={formData.name} onChange={e => set('name', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" /></div>
-        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Email</label><input required type="email" placeholder="you@company.com" value={formData.email} onChange={e => set('email', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" /></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Name</label><input required type="text" placeholder="Your name" value={formData.name} onChange={e => set('name', e.target.value)} className="w-full bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#7042f8] transition-all" /></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Email</label><input required type="email" placeholder="you@company.com" value={formData.email} onChange={e => set('email', e.target.value)} className="w-full bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#7042f8] transition-all" /></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project type</label><select value={formData.type} onChange={e => set('type', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 cursor-pointer appearance-none"><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div>
-        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Budget range</label><select value={formData.budget} onChange={e => set('budget', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 cursor-pointer appearance-none"><option>Let&apos;s discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project type</label><select value={formData.type} onChange={e => set('type', e.target.value)} className="w-full bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#7042f8] cursor-pointer"><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Budget range</label><select value={formData.budget} onChange={e => set('budget', e.target.value)} className="w-full bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#7042f8] cursor-pointer"><option>Let&apos;s discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div>
       </div>
-      <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project description</label><textarea required rows={5} placeholder="What would you like to build?" value={formData.message} onChange={e => set('message', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-vertical min-h-[120px]" /></div>
-      <button type="submit" disabled={status === 'submitting'} className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold px-8 py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+      <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project description</label><textarea required rows={5} placeholder="What would you like to build?" value={formData.message} onChange={e => set('message', e.target.value)} className="w-full bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#7042f8] transition-all resize-vertical min-h-[120px]" /></div>
+      <button type="submit" disabled={status === 'submitting'} className="button-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
         {status === 'submitting' ? 'Sending…' : <>Send inquiry <Send size={16} /></>}
       </button>
       {status === 'error' && <div className="flex items-center gap-2 text-red-400 text-sm"><AlertCircle size={16} /> Something went wrong. Please try again or email me directly.</div>}
@@ -97,8 +99,6 @@ function ContactForm() {
 export default function Portfolio() {
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const {scrollYProgress} = useScroll();
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
@@ -106,12 +106,9 @@ export default function Portfolio() {
     return () => removeEventListener('scroll', fn);
   }, []);
 
-  // Close mobile menu on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && navOpen) {
-        setNavOpen(false);
-      }
+      if (e.key === 'Escape' && navOpen) setNavOpen(false);
     };
     addEventListener('keydown', handleKeyDown);
     return () => removeEventListener('keydown', handleKeyDown);
@@ -119,274 +116,219 @@ export default function Portfolio() {
 
   return (
     <>
-      {/* Skip to content link */}
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
-      {/* Background layers */}
+      {/* Background */}
       <Starfield />
       <div className="nebula-1" aria-hidden="true" />
       <div className="nebula-2" aria-hidden="true" />
-      <div className="nebula-3" aria-hidden="true" />
 
-      {/* Scroll progress */}
-      <motion.div className="fixed top-0 left-0 h-[2px] z-50 bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" style={{width: progressWidth}} role="progressbar" aria-label="Page scroll progress" />
+      {/* ─── NAV ─── */}
+      <nav className={`w-full h-[65px] fixed top-0 z-50 px-5 md:px-10 transition-all ${scrolled ? 'bg-[#03001427] backdrop-blur-md shadow-lg shadow-[#2A0E61]/50' : ''}`} aria-label="Main navigation">
+        <div className="w-full h-full flex items-center justify-between m-auto max-w-[1400px]">
+          {/* Logo */}
+          <a href="#home" className="flex items-center gap-2.5" aria-label="Home">
+            <span className="text-2xl font-black text-white">ZA<span className="text-[#7042f8]">.</span></span>
+            <span className="hidden md:block font-bold text-gray-300">Zaki Akdas</span>
+          </a>
 
-      {/* Nav */}
-      <motion.nav initial={{y: -80, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{duration: 0.8, delay: 0.2}} className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[1100px] px-5 py-3 flex items-center justify-between rounded-2xl transition-all duration-300 ${scrolled ? 'glass shadow-lg shadow-black/20' : ''}`} aria-label="Main navigation">
-        <a href="#home" className="font-black text-lg tracking-tight" aria-label="Zaki Akdas Choudhary - Home">ZA<span className="text-purple-400">.</span></a>
-        <div className="hidden md:flex items-center gap-7 text-sm text-gray-400" role="menubar">
-          {['Work', 'Skills', 'About', 'Contact'].map(x => (
-            <a key={x} href={`#${x.toLowerCase()}`} role="menuitem" className="hover:text-white transition-colors">{x}</a>
-          ))}
+          {/* Desktop nav pill */}
+          <div className="hidden md:flex nav-pill">
+            <a href="#about" className="px-3">About me</a>
+            <a href="#skills" className="px-3">Skills</a>
+            <a href="#work" className="px-3">Projects</a>
+            <a href="#contact" className="px-3">Contact</a>
+          </div>
+
+          {/* Social icons */}
+          <div className="hidden md:flex items-center gap-4">
+            <a href="https://github.com/Zaki-akdas" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-[#7042f8] transition" aria-label="GitHub">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-[#7042f8] transition" aria-label="LinkedIn">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="mailto:zakiakdas703@gmail.com" className="text-gray-400 hover:text-[#7042f8] transition" aria-label="Email">
+              <Mail size={22} />
+            </a>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button onClick={() => setNavOpen(!navOpen)} className="md:hidden text-white text-3xl focus:outline-none" aria-label={navOpen ? 'Close menu' : 'Open menu'} aria-expanded={navOpen}>
+            {navOpen ? <X size={28} /> : '☰'}
+          </button>
         </div>
-        <a href="#contact" className="hidden md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all">
-          Let&apos;s talk <ArrowUpRight size={14} />
-        </a>
-        <button onClick={() => setNavOpen(!navOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white" aria-label={navOpen ? 'Close menu' : 'Open menu'} aria-expanded={navOpen} aria-controls="mobile-menu">
-          {navOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </motion.nav>
+      </nav>
 
       {/* Mobile menu */}
       <AnimatePresence>
         {navOpen && (
-          <motion.div id="mobile-menu" role="menu" initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-5 md:hidden" aria-label="Mobile navigation">
-            {['Work', 'Skills', 'About', 'Contact'].map((x, i) => (
-              <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={`#${x.toLowerCase()}`} onClick={() => setNavOpen(false)} className="block py-3 text-gray-300 hover:text-white font-medium border-b border-white/5 last:border-0">{x}</motion.a>
+          <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-[70px] left-4 right-4 z-50 glass-card p-5 md:hidden" role="menu" aria-label="Mobile navigation">
+            {['About', 'Skills', 'Projects', 'Contact'].map((x, i) => (
+              <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={`#${x === 'Projects' ? 'work' : x.toLowerCase()}`} onClick={() => setNavOpen(false)} role="menuitem" className="block py-3 text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main className="relative z-10" id="main-content">
-        {/* ═══ HERO ═══ */}
-        <section id="home" aria-label="Hero" className="min-h-screen flex flex-col items-center justify-center px-5 pt-24 pb-16">
-          <div className="w-full max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Left: Text */}
-            <motion.div initial={{opacity: 0, x: -40}} animate={{opacity: 1, x: 0}} transition={{duration: 0.9, delay: 0.4}} className="text-center lg:text-left order-2 lg:order-1">
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                Bhopal, India · Web Developer
-              </div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tight mb-6">
-                I build <span className="gradient-text">digital experiences</span> with purpose.
-              </h1>
-              <p className="text-gray-400 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0 mb-8">
-                Professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                <a href="#contact" className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold px-6 py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5">
-                  Start a project <ArrowUpRight size={18} />
-                </a>
-                <a href="#work" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-6 py-3.5 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
-                  View work ↓
-                </a>
-              </div>
-              <div className="flex gap-8 mt-10 text-gray-500 text-xs">
-                <div><span className="block text-white text-sm font-bold mb-1">WEB DEVELOPER</span>Designing & building</div>
-                <div><span className="block text-white text-sm font-bold mb-1">AVAILABLE</span>For freelance projects</div>
-              </div>
-            </motion.div>
+      <main className="h-full w-full" id="main-content">
+        <div className="flex flex-col gap-20">
 
-            {/* Right: Planet */}
-            <motion.div initial={{opacity: 0, scale: 0.8}} animate={{opacity: 1, scale: 1}} transition={{duration: 1, delay: 0.6}} className="order-1 lg:order-2 h-[350px] md:h-[450px] lg:h-[520px]">
-              <Planet />
-            </motion.div>
+          {/* ═══ HERO ═══ */}
+          <div className="relative flex flex-col h-full w-full">
+            {/* Animated background circles */}
+            <div className="absolute top-[-200px] left-0 w-full h-full overflow-hidden -z-10">
+              <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.15),transparent_70%)] blur-[60px] animate-drift" />
+              <div className="absolute top-[40%] right-[5%] w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.1),transparent_70%)] blur-[60px] animate-drift" style={{animationDelay: '-10s'}} />
+            </div>
+
+            <div className="flex flex-col lg:flex-row items-center justify-center px-5 lg:px-20 mt-28 lg:mt-40 w-full max-w-[1400px] m-auto z-[10]">
+              {/* Left: Text */}
+              <div className="h-full w-full flex flex-col gap-5 justify-center text-start">
+                <Reveal>
+                  <WelcomeBadge text="Web Developer Portfolio" />
+                </Reveal>
+
+                <Reveal delay={0.1}>
+                  <div className="flex flex-col gap-2 mt-6 text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-[600px]">
+                    <span>Providing <span className="gradient-text-cyan">the best</span> project experience.</span>
+                  </div>
+                </Reveal>
+
+                <Reveal delay={0.2}>
+                  <p className="text-lg text-gray-400 my-5 max-w-[600px]">
+                    I&apos;m Zaki Akdas Choudhary, a web developer creating professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.
+                  </p>
+                </Reveal>
+
+                <Reveal delay={0.3}>
+                  <div className="flex gap-4">
+                    <a href="#work" className="button-primary text-center text-white cursor-pointer">View projects</a>
+                    <a href="#contact" className="py-2 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[#2A0E61] hover:border-[#7042f8] transition font-semibold">Contact me</a>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* Right: Planet */}
+              <Reveal className="w-full lg:w-1/2 h-[350px] md:h-[450px] lg:h-[550px]" delay={0.2}>
+                <Planet />
+              </Reveal>
+            </div>
           </div>
 
-          {/* Scroll hint */}
-          <motion.div animate={{y: [0, 8, 0]}} transition={{duration: 2, repeat: Infinity}} className="absolute bottom-8 left-1/2 -translate-x-1/2">
-            <ChevronDown size={24} className="text-gray-500" />
-          </motion.div>
-        </section>
+          {/* ═══ SKILLS ═══ */}
+          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20 px-5">
+            <Reveal className="flex flex-col items-center justify-center gap-3">
+              <WelcomeBadge text="Tech Stack" />
+              <div className="text-[30px] text-white font-medium mt-[10px] text-center mb-[15px]">Making apps with modern technologies.</div>
+              <div className="text-[20px] text-gray-200 mb-10 mt-[10px] text-center italic">Never miss a task, deadline or idea.</div>
+            </Reveal>
 
-        {/* ═══ STATEMENT ═══ */}
-        <section className="py-20 md:py-32 px-5 border-t border-b border-white/5" aria-label="Approach">
-          <div className="max-w-[1100px] mx-auto">
-            <Reveal>
-              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">A considered approach</p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[0.92] tracking-tight mb-6">
-                I don&apos;t just make pages.<br />I shape <span className="gradient-text-accent">useful digital products.</span>
-              </h2>
-            </Reveal>
-            <Reveal delay={0.2}>
-              <p className="text-gray-400 text-lg leading-relaxed max-w-2xl">From concept to launch, I focus on thoughtful interfaces, responsive development and the details that make a digital experience feel credible.</p>
-            </Reveal>
-          </div>
-        </section>
+            {/* Skills grid */}
+            <div className="flex flex-row justify-center flex-wrap mt-4 gap-6 items-center max-w-[1000px]">
+              {skills.map((skill, i) => (
+                <Reveal key={skill.name} delay={i * 0.04}>
+                  <div className="skill-icon flex flex-col items-center gap-2 cursor-default">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[rgba(3,0,20,0.5)] border border-[#2A0E61] flex items-center justify-center text-3xl md:text-4xl hover:border-[#7042f8] transition-all">
+                      {skill.icon}
+                    </div>
+                    <span className="text-xs text-gray-400 font-medium">{skill.name}</span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        {/* ═══ WORK ═══ */}
-        <section id="work" aria-label="Selected work" className="py-20 md:py-32 px-5">
-          <div className="max-w-[1100px] mx-auto">
-            <Reveal>
-              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Selected work</p>
+          {/* ═══ PROJECTS ═══ */}
+          <section id="work" className="flex flex-col items-center justify-center py-20 px-5">
+            <Reveal className="w-full max-w-[1200px]">
+              <h2 className="text-[40px] font-semibold gradient-text-cyan py-10 text-center">My Projects</h2>
             </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Live products for<br />real businesses.</h2>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <p className="text-gray-400 mb-12 max-w-lg">Each card opens a published client website.</p>
-            </Reveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((p, i) => (
                 <Reveal key={p.title} delay={i * 0.15}>
-                  <a href={p.url} target="_blank" rel="noreferrer" className="glass-card block p-6 group">
-                    <div className={`h-48 rounded-xl mb-5 flex flex-col justify-end p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-600 to-red-900' : 'bg-gradient-to-br from-blue-600 to-indigo-950'}`}>
-                      <span className="text-white/80 text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
-                      <span className="text-white text-2xl font-black tracking-tight">{p.title}</span>
+                  <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
+                    <div className={`h-48 flex flex-col justify-end p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
+                      <span className="text-white/70 text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
+                      <span className="text-white text-2xl font-black">{p.title}</span>
                     </div>
-                    <p className="text-xs text-purple-400 font-bold uppercase tracking-wider mb-2">{p.kind}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">{p.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {p.tags.map(t => <span key={t} className="text-xs border border-white/10 rounded-full px-3 py-1 text-gray-400">{t}</span>)}
+                    <div className="relative p-4">
+                      <h3 className="text-xl font-semibold text-white">{p.title}</h3>
+                      <p className="mt-2 text-gray-300 text-sm leading-relaxed">{p.description}</p>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {p.tags.map(t => <span key={t} className="text-xs border border-[#2A0E61] rounded-full px-3 py-1 text-gray-400">{t}</span>)}
+                      </div>
+                      <span className="flex items-center gap-1.5 text-sm font-bold text-[#7042f8] group-hover:text-[#b49bff] transition mt-3">View live <ExternalLink size={14} /></span>
                     </div>
-                    <span className="flex items-center gap-1.5 text-sm font-bold text-purple-400 group-hover:text-purple-300 transition-colors">View live <ExternalLink size={14} /></span>
                   </a>
                 </Reveal>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ═══ SERVICES ═══ */}
-        <section id="skills" aria-label="Services" className="py-20 md:py-32 px-5 border-t border-white/5">
-          <div className="max-w-[1100px] mx-auto">
-            <Reveal>
-              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">What I can build</p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-12">Useful technology,<br />thoughtfully applied.</h2>
-            </Reveal>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {services.map((s, i) => (
-                <Reveal key={s.title} delay={i * 0.08}>
-                  <div className="glass-card p-6 h-full">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{background: `${s.color}15`, border: `1px solid ${s.color}30`}}>
-                      <s.icon size={22} style={{color: s.color}} />
-                    </div>
-                    <h3 className="text-white font-bold text-lg mb-2">{s.title}</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ TECH STACK ═══ */}
-        <section className="py-20 md:py-32 px-5 border-t border-white/5" aria-label="Technology stack">
-          <div className="max-w-[1100px] mx-auto">
-            <Reveal>
-              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Technology ecosystem</p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-12">A modern web toolkit.</h2>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {tech.map((t, i) => (
-                  <motion.div key={t.name} initial={{opacity: 0, scale: 0.8}} whileInView={{opacity: 1, scale: 1}} viewport={{once: true}} transition={{delay: i * 0.04}} whileHover={{y: -5, scale: 1.08}} className="glass-card px-5 py-3 flex items-center gap-2.5 cursor-default">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{background: t.color}} />
-                    <span className="text-sm font-medium text-gray-300">{t.name}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ═══ ABOUT ═══ */}
-        <section id="about" aria-label="About Zaki" className="py-20 md:py-32 px-5 border-t border-white/5">
-          <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Monogram */}
-            <Reveal direction="left">
-              <div className="aspect-square max-w-[380px] mx-auto rounded-3xl border border-white/10 bg-gradient-to-br from-purple-900/30 to-blue-900/20 flex items-center justify-center relative overflow-hidden">
-                <span className="text-[10rem] font-black tracking-tighter text-white/5">ZA</span>
-                <div className="absolute bottom-6 left-0 right-0 text-center text-xs font-bold text-gray-500 tracking-[0.15em] uppercase">Bhopal · India</div>
-              </div>
-            </Reveal>
-
-            {/* Text */}
-            <div>
-              <Reveal>
-                <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">About Zaki</p>
+          {/* ═══ CONTACT ═══ */}
+          <section id="contact" className="py-20 px-5">
+            <div className="max-w-[800px] mx-auto">
+              <Reveal className="flex flex-col items-center mb-12">
+                <WelcomeBadge text="Get in Touch" />
+                <h2 className="text-3xl md:text-4xl font-bold text-white mt-6 text-center">Have an idea? <span className="gradient-text-cyan">Let&apos;s build it.</span></h2>
+                <p className="text-gray-400 mt-4 text-center max-w-lg">Tell me what you&apos;re building and I&apos;ll review the details.</p>
               </Reveal>
+
               <Reveal delay={0.1}>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-6">The developer behind<br />the interface.</h2>
-              </Reveal>
-              <Reveal delay={0.2}>
-                <p className="text-gray-400 leading-relaxed mb-4">I&apos;m Zaki Akdas Choudhary, a web developer based in Bhopal with a BCA background in Information Technology. I value clear communication, structured problem-solving and steady refinement.</p>
-              </Reveal>
-              <Reveal delay={0.3}>
-                <p className="text-gray-400 leading-relaxed mb-8">Every project starts by understanding what needs to work — then turns that clarity into an experience people can actually use.</p>
-              </Reveal>
-
-              {/* Timeline */}
-              <Reveal delay={0.35}>
-                <div className="border-t border-white/10 pt-6 space-y-5">
-                  {[
-                    {label: 'NOW', title: 'Web Developer', desc: 'Creating professional, modern websites for businesses of every kind.'},
-                    {label: 'FOUNDATION', title: 'BCA · Information Technology', desc: 'Developing the technical foundation behind thoughtful web experiences.'},
-                    {label: 'NEXT', title: 'Freelance & digital products', desc: 'Growing a body of client work with clear outcomes and useful experiences.'},
-                  ].map((item, i) => (
-                    <div key={i} className="flex gap-4 items-start">
-                      <span className="text-[10px] font-bold text-purple-400 tracking-widest uppercase mt-1 shrink-0 w-20">{item.label}</span>
-                      <div className="border-l border-white/10 pl-4">
-                        <h4 className="text-white font-bold text-sm">{item.title}</h4>
-                        <p className="text-gray-500 text-xs leading-relaxed mt-1">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex gap-4 justify-center mb-8">
+                  <a href="mailto:zakiakdas703@gmail.com" className="flex items-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                    <Mail size={18} /> Email Zaki
+                  </a>
+                  <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                    <MessageCircle size={18} /> WhatsApp
+                  </a>
                 </div>
               </Reveal>
-            </div>
-          </div>
-        </section>
 
-        {/* ═══ CONTACT ═══ */}
-        <section id="contact" aria-label="Contact" className="py-20 md:py-32 px-5">
-          <div className="max-w-[1100px] mx-auto">
-            <div className="glass-card p-8 md:p-12 lg:p-16 relative overflow-hidden">
-              {/* Decorative glow */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
-
-              <div className="relative z-10">
-                <Reveal>
-                  <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Start a conversation</p>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4">
-                    Have an idea?<br /><span className="gradient-text-accent">Let&apos;s build it.</span>
-                  </h2>
-                </Reveal>
-                <Reveal delay={0.15}>
-                  <p className="text-gray-400 text-lg max-w-lg mb-8">Tell me what you&apos;re building, what it needs to achieve and where you want to take it.</p>
-                </Reveal>
-                <Reveal delay={0.2}>
-                  <div className="flex flex-wrap gap-3 mb-10">
-                    <a href="mailto:zakiakdas703@gmail.com" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-5 py-3 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
-                      <Mail size={18} /> Email Zaki
-                    </a>
-                    <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-5 py-3 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
-                      <MessageCircle size={18} /> WhatsApp
-                    </a>
-                  </div>
-                </Reveal>
-                <Reveal delay={0.25}>
-                  <ContactForm />
-                </Reveal>
-              </div>
+              <Reveal delay={0.2}>
+                <ContactForm />
+              </Reveal>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 py-8 text-center text-gray-600 text-xs" role="contentinfo">
-        © {new Date().getFullYear()} Zaki Akdas Choudhary · Built with intent.
+      {/* ═══ FOOTER ═══ */}
+      <footer className="w-full bg-[#030014] border-t border-[#2A0E61] py-12 px-5" role="contentinfo">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* Social Media */}
+          <div className="footer-col flex flex-col items-center md:items-start">
+            <h3 className="text-white">Social Media</h3>
+            <a href="mailto:zakiakdas703@gmail.com"><Mail size={16} /> Instagram</a>
+            <a href="https://github.com/Zaki-akdas" target="_blank" rel="noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer"><MessageCircle size={16} /> WhatsApp</a>
+          </div>
+
+          {/* About */}
+          <div className="footer-col flex flex-col items-center md:items-start">
+            <h3 className="text-white">About</h3>
+            <a href="#skills">My Skills</a>
+            <a href="#work">Projects</a>
+            <a href="mailto:zakiakdas703@gmail.com"><Mail size={16} /> Contact Me</a>
+          </div>
+
+          {/* Quick Links */}
+          <div className="footer-col flex flex-col items-center md:items-start">
+            <h3 className="text-white">Quick Links</h3>
+            <a href="#home">Home</a>
+            <a href="#about">About Me</a>
+            <a href="#contact">Let&apos;s Talk</a>
+          </div>
+        </div>
+
+        <div className="mt-10 text-center text-gray-500 text-sm">
+          © {new Date().getFullYear()} Zaki Akdas Choudhary. All rights reserved.
+        </div>
       </footer>
     </>
   );
