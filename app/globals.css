@@ -68,3 +68,140 @@
 
 /* Mobile animation tuning */
 @media(max-width:760px){.reveal{transform:translateY(25px)}.hero-stagger>*{transform:translateY(20px)}.cloud span:hover{transform:translateY(-3px) scale(1.04)}}
+
+/* ========== ENHANCED MOBILE RESPONSIVE ========== */
+@media(max-width:760px){
+  /* Navigation - better touch targets */
+  nav{top:8px;padding:8px 10px 8px 14px;border-radius:14px}
+  .logo{font-size:.95rem}
+  .talk{padding:9px 12px;font-size:.72rem;border-radius:9px;min-height:40px}
+  .menu{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);display:grid;place-items:center}
+  .links.open{top:58px;padding:14px 16px;gap:0;box-shadow:0 15px 40px rgba(0,0,0,.4);border-radius:14px}
+  .links.open a{padding:12px 0;width:100%;font-size:.95rem;border-bottom:1px solid rgba(255,255,255,.06)}
+  .links.open a:last-child{border:0}
+
+  /* Hero - optimized mobile layout */
+  .hero{min-height:auto;padding:110px 0 50px;gap:0}
+  .hero h1{font-size:clamp(2.8rem,12vw,3.8rem);line-height:.88;margin:16px 0 18px}
+  .hero-copy{font-size:.92rem;line-height:1.6}
+  .lead{font-size:.9rem}
+  .micro{flex-direction:column;gap:12px;margin-top:22px}
+  .micro span{font-size:.68rem}
+  .actions .primary,.actions .secondary{flex:1;justify-content:center;min-height:48px;padding:13px 16px}
+
+  /* 3D Core - compact */
+  .core3d{height:280px;margin:10px -20px 0;scale:.85}
+  .corelabel{font-size:.5rem;bottom:4px}
+  .corecode{font-size:2.5rem}
+
+  /* Marquee - mobile spacing */
+  .marquee{margin-top:55px;padding:11px 0}
+  .marquee div{font-size:.6rem}
+
+  /* Statement - tighter padding */
+  .statement{padding:55px 0}
+  .statement h2{font-size:clamp(2.2rem,9vw,3rem)}
+  .statement p{font-size:.9rem}
+
+  /* Section headers */
+  .header{display:block;margin-bottom:30px}
+  .header h2{font-size:clamp(2.2rem,9vw,3rem)}
+  .header>p{margin-top:16px;font-size:.85rem;max-width:100%}
+  section{padding:70px 0}
+
+  /* Project cards - stacked, compact */
+  .projects{grid-template-columns:1fr;gap:14px}
+  .project{min-height:380px;padding:18px;border-radius:16px}
+  .project h3{font-size:1.6rem}
+  .project p{font-size:.84rem;line-height:1.55}
+  .browser{top:30px;left:8%;width:84%;height:44%;padding:18px}
+  .browser b{font-size:1.5rem}
+  .browser span{font-size:.5rem}
+  .tags{gap:5px;margin-top:12px}
+  .tags span{font-size:.6rem;padding:5px 8px}
+  .project em{font-size:.68rem}
+
+  /* Services - single column */
+  .serviceGrid{grid-template-columns:1fr;border-radius:14px;overflow:hidden}
+  .serviceGrid article{min-height:auto;padding:20px;border-right:0}
+  .serviceGrid h3{font-size:1.15rem;margin:30px 0 8px}
+  .serviceGrid p{font-size:.82rem}
+
+  /* Skills - cloud */
+  .skills{grid-template-columns:1fr;gap:25px}
+  .skills h2{font-size:clamp(2.2rem,9vw,3rem)}
+  .cloud{padding:22px;gap:7px;border-radius:15px}
+  .cloud span{font-size:.72rem;padding:7px 10px}
+
+  /* About */
+  .about{grid-template-columns:1fr;gap:30px}
+  .monogram{min-height:260px;font-size:6rem;margin:auto;max-width:320px}
+  .monogram small{margin-top:180px;font-size:.5rem}
+  .about h2{font-size:clamp(2.2rem,9vw,3rem)}
+  .about p{font-size:.9rem}
+
+  /* Journey timeline */
+  .journey{padding:50px 0 20px}
+  .journey h2{font-size:clamp(2.2rem,9vw,3rem);margin:14px 0 30px}
+  .timeline{grid-template-columns:1fr;border-left:0}
+  .timeline article{padding:16px;border-right:0;border-bottom:1px solid var(--line);min-height:auto}
+  .timeline article:last-child{border:0}
+  .timeline small{font-size:.58rem}
+  .timeline b{font-size:.88rem;margin:20px 0 7px}
+  .timeline p{font-size:.78rem}
+
+  /* Contact - full mobile width */
+  .contact{width:100%;border-radius:18px;padding:28px 18px;margin-bottom:0;border-left:0;border-right:0}
+  .contact h2{font-size:clamp(2.6rem,11vw,3.5rem)}
+  .contact p{font-size:.88rem}
+  .contact-links{grid-template-columns:1fr;gap:10px}
+  .contact-links .secondary{justify-content:center;min-height:46px;padding:12px}
+  .contact-form{gap:14px}
+  .form-row{grid-template-columns:1fr;gap:12px}
+  .form-field input,.form-field textarea,.form-field select{min-height:46px;font-size:16px;padding:11px 13px}
+  .form-field textarea{min-height:120px}
+  .contact-form .primary{width:100%;justify-content:center;min-height:50px;font-size:.88rem}
+  .form-success{padding:22px;border-radius:12px}
+
+  /* Footer */
+  footer{padding:25px 16px;font-size:.7rem}
+
+  /* Particles - lighter on mobile */
+  #particles{opacity:.3}
+
+  /* Glow pulse - subtler on mobile */
+  .glow-pulse{animation:none;border-color:#6048a8}
+
+  /* Noise overlay - lighter */
+  .noise{opacity:.03}
+
+  /* Touch-friendly adjustments */
+  .magnetic:active{transform:scale(.97)}
+  .tilt-card:active{transform:none}
+}
+
+/* Small phones */
+@media(max-width:380px){
+  .hero h1{font-size:2.4rem}
+  .talk{display:none}
+  .actions{gap:8px}
+  .actions .primary,.actions .secondary{padding:11px 10px;font-size:.78rem}
+  .core3d{height:220px;scale:.75}
+  .monogram{min-height:200px;font-size:4.5rem}
+  .contact h2{font-size:2.2rem}
+  .project{min-height:340px}
+}
+
+/* Tablet landscape */
+@media(min-width:761px) and (max-width:1024px){
+  .projects{grid-template-columns:1fr 1fr}
+  .serviceGrid{grid-template-columns:1fr 1fr}
+  .timeline{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Tall phones (gesture nav) */
+@media(max-height:700px) and (max-width:760px){
+  .hero{padding-top:90px;min-height:auto}
+  .core3d{height:220px}
+  section{padding:55px 0}
+}
