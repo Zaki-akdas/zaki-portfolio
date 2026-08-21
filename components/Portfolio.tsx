@@ -1,132 +1,49 @@
 'use client';
+import {useEffect, useState, useRef} from 'react';
+import {motion, useInView, useScroll, useTransform, AnimatePresence} from 'framer-motion';
+import {ArrowUpRight, Mail, MessageCircle, Send, CheckCircle, AlertCircle, Code2, Globe, ShoppingCart, Brain, Wrench, Layers, ChevronDown, Menu, X, ExternalLink} from 'lucide-react';
 import dynamic from 'next/dynamic';
-import {useEffect, useState, useRef, useCallback} from 'react';
-import {ArrowUpRight, Menu, X, Mail, MessageCircle, Send, CheckCircle, AlertCircle} from 'lucide-react';
 import {projects} from '@/data/projects';
 
-const DigitalCore = dynamic(() => import('./DigitalCore'), {ssr: false, loading: () => <div className="corefallback">&lt;/&gt;</div>});
+const Planet = dynamic(() => import('./Planet'), {ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center"><div className="text-6xl text-purple-400 animate-pulse">🌍</div></div>});
+const Starfield = dynamic(() => import('./Starfield'), {ssr: false});
 
-const services = ['Business Websites', 'Web Applications', 'E-commerce', 'Custom Business Tools', 'AI Integrations', 'Product Refinement'];
-const tech = ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'Node.js', 'APIs', 'PostgreSQL', 'MongoDB', 'Supabase', 'Git & GitHub', 'OpenAI', 'Gemini'];
+/* ─── Data ─── */
+const services = [
+  {icon: Globe, title: 'Business Websites', desc: 'Professional responsive sites that establish trust and create a clear path to enquiry.', color: '#6c3ce0'},
+  {icon: Code2, title: 'Web Applications', desc: 'Modern interfaces and connected product features for practical ideas.', color: '#3b82f6'},
+  {icon: ShoppingCart, title: 'E-commerce', desc: 'Clear shopping experiences built around product discovery and action.', color: '#ec4899'},
+  {icon: Wrench, title: 'Custom Tools', desc: 'Dashboards and workflows shaped around a real operational need.', color: '#06b6d4'},
+  {icon: Brain, title: 'AI Integrations', desc: 'Useful AI features connected to products and business workflows.', color: '#a78bfa'},
+  {icon: Layers, title: 'Product Refinement', desc: 'Responsive improvements and thoughtful evolution of an existing site.', color: '#f59e0b'},
+];
 
-/* ─── Reveal hook ─── */
-function useReveal<T extends HTMLElement = HTMLElement>(threshold = 0.12) {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { el.classList.add('visible'); io.unobserve(el); }
-    }, {threshold});
-    io.observe(el);
-    return () => io.disconnect();
-  }, [threshold]);
-  return ref;
-}
+const tech = [
+  {name: 'HTML', color: '#e34c26'}, {name: 'CSS', color: '#1572b6'},
+  {name: 'JavaScript', color: '#f7df1e'}, {name: 'TypeScript', color: '#3178c6'},
+  {name: 'React', color: '#61dafb'}, {name: 'Next.js', color: '#ffffff'},
+  {name: 'Tailwind CSS', color: '#06b6d4'}, {name: 'Node.js', color: '#68a063'},
+  {name: 'PostgreSQL', color: '#336791'}, {name: 'MongoDB', color: '#47a248'},
+  {name: 'Supabase', color: '#3ecf8e'}, {name: 'Git', color: '#f05032'},
+  {name: 'OpenAI', color: '#10a37f'}, {name: 'Gemini', color: '#8b5cf6'},
+  {name: 'Three.js', color: '#049ef4'},
+];
 
-/* ─── 3D Tilt hook ─── */
-function useTilt<T extends HTMLElement = HTMLElement>(maxTilt = 8) {
-  const ref = useRef<T>(null);
-  const onMove = useCallback((e: PointerEvent) => {
-    const el = ref.current;
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(900px) rotateY(${x * maxTilt}deg) rotateX(${-y * maxTilt}deg) translateY(-5px)`;
-  }, [maxTilt]);
-  const onLeave = useCallback(() => { if (ref.current) ref.current.style.transform = ''; }, []);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerleave', onLeave);
-    return () => { el.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave); };
-  }, [onMove, onLeave]);
-  return ref;
-}
-
-/* ─── Parallax hook ─── */
-function useParallax<T extends HTMLElement = HTMLElement>(speed = 0.12) {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const fn = () => {
-      if (!ref.current) return;
-      const r = ref.current.getBoundingClientRect();
-      const offset = (r.top + r.height / 2 - window.innerHeight / 2) * speed;
-      ref.current.style.transform = `translateY(${offset}px)`;
-    };
-    addEventListener('scroll', fn, {passive: true});
-    fn();
-    return () => removeEventListener('scroll', fn);
-  }, [speed]);
-  return ref;
-}
-
-/* ─── Particle canvas ─── */
-function Particles() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    let W: number, H: number;
-    const dpr = window.devicePixelRatio || 1;
-    let particles: {x: number; y: number; vx: number; vy: number; r: number; a: number}[] = [];
-
-    function resize() {
-      W = canvas!.width = innerWidth * dpr;
-      H = canvas!.height = innerHeight * dpr;
-      canvas!.style.width = innerWidth + 'px';
-      canvas!.style.height = innerHeight + 'px';
-      const count = innerWidth < 700 ? 25 : 50;
-      particles = Array.from({length: count}, () => ({
-        x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: Math.random() * 1.5 + 0.5,
-        a: Math.random() * 0.25 + 0.08,
-      }));
-    }
-    resize();
-    addEventListener('resize', resize);
-
-    let raf: number;
-    function draw() {
-      ctx!.setTransform(1, 0, 0, 1, 0, 0);
-      ctx!.scale(dpr, dpr);
-      ctx!.clearRect(0, 0, innerWidth, innerHeight);
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
-        if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(140,97,245,${p.a})`;
-        ctx!.fill();
-        for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j];
-          const d = Math.hypot(p.x - q.x, p.y - q.y);
-          if (d < 120) {
-            ctx!.beginPath();
-            ctx!.moveTo(p.x, p.y);
-            ctx!.lineTo(q.x, q.y);
-            ctx!.strokeStyle = `rgba(100,80,200,${(1 - d / 120) * 0.07})`;
-            ctx!.lineWidth = 0.5;
-            ctx!.stroke();
-          }
-        }
-      }
-      raf = requestAnimationFrame(draw);
-    }
-    draw();
-    return () => { cancelAnimationFrame(raf); removeEventListener('resize', resize); };
-  }, []);
-  return <canvas id="particles" ref={canvasRef} aria-hidden="true" />;
+/* ─── Reveal wrapper ─── */
+function Reveal({children, className = '', delay = 0, direction = 'up'}: {children: React.ReactNode; className?: string; delay?: number; direction?: 'up' | 'down' | 'left' | 'right'}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, {once: true, margin: '0px 0px -20px 0px'});
+  const variants = {
+    up: {hidden: {opacity: 0, y: 50}, visible: {opacity: 1, y: 0}},
+    down: {hidden: {opacity: 0, y: -50}, visible: {opacity: 1, y: 0}},
+    left: {hidden: {opacity: 0, x: -50}, visible: {opacity: 1, x: 0}},
+    right: {hidden: {opacity: 0, x: 50}, visible: {opacity: 1, x: 0}},
+  };
+  return (
+    <motion.div ref={ref} initial="hidden" animate={isInView ? 'visible' : 'hidden'} variants={variants[direction]} transition={{duration: 0.7, delay, ease: [0.16, 1, 0.3, 1]}} className={className}>
+      {children}
+    </motion.div>
+  );
 }
 
 /* ─── Contact Form ─── */
@@ -140,225 +57,323 @@ function ContactForm() {
       const res = await fetch('https://formspree.io/f/mnpawgla', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name: formData.name, email: formData.email, projectType: formData.type, budget: formData.budget, message: formData.message}),
+        body: JSON.stringify(formData),
       });
       if (res.ok) { setStatus('success'); setFormData({name: '', email: '', type: 'Business website', budget: "Let's discuss", message: ''}); }
       else setStatus('error');
     } catch { setStatus('error'); }
   };
-  const set = (field: string, value: string) => setFormData(p => ({...p, [field]: value}));
+  const set = (f: string, v: string) => setFormData(p => ({...p, [f]: v}));
 
   if (status === 'success') return (
-    <div className="form-success reveal-scale visible">
-      <CheckCircle size={28} /><h3>Message sent!</h3><p>Thanks for reaching out. I&apos;ll get back to you soon.</p>
-      <button className="form-reset" onClick={() => setStatus('idle')}>Send another message</button>
-    </div>
+    <motion.div initial={{opacity: 0, scale: 0.9}} animate={{opacity: 1, scale: 1}} className="glass-card p-8 text-center">
+      <CheckCircle size={40} className="text-green-400 mx-auto mb-4" />
+      <h3 className="text-xl font-bold text-white mb-2">Message sent!</h3>
+      <p className="text-gray-400 mb-4">Thanks for reaching out. I&apos;ll get back to you soon.</p>
+      <button onClick={() => setStatus('idle')} className="text-purple-400 hover:text-purple-300 text-sm font-semibold cursor-pointer">Send another →</button>
+    </motion.div>
   );
 
   return (
-    <form className="contact-form" onSubmit={handleSubmit}>
-      <div className="form-row">
-        <div className="form-field"><label htmlFor="c-name">Name</label><input id="c-name" type="text" required placeholder="Your name" value={formData.name} onChange={e => set('name', e.target.value)} /></div>
-        <div className="form-field"><label htmlFor="c-email">Email</label><input id="c-email" type="email" required placeholder="you@company.com" value={formData.email} onChange={e => set('email', e.target.value)} /></div>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Name</label><input required type="text" placeholder="Your name" value={formData.name} onChange={e => set('name', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" /></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Email</label><input required type="email" placeholder="you@company.com" value={formData.email} onChange={e => set('email', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" /></div>
       </div>
-      <div className="form-row">
-        <div className="form-field"><label htmlFor="c-type">Project type</label><select id="c-type" value={formData.type} onChange={e => set('type', e.target.value)}><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div>
-        <div className="form-field"><label htmlFor="c-budget">Budget range</label><select id="c-budget" value={formData.budget} onChange={e => set('budget', e.target.value)}><option>Let&apos;s discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project type</label><select value={formData.type} onChange={e => set('type', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 cursor-pointer appearance-none"><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div>
+        <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Budget range</label><select value={formData.budget} onChange={e => set('budget', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 cursor-pointer appearance-none"><option>Let&apos;s discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div>
       </div>
-      <div className="form-field"><label htmlFor="c-message">Project description</label><textarea id="c-message" required rows={5} placeholder="What would you like to build?" value={formData.message} onChange={e => set('message', e.target.value)} /></div>
-      <button className="primary magnetic" type="submit" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending…' : <>Send inquiry <Send size={16} /></>}</button>
-      {status === 'error' && <div className="form-error"><AlertCircle size={16} /> Something went wrong. Please try again or email me directly.</div>}
+      <div><label className="block text-xs font-bold text-gray-400 mb-1.5 tracking-wider uppercase">Project description</label><textarea required rows={5} placeholder="What would you like to build?" value={formData.message} onChange={e => set('message', e.target.value)} className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-vertical min-h-[120px]" /></div>
+      <button type="submit" disabled={status === 'submitting'} className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold px-8 py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+        {status === 'submitting' ? 'Sending…' : <>Send inquiry <Send size={16} /></>}
+      </button>
+      {status === 'error' && <div className="flex items-center gap-2 text-red-400 text-sm"><AlertCircle size={16} /> Something went wrong. Please try again or email me directly.</div>}
     </form>
   );
 }
 
-/* ─── Section Header ─── */
-function Header({tag, title, text}: {tag: string; title: string; text: string}) {
-  const ref = useReveal<HTMLDivElement>();
-  return <div className="header" ref={ref}><div><p className="eyebrow">{tag}</p><h2>{title}</h2></div><p>{text}</p></div>;
-}
-
 /* ─── Main Portfolio ─── */
 export default function Portfolio() {
-  const [open, setOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [loaded, setLoaded] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const {scrollYProgress} = useScroll();
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 1100); return () => clearTimeout(t); }, []);
   useEffect(() => {
-    const fn = () => setProgress(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100);
+    const fn = () => setScrolled(window.scrollY > 50);
     addEventListener('scroll', fn, {passive: true});
     return () => removeEventListener('scroll', fn);
   }, []);
 
-  /* Reveal refs */
-  const statementRef = useReveal<HTMLDivElement>();
-  const skillsRef = useReveal<HTMLDivElement>();
-  const aboutRef = useReveal<HTMLDivElement>();
-  const journeyRef = useReveal<HTMLDivElement>();
-  const contactRef = useReveal<HTMLDivElement>();
-  const heroRef = useReveal<HTMLDivElement>(0.05);
+  return (
+    <>
+      {/* Background layers */}
+      <Starfield />
+      <div className="nebula-1" />
+      <div className="nebula-2" />
+      <div className="nebula-3" />
 
-  /* Tilt refs */
-  const projectTilt = useTilt<HTMLAnchorElement>(6);
-  const serviceTilt = useTilt<HTMLDivElement>(5);
+      {/* Scroll progress */}
+      <motion.div className="fixed top-0 left-0 h-[2px] z-50 bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" style={{width: progressWidth}} />
 
-  /* Parallax refs */
-  const parallaxBg = useParallax<HTMLDivElement>(0.08);
-
-  return (<>
-    {/* Particle background */}
-    <Particles />
-
-    {/* Loader */}
-    <div className={loaded ? 'loader done' : 'loader'}>
-      <div>
-        <b>ZAKI AKDAS<br />CHOUDHARY</b>
-        <span>WEB DEVELOPER · BHOPAL</span>
-        <i>100%</i>
-      </div>
-    </div>
-
-    {/* Progress bar */}
-    <div className="progress" style={{width: `${progress}%`}} />
-
-    {/* Nav */}
-    <nav>
-      <a className="logo" href="#home">ZA<span>.</span><small>WEB SYSTEMS</small></a>
-      <div className={open ? 'links open' : 'links'}>
-        {['Work', 'Services', 'Skills', 'About', 'Contact'].map(x => (
-          <a onClick={() => setOpen(false)} key={x} href={'#' + x.toLowerCase()}>{x}</a>
-        ))}
-      </div>
-      <a className="talk magnetic" href="#contact">Let&apos;s talk <ArrowUpRight size={15} /></a>
-      <button className="menu" aria-label="Menu" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
-    </nav>
-
-    <main>
-      {/* Marquee */}
-      <div className="marquee"><div>WEB DEVELOPER <b>✦</b> BUSINESS WEBSITES <b>✦</b> DIGITAL EXPERIENCES <b>✦</b> WEB DEVELOPER <b>✦</b> BUSINESS WEBSITES <b>✦</b> DIGITAL EXPERIENCES <b>✦</b></div></div>
-
-      {/* Hero */}
-      <section id="home" className="hero">
-        <div className="heroCopy hero-stagger" ref={heroRef}>
-          <p className="eyebrow">Hello, I&apos;m Zaki · Bhopal, India</p>
-          <p className="role">WEB DEVELOPER <span>/</span> BUSINESS WEBSITE BUILDER</p>
-          <h1>I build <i>digital experiences</i> with purpose.</h1>
-          <p className="lead">I&apos;m Zaki Akdas Choudhary, a web developer creating professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.</p>
-          <div className="actions">
-            <a className="primary magnetic" href="#contact">Start a project <ArrowUpRight /></a>
-            <a className="secondary magnetic" href="#work">View work ↓</a>
-          </div>
-          <div className="micro">
-            <span><b>WEB DEVELOPER</b>Designing & building for the web</span>
-            <span><b>AVAILABLE TO CONNECT</b>For selected freelance projects</span>
-          </div>
+      {/* Nav */}
+      <motion.nav initial={{y: -80, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{duration: 0.8, delay: 0.2}} className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[1100px] px-5 py-3 flex items-center justify-between rounded-2xl transition-all duration-300 ${scrolled ? 'glass shadow-lg shadow-black/20' : ''}`}>
+        <a href="#home" className="font-black text-lg tracking-tight">ZA<span className="text-purple-400">.</span></a>
+        <div className="hidden md:flex items-center gap-7 text-sm text-gray-400">
+          {['Work', 'Skills', 'About', 'Contact'].map(x => (
+            <a key={x} href={`#${x.toLowerCase()}`} className="hover:text-white transition-colors">{x}</a>
+          ))}
         </div>
-        <DigitalCore />
-      </section>
+        <a href="#contact" className="hidden md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all">
+          Let&apos;s talk <ArrowUpRight size={14} />
+        </a>
+        <button onClick={() => setNavOpen(!navOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white">
+          {navOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </motion.nav>
 
-      {/* Statement */}
-      <section className="statement" ref={statementRef}>
-        <p className="eyebrow">A considered approach</p>
-        <h2>I don&apos;t just make pages.<br />I shape <i>useful digital products.</i></h2>
-        <p>From concept to launch, I focus on thoughtful interfaces, responsive development and the details that make a digital experience feel credible.</p>
-      </section>
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {navOpen && (
+          <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-5 md:hidden">
+            {['Work', 'Skills', 'About', 'Contact'].map((x, i) => (
+              <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={`#${x.toLowerCase()}`} onClick={() => setNavOpen(false)} className="block py-3 text-gray-300 hover:text-white font-medium border-b border-white/5 last:border-0">{x}</motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Work */}
-      <section id="work">
-        <Header tag="Selected work" title="Live products for real businesses." text="Each card opens a published client website. No invented statistics or fictional outcomes." />
-        <div className="projects">
-          {projects.map(p => (
-            <a className={`project ${p.theme} tilt-card`} key={p.title} href={p.url} target="_blank" ref={projectTilt}>
-              <div className="browser">
-                <b>{p.theme === 'food' ? 'AL-BAIK ZAYKA' : '☾ NIGHT CORNER'}</b>
-                <span>{p.theme === 'food' ? 'FAST FOOD · HOME DELIVERY' : 'YOUR NIGHT · YOUR ESSENTIALS'}</span>
+      <main className="relative z-10">
+        {/* ═══ HERO ═══ */}
+        <section id="home" className="min-h-screen flex flex-col items-center justify-center px-5 pt-24 pb-16">
+          <div className="w-full max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Left: Text */}
+            <motion.div initial={{opacity: 0, x: -40}} animate={{opacity: 1, x: 0}} transition={{duration: 0.9, delay: 0.4}} className="text-center lg:text-left order-2 lg:order-1">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                Bhopal, India · Web Developer
               </div>
-              <small>{p.kind}</small>
-              <h3>{p.title}</h3>
-              <p>{p.description}</p>
-              <div className="tags">{p.tags.map(t => <span key={t}>{t}</span>)}</div>
-              <em>View live <ArrowUpRight size={18} /></em>
-            </a>
-          ))}
-        </div>
-      </section>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tight mb-6">
+                I build <span className="gradient-text">digital experiences</span> with purpose.
+              </h1>
+              <p className="text-gray-400 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0 mb-8">
+                Professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <a href="#contact" className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-bold px-6 py-3.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:-translate-y-0.5">
+                  Start a project <ArrowUpRight size={18} />
+                </a>
+                <a href="#work" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-6 py-3.5 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
+                  View work ↓
+                </a>
+              </div>
+              <div className="flex gap-8 mt-10 text-gray-500 text-xs">
+                <div><span className="block text-white text-sm font-bold mb-1">WEB DEVELOPER</span>Designing & building</div>
+                <div><span className="block text-white text-sm font-bold mb-1">AVAILABLE</span>For freelance projects</div>
+              </div>
+            </motion.div>
 
-      {/* Services */}
-      <section id="services">
-        <Header tag="What I can build" title="Useful technology, thoughtfully applied." text="Services shaped around the problems a growing business needs to solve." />
-        <div className="serviceGrid">
-          {services.map((x, i) => (
-            <article key={x} className="tilt-card" ref={serviceTilt}>
-              <small>0{i + 1} / BUILD</small>
-              <h3>{x}</h3>
-              <p>{['Professional responsive sites that establish trust and create a clear path to enquiry.', 'Modern interfaces and connected product features for practical ideas.', 'Clear shopping experiences built around product discovery and action.', 'Dashboards and workflows shaped around a real operational need.', 'Useful AI features connected to products and business workflows.', 'Responsive improvements and thoughtful evolution of an existing site.'][i]}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+            {/* Right: Planet */}
+            <motion.div initial={{opacity: 0, scale: 0.8}} animate={{opacity: 1, scale: 1}} transition={{duration: 1, delay: 0.6}} className="order-1 lg:order-2 h-[350px] md:h-[450px] lg:h-[520px]">
+              <Planet />
+            </motion.div>
+          </div>
 
-      {/* Skills */}
-      <section id="skills" className="skills" ref={skillsRef}>
-        <div>
-          <p className="eyebrow">Technology ecosystem</p>
-          <h2>A modern web toolkit.</h2>
-          <p>Frontend interfaces, backend logic, databases and AI APIs — selected for the job, not added for noise.</p>
-        </div>
-        <div className="cloud stagger">
-          {tech.map(x => <span key={x}>{x}</span>)}
-        </div>
-      </section>
+          {/* Scroll hint */}
+          <motion.div animate={{y: [0, 8, 0]}} transition={{duration: 2, repeat: Infinity}} className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <ChevronDown size={24} className="text-gray-500" />
+          </motion.div>
+        </section>
 
-      {/* About */}
-      <section id="about" className="about" ref={aboutRef}>
-        <div className="monogram float" ref={parallaxBg}>
-          ZA<small>BHOPAL · INDIA</small>
-        </div>
-        <div>
-          <p className="eyebrow">About Zaki</p>
-          <h2>The developer behind the interface.</h2>
-          <p>I&apos;m Zaki Akdas Choudhary, a web developer based in Bhopal with a BCA background in Information Technology. I value clear communication, structured problem-solving and steady refinement.</p>
-          <p>Every project starts by understanding what needs to work — then turns that clarity into an experience people can actually use.</p>
-        </div>
-      </section>
+        {/* ═══ STATEMENT ═══ */}
+        <section className="py-20 md:py-32 px-5 border-t border-b border-white/5">
+          <div className="max-w-[1100px] mx-auto">
+            <Reveal>
+              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">A considered approach</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[0.92] tracking-tight mb-6">
+                I don&apos;t just make pages.<br />I shape <span className="gradient-text-accent">useful digital products.</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <p className="text-gray-400 text-lg leading-relaxed max-w-2xl">From concept to launch, I focus on thoughtful interfaces, responsive development and the details that make a digital experience feel credible.</p>
+            </Reveal>
+          </div>
+        </section>
 
-      {/* Journey */}
-      <section className="journey" ref={journeyRef}>
-        <p className="eyebrow">Career &amp; approach</p>
-        <h2>Learning. Building.<br /><i>Improving.</i></h2>
-        <div className="timeline stagger">
-          <article>
-            <small>NOW</small>
-            <b>Web Developer</b>
-            <p>Creating professional, modern websites for businesses of every kind.</p>
-          </article>
-          <article>
-            <small>FOUNDATION</small>
-            <b>BCA · Information Technology</b>
-            <p>Developing the technical foundation behind thoughtful web experiences.</p>
-          </article>
-          <article>
-            <small>NEXT</small>
-            <b>Freelance &amp; digital products</b>
-            <p>Growing a body of client work with clear outcomes and useful experiences.</p>
-          </article>
-        </div>
-      </section>
+        {/* ═══ WORK ═══ */}
+        <section id="work" className="py-20 md:py-32 px-5">
+          <div className="max-w-[1100px] mx-auto">
+            <Reveal>
+              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Selected work</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Live products for<br />real businesses.</h2>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <p className="text-gray-400 mb-12 max-w-lg">Each card opens a published client website.</p>
+            </Reveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {projects.map((p, i) => (
+                <Reveal key={p.title} delay={i * 0.15}>
+                  <a href={p.url} target="_blank" rel="noreferrer" className="glass-card block p-6 group">
+                    <div className={`h-48 rounded-xl mb-5 flex flex-col justify-end p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-600 to-red-900' : 'bg-gradient-to-br from-blue-600 to-indigo-950'}`}>
+                      <span className="text-white/80 text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
+                      <span className="text-white text-2xl font-black tracking-tight">{p.title}</span>
+                    </div>
+                    <p className="text-xs text-purple-400 font-bold uppercase tracking-wider mb-2">{p.kind}</p>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">{p.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {p.tags.map(t => <span key={t} className="text-xs border border-white/10 rounded-full px-3 py-1 text-gray-400">{t}</span>)}
+                    </div>
+                    <span className="flex items-center gap-1.5 text-sm font-bold text-purple-400 group-hover:text-purple-300 transition-colors">View live <ExternalLink size={14} /></span>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Contact */}
-      <section id="contact" className="contact glow-pulse" ref={contactRef}>
-        <p className="eyebrow">Start a conversation</p>
-        <h2>Have an idea?<br /><i>Let&apos;s build it.</i></h2>
-        <p>Tell me what you&apos;re building, what it needs to achieve and where you want to take it.</p>
-        <div className="contact-links">
-          <a className="secondary magnetic" href="mailto:zakiakdas703@gmail.com"><Mail />Email Zaki</a>
-          <a className="secondary magnetic" href="https://wa.me/919131957419" target="_blank"><MessageCircle /> WhatsApp</a>
-        </div>
-        <ContactForm />
-      </section>
-    </main>
+        {/* ═══ SERVICES ═══ */}
+        <section id="skills" className="py-20 md:py-32 px-5 border-t border-white/5">
+          <div className="max-w-[1100px] mx-auto">
+            <Reveal>
+              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">What I can build</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-12">Useful technology,<br />thoughtfully applied.</h2>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {services.map((s, i) => (
+                <Reveal key={s.title} delay={i * 0.08}>
+                  <div className="glass-card p-6 h-full">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{background: `${s.color}15`, border: `1px solid ${s.color}30`}}>
+                      <s.icon size={22} style={{color: s.color}} />
+                    </div>
+                    <h3 className="text-white font-bold text-lg mb-2">{s.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
 
-    <footer>© {new Date().getFullYear()} Zaki Akdas Choudhary · Built with intent.</footer>
-  </>);
+        {/* ═══ TECH STACK ═══ */}
+        <section className="py-20 md:py-32 px-5 border-t border-white/5">
+          <div className="max-w-[1100px] mx-auto">
+            <Reveal>
+              <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Technology ecosystem</p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-12">A modern web toolkit.</h2>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {tech.map((t, i) => (
+                  <motion.div key={t.name} initial={{opacity: 0, scale: 0.8}} whileInView={{opacity: 1, scale: 1}} viewport={{once: true}} transition={{delay: i * 0.04}} whileHover={{y: -5, scale: 1.08}} className="glass-card px-5 py-3 flex items-center gap-2.5 cursor-default">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{background: t.color}} />
+                    <span className="text-sm font-medium text-gray-300">{t.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ═══ ABOUT ═══ */}
+        <section id="about" className="py-20 md:py-32 px-5 border-t border-white/5">
+          <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Monogram */}
+            <Reveal direction="left">
+              <div className="aspect-square max-w-[380px] mx-auto rounded-3xl border border-white/10 bg-gradient-to-br from-purple-900/30 to-blue-900/20 flex items-center justify-center relative overflow-hidden">
+                <span className="text-[10rem] font-black tracking-tighter text-white/5">ZA</span>
+                <div className="absolute bottom-6 left-0 right-0 text-center text-xs font-bold text-gray-500 tracking-[0.15em] uppercase">Bhopal · India</div>
+              </div>
+            </Reveal>
+
+            {/* Text */}
+            <div>
+              <Reveal>
+                <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">About Zaki</p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-6">The developer behind<br />the interface.</h2>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <p className="text-gray-400 leading-relaxed mb-4">I&apos;m Zaki Akdas Choudhary, a web developer based in Bhopal with a BCA background in Information Technology. I value clear communication, structured problem-solving and steady refinement.</p>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <p className="text-gray-400 leading-relaxed mb-8">Every project starts by understanding what needs to work — then turns that clarity into an experience people can actually use.</p>
+              </Reveal>
+
+              {/* Timeline */}
+              <Reveal delay={0.35}>
+                <div className="border-t border-white/10 pt-6 space-y-5">
+                  {[
+                    {label: 'NOW', title: 'Web Developer', desc: 'Creating professional, modern websites for businesses of every kind.'},
+                    {label: 'FOUNDATION', title: 'BCA · Information Technology', desc: 'Developing the technical foundation behind thoughtful web experiences.'},
+                    {label: 'NEXT', title: 'Freelance & digital products', desc: 'Growing a body of client work with clear outcomes and useful experiences.'},
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-4 items-start">
+                      <span className="text-[10px] font-bold text-purple-400 tracking-widest uppercase mt-1 shrink-0 w-20">{item.label}</span>
+                      <div className="border-l border-white/10 pl-4">
+                        <h4 className="text-white font-bold text-sm">{item.title}</h4>
+                        <p className="text-gray-500 text-xs leading-relaxed mt-1">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ CONTACT ═══ */}
+        <section id="contact" className="py-20 md:py-32 px-5">
+          <div className="max-w-[1100px] mx-auto">
+            <div className="glass-card p-8 md:p-12 lg:p-16 relative overflow-hidden">
+              {/* Decorative glow */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
+
+              <div className="relative z-10">
+                <Reveal>
+                  <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Start a conversation</p>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4">
+                    Have an idea?<br /><span className="gradient-text-accent">Let&apos;s build it.</span>
+                  </h2>
+                </Reveal>
+                <Reveal delay={0.15}>
+                  <p className="text-gray-400 text-lg max-w-lg mb-8">Tell me what you&apos;re building, what it needs to achieve and where you want to take it.</p>
+                </Reveal>
+                <Reveal delay={0.2}>
+                  <div className="flex flex-wrap gap-3 mb-10">
+                    <a href="mailto:zakiakdas703@gmail.com" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-5 py-3 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
+                      <Mail size={18} /> Email Zaki
+                    </a>
+                    <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center gap-2 border border-white/10 text-gray-300 font-bold px-5 py-3 rounded-xl hover:border-purple-500/40 hover:text-white transition-all">
+                      <MessageCircle size={18} /> WhatsApp
+                    </a>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.25}>
+                  <ContactForm />
+                </Reveal>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/5 py-8 text-center text-gray-600 text-xs">
+        © {new Date().getFullYear()} Zaki Akdas Choudhary · Built with intent.
+      </footer>
+    </>
+  );
 }
