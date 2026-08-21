@@ -1,11 +1,12 @@
 'use client';
-import {useEffect, useState, useRef} from 'react';
-import {motion, useInView, AnimatePresence} from 'framer-motion';
+import {useEffect, useState, useRef, useCallback} from 'react';
+import {motion, useInView, AnimatePresence, useScroll, useSpring} from 'framer-motion';
 import {Mail, MessageCircle, Send, CheckCircle, AlertCircle, Sparkles, ExternalLink} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
 const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
+const LoadingScreen = dynamic(() => import('./LoadingScreen'), {ssr: false});
 
 /* ─── Data ─── */
 const skills = [
@@ -94,10 +95,37 @@ function ContactForm() {
   );
 }
 
+/* ─── Section Wrapper with slide-in effect ─── */
+function SectionReveal({children, className = '', direction = 'up'}: {children: React.ReactNode; className?: string; direction?: 'up' | 'left' | 'right'}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, {once: true, margin: '-80px'});
+  const variants = {
+    up: {hidden: {opacity: 0, y: 60}, visible: {opacity: 1, y: 0}},
+    left: {hidden: {opacity: 0, x: -60}, visible: {opacity: 1, x: 0}},
+    right: {hidden: {opacity: 0, x: 60}, visible: {opacity: 1, x: 0}},
+  };
+  return (
+    <motion.section ref={ref}
+      initial="hidden"
+      animate={isInView ? 'visible' : 'hidden'}
+      variants={variants[direction]}
+      transition={{duration: 0.8, ease: [0.16, 1, 0.3, 1]}}
+      className={className}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
 /* ─── Main Portfolio ─── */
 export default function Portfolio() {
+  const [loaded, setLoaded] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const {scrollYProgress} = useScroll();
+  const scaleX = useSpring(scrollYProgress, {stiffness: 100, damping: 30, restDelta: 0.001});
+
+  const handleLoadComplete = useCallback(() => setLoaded(true), []);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
@@ -115,6 +143,18 @@ export default function Portfolio() {
 
   return (
     <>
+      {/* ── Loading Screen ── */}
+      {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
+
+      {/* ── Scroll Progress Bar ── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
+        style={{
+          scaleX,
+          background: 'linear-gradient(to right, #7042f8, #06b6d4)',
+          boxShadow: '0 0 10px rgba(112,66,248,0.5)',
+        }}
+      />
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* ── Animated Space Background ── */}
@@ -206,7 +246,7 @@ export default function Portfolio() {
           </div>
 
           {/* ═══ SKILLS ═══ */}
-          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20 px-5">
+          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20 px-5" style={{opacity: 1}}>
             <Reveal className="flex flex-col items-center justify-center gap-3">
               <WelcomeBadge text="Think better with Next.js" />
               <div className="text-[30px] text-white font-medium mt-[10px] text-center mb-[15px]">Making apps with modern technologies.</div>
@@ -228,7 +268,7 @@ export default function Portfolio() {
           </section>
 
           {/* ═══ PROJECTS ═══ */}
-          <section id="work" className="flex flex-col items-center justify-center py-20 px-5">
+          <section id="work" className="flex flex-col items-center justify-center py-20 px-5" style={{opacity: 1}}>
             <Reveal className="w-full max-w-[1200px]">
               <h2 className="text-[40px] font-semibold gradient-text-cyan py-10 text-center">My Projects</h2>
             </Reveal>
@@ -256,7 +296,7 @@ export default function Portfolio() {
           </section>
 
           {/* ═══ CONTACT ═══ */}
-          <section id="contact" className="py-20 px-5">
+          <section id="contact" className="py-20 px-5" style={{opacity: 1}}>
             <div className="max-w-[800px] mx-auto">
               <Reveal className="flex flex-col items-center mb-12">
                 <WelcomeBadge text="Get in Touch" />
