@@ -172,7 +172,7 @@ export default function SpaceBackground() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10 bg-[#030014]" aria-hidden="true">
+    <div className="fixed inset-0 w-full h-full -z-10 bg-[#030014] overflow-hidden" aria-hidden="true">
       <canvas ref={canvasRef} className="block w-full h-full" />
       {/* Nebula blobs */}
       <div className="absolute top-[-200px] right-[-200px] w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.15),transparent_70%)] blur-[100px] pointer-events-none" style={{animation: 'drift 20s ease-in-out infinite alternate'}} />

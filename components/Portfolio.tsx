@@ -189,7 +189,7 @@ export default function Portfolio() {
             </a>
           </div>
 
-          <button onClick={() => setNavOpen(!navOpen)} className="md:hidden text-white text-3xl focus:outline-none" aria-label={navOpen ? 'Close menu' : 'Open menu'} aria-expanded={navOpen}>
+          <button onClick={() => setNavOpen(!navOpen)} className="md:hidden text-white text-2xl w-11 h-11 flex items-center justify-center rounded-lg focus:outline-none hover:bg-white/10 transition" aria-label={navOpen ? 'Close menu' : 'Open menu'} aria-expanded={navOpen}>
             {navOpen ? '✕' : '☰'}
           </button>
         </div>
@@ -201,44 +201,44 @@ export default function Portfolio() {
           <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-[70px] left-4 right-4 z-50 glass-card p-5 md:hidden" role="menu" aria-label="Mobile navigation">              {['About', 'Skills', 'Projects', 'Contact'].map((x, i) => {
                 const href = x === 'About' ? '#skills' : x === 'Projects' ? '#work' : `#${x.toLowerCase()}`;
                 return (
-                  <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-3 text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
+                  <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-4 min-h-[44px] text-base text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
                 );
               })}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main className="h-full w-full" id="main-content">
-        <div className="flex flex-col gap-20">
+      <main className="h-full w-full overflow-hidden" id="main-content">
+        <div className="flex flex-col gap-12 sm:gap-16 lg:gap-20">
 
           {/* ═══ HERO ═══ */}
-          <div id="home" className="relative flex flex-col h-full w-full">
+          <div id="home" className="relative flex flex-col h-full w-full overflow-hidden">
             {/* Decorative radial glow */}
-            <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.12),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
-            <div className="absolute top-[40%] right-[5%] w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.08),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
+            <div className="absolute top-[20%] left-0 sm:left-[10%] w-[250px] sm:w-[400px] lg:w-[500px] h-[250px] sm:h-[400px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.12),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
+            <div className="absolute top-[40%] right-0 sm:right-[5%] w-[200px] sm:w-[350px] lg:w-[400px] h-[200px] sm:h-[350px] lg:h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.08),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
 
-            <div className="flex flex-col items-center justify-center px-5 lg:px-20 mt-28 lg:mt-40 w-full max-w-[1400px] m-auto z-[10]">
+            <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-20 mt-24 sm:mt-28 lg:mt-40 w-full max-w-[1400px] m-auto z-[10]">
               <div className="h-full w-full flex flex-col gap-5 justify-center items-center text-center">
                 <Reveal>
                   <WelcomeBadge text="Fullstack Developer Portfolio" />
                 </Reveal>
 
                 <Reveal delay={0.1}>
-                  <div className="flex flex-col gap-2 mt-6 text-4xl md:text-5xl lg:text-6xl font-bold text-white max-w-[700px]">
-                    <span>Providing <span className="gradient-text-cyan">the best</span> project experience.</span>
+                  <div className="flex flex-col gap-2 mt-4 sm:mt-6 font-bold text-white max-w-[700px]">
+                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Providing <span className="gradient-text-cyan">the best</span> project experience.</span>
                   </div>
                 </Reveal>
 
                 <Reveal delay={0.2}>
-                  <p className="text-lg text-gray-400 my-5 max-w-[600px]">
+                  <p className="text-sm sm:text-base md:text-lg text-gray-400 my-3 sm:my-5 max-w-[600px] leading-relaxed">
                     I&apos;m Zaki Akdas Choudhary, a web developer creating professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.
                   </p>
                 </Reveal>
 
                 <Reveal delay={0.3}>
-                  <div className="flex gap-4">
-                    <a href="#work" className="button-primary text-center text-white cursor-pointer">View projects</a>
-                    <a href="#contact" className="py-2 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[#2A0E61] hover:border-[#7042f8] transition font-semibold">Contact me</a>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+                    <a href="#work" className="button-primary text-center text-white cursor-pointer w-full sm:w-auto">View projects</a>
+                    <a href="#contact" className="py-2.5 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[#2A0E61] hover:border-[#7042f8] transition font-semibold w-full sm:w-auto">Contact me</a>
                   </div>
                 </Reveal>
               </div>
@@ -246,14 +246,14 @@ export default function Portfolio() {
           </div>
 
           {/* ═══ SKILLS ═══ */}
-          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-20 px-5" style={{opacity: 1}}>
+          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
             <Reveal className="flex flex-col items-center justify-center gap-3">
               <WelcomeBadge text="Think better with Next.js" />
-              <div className="text-[30px] text-white font-medium mt-[10px] text-center mb-[15px]">Making apps with modern technologies.</div>
-              <div className="text-[20px] text-gray-200 mb-10 mt-[10px] text-center italic">Never miss a task, deadline or idea.</div>
+              <div className="text-lg sm:text-xl md:text-[30px] text-white font-medium mt-2 sm:mt-[10px] text-center mb-3 sm:mb-[15px] px-4">Making apps with modern technologies.</div>
+              <div className="text-sm sm:text-lg md:text-[20px] text-gray-200 mb-6 sm:mb-10 mt-1 sm:mt-[10px] text-center italic px-4">Never miss a task, deadline or idea.</div>
             </Reveal>
 
-            <div className="flex flex-row justify-center flex-wrap mt-4 gap-6 items-center max-w-[1000px]">
+            <div className="flex flex-row justify-center flex-wrap mt-4 gap-4 sm:gap-6 items-center max-w-[1000px] px-2">
               {skills.map((skill, i) => (
                 <Reveal key={skill.name} delay={i * 0.04}>
                   <div className="skill-icon flex flex-col items-center gap-2 cursor-default">
@@ -268,18 +268,18 @@ export default function Portfolio() {
           </section>
 
           {/* ═══ PROJECTS ═══ */}
-          <section id="work" className="flex flex-col items-center justify-center py-20 px-5" style={{opacity: 1}}>
+          <section id="work" className="flex flex-col items-center justify-center py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
             <Reveal className="w-full max-w-[1200px]">
-              <h2 className="text-[40px] font-semibold gradient-text-cyan py-10 text-center">My Projects</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-[40px] font-semibold gradient-text-cyan py-6 sm:py-10 text-center">My Projects</h2>
             </Reveal>
 
-            <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {projects.map((p, i) => (
                 <Reveal key={p.title} delay={i * 0.15}>
                   <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
-                    <div className={`h-48 flex flex-col justify-end p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
-                      <span className="text-white/70 text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
-                      <span className="text-white text-2xl font-black">{p.title}</span>
+                    <div className={`h-36 sm:h-48 flex flex-col justify-end p-4 sm:p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
+                      <span className="text-white/70 text-[10px] sm:text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
+                      <span className="text-white text-xl sm:text-2xl font-black">{p.title}</span>
                     </div>
                     <div className="relative p-4">
                       <h3 className="text-xl font-semibold text-white">{p.title}</h3>
@@ -296,20 +296,20 @@ export default function Portfolio() {
           </section>
 
           {/* ═══ CONTACT ═══ */}
-          <section id="contact" className="py-20 px-5" style={{opacity: 1}}>
+          <section id="contact" className="py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
             <div className="max-w-[800px] mx-auto">
               <Reveal className="flex flex-col items-center mb-12">
                 <WelcomeBadge text="Get in Touch" />
-                <h2 className="text-3xl md:text-4xl font-bold text-white mt-6 text-center">Have an idea? <span className="gradient-text-cyan">Let&apos;s build it.</span></h2>
-                <p className="text-gray-400 mt-4 text-center max-w-lg">Tell me what you&apos;re building and I&apos;ll review the details.</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mt-4 sm:mt-6 text-center px-2">Have an idea? <span className="gradient-text-cyan">Let&apos;s build it.</span></h2>
+                <p className="text-sm sm:text-base text-gray-400 mt-3 sm:mt-4 text-center max-w-lg px-4">Tell me what you&apos;re building and I&apos;ll review the details.</p>
               </Reveal>
 
               <Reveal delay={0.1}>
-                <div className="flex gap-4 justify-center mb-8">
-                  <a href="mailto:zakiakdas703@gmail.com" className="flex items-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 w-full sm:w-auto px-4 sm:px-0">
+                  <a href="mailto:zakiakdas703@gmail.com" className="flex items-center justify-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
                     <Mail size={18} /> Email Zaki
                   </a>
-                  <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                  <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
                     <MessageCircle size={18} /> WhatsApp
                   </a>
                 </div>
@@ -324,7 +324,7 @@ export default function Portfolio() {
       </main>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="w-full bg-[#030014] border-t border-[#2A0E61] py-12 px-5" role="contentinfo">
+      <footer className="w-full bg-[#030014] border-t border-[#2A0E61] py-8 sm:py-12 px-4 sm:px-5" role="contentinfo">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           <div className="footer-col flex flex-col items-center md:items-start">
             <h3 className="text-white">Social Media</h3>
@@ -347,7 +347,7 @@ export default function Portfolio() {
             <a href="#contact">Let&apos;s Talk</a>
           </div>
         </div>
-        <div className="mt-10 text-center text-gray-500 text-sm">
+        <div className="mt-6 sm:mt-10 text-center text-gray-500 text-xs sm:text-sm">
           © {new Date().getFullYear()} Zaki Akdas Choudhary. All rights reserved.
         </div>
       </footer>

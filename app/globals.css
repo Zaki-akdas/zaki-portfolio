@@ -18,6 +18,23 @@ body {
   overflow-x: hidden;
 }
 
+/* Ensure no horizontal overflow from absolutely positioned elements */
+html, main, #main-content {
+  overflow-x: clip;
+}
+
+/* Mobile-specific utilities */
+@media (max-width: 640px) {
+  .gap-sections {
+    gap: 3rem !important;
+  }
+}
+
+/* Ensure fixed bg doesn't cause scroll */
+.fixed.inset-0 {
+  overflow: hidden;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
