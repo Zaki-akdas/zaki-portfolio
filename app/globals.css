@@ -245,12 +245,13 @@ textarea:focus-visible {
   animation: drift 25s ease-in-out infinite alternate-reverse;
 }
 
-/* Fallback: ensure content becomes visible even if JS animations lag */
-@keyframes fadeInFallback {
-  to { opacity: 1 !important; transform: none !important; }
-}
-[style*="opacity: 0"] {
-  animation: fadeInFallback 0.5s ease forwards 1s;
+
+
+/* Nebula drift animation */
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.05); }
+  100% { transform: translate(-20px, 30px) scale(0.95); }
 }
 
 /* Reduced motion */

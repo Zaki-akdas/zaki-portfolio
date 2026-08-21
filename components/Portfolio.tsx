@@ -130,7 +130,7 @@ export default function Portfolio() {
 
           {/* Desktop nav pill */}
           <div className="hidden md:flex nav-pill">
-            <a href="#about" className="px-3">About me</a>
+            <a href="#skills" className="px-3">About me</a>
             <a href="#skills" className="px-3">Skills</a>
             <a href="#work" className="px-3">Projects</a>
             <a href="#contact" className="px-3">Contact</a>
@@ -158,10 +158,12 @@ export default function Portfolio() {
       {/* Mobile menu */}
       <AnimatePresence>
         {navOpen && (
-          <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-[70px] left-4 right-4 z-50 glass-card p-5 md:hidden" role="menu" aria-label="Mobile navigation">
-            {['About', 'Skills', 'Projects', 'Contact'].map((x, i) => (
-              <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={`#${x === 'Projects' ? 'work' : x.toLowerCase()}`} onClick={() => setNavOpen(false)} role="menuitem" className="block py-3 text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
-            ))}
+          <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-[70px] left-4 right-4 z-50 glass-card p-5 md:hidden" role="menu" aria-label="Mobile navigation">              {['About', 'Skills', 'Projects', 'Contact'].map((x, i) => {
+                const href = x === 'About' ? '#skills' : x === 'Projects' ? '#work' : `#${x.toLowerCase()}`;
+                return (
+                  <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-3 text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
+                );
+              })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -170,7 +172,7 @@ export default function Portfolio() {
         <div className="flex flex-col gap-20">
 
           {/* ═══ HERO ═══ */}
-          <div className="relative flex flex-col h-full w-full">
+          <div id="home" className="relative flex flex-col h-full w-full">
             {/* Decorative radial glow */}
             <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.12),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
             <div className="absolute top-[40%] right-[5%] w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.08),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
@@ -301,7 +303,7 @@ export default function Portfolio() {
           <div className="footer-col flex flex-col items-center md:items-start">
             <h3 className="text-white">Quick Links</h3>
             <a href="#home">Home</a>
-            <a href="#about">About Me</a>
+            <a href="#skills">About Me</a>
             <a href="#contact">Let&apos;s Talk</a>
           </div>
         </div>
