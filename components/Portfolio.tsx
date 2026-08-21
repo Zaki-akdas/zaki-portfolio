@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
 const Planet = dynamic(() => import('./Planet'), {ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center"><div className="text-6xl text-purple-400 animate-pulse">🌍</div></div>});
-const Starfield = dynamic(() => import('./Starfield'), {ssr: false});
+const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
 
 /* ─── Data ─── */
 const skills = [
@@ -119,7 +119,7 @@ export default function Portfolio() {
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* Background */}
-      <Starfield />
+      <SpaceBackground />
       <div className="nebula-1" aria-hidden="true" />
       <div className="nebula-2" aria-hidden="true" />
 
