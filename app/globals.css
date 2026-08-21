@@ -36,6 +36,117 @@ body {
   color: #fff;
 }
 
+/* ========== ACCESSIBILITY ========== */
+
+/* Skip to content link */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: linear-gradient(135deg, #6c3ce0, #3b82f6);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 30px rgba(108, 60, 224, 0.4);
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid #a78bfa;
+  outline-offset: 2px;
+}
+
+/* Global focus-visible styles */
+:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Focus styles for all interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* Enhanced focus for glass cards */
+.glass-card:focus-visible {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.3), 0 20px 60px rgba(108, 60, 224, 0.12);
+  transform: translateY(-4px);
+}
+
+/* Form field focus states */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: #6c3ce0 !important;
+  box-shadow: 0 0 0 3px rgba(108, 60, 224, 0.2);
+  outline: none;
+}
+
+/* Button focus ring */
+button:focus-visible,
+a[class*="bg-gradient"].focus-visible {
+  box-shadow: 0 0 0 3px rgba(108, 60, 224, 0.5);
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Visible on focus for sr-only elements */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid LinkText;
+  }
+  .glass-card:focus-visible {
+    border: 2px solid LinkText;
+  }
+  .gradient-text {
+    color: LinkText;
+  }
+}
+
 /* Fallback: ensure content is visible after 2s even if JS animations don't trigger */
 @keyframes fadeInFallback {
   to { opacity: 1 !important; transform: none !important; }

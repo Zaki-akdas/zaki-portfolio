@@ -106,29 +106,43 @@ export default function Portfolio() {
     return () => removeEventListener('scroll', fn);
   }, []);
 
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && navOpen) {
+        setNavOpen(false);
+      }
+    };
+    addEventListener('keydown', handleKeyDown);
+    return () => removeEventListener('keydown', handleKeyDown);
+  }, [navOpen]);
+
   return (
     <>
+      {/* Skip to content link */}
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+
       {/* Background layers */}
       <Starfield />
-      <div className="nebula-1" />
-      <div className="nebula-2" />
-      <div className="nebula-3" />
+      <div className="nebula-1" aria-hidden="true" />
+      <div className="nebula-2" aria-hidden="true" />
+      <div className="nebula-3" aria-hidden="true" />
 
       {/* Scroll progress */}
-      <motion.div className="fixed top-0 left-0 h-[2px] z-50 bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" style={{width: progressWidth}} />
+      <motion.div className="fixed top-0 left-0 h-[2px] z-50 bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" style={{width: progressWidth}} role="progressbar" aria-label="Page scroll progress" />
 
       {/* Nav */}
-      <motion.nav initial={{y: -80, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{duration: 0.8, delay: 0.2}} className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[1100px] px-5 py-3 flex items-center justify-between rounded-2xl transition-all duration-300 ${scrolled ? 'glass shadow-lg shadow-black/20' : ''}`}>
-        <a href="#home" className="font-black text-lg tracking-tight">ZA<span className="text-purple-400">.</span></a>
-        <div className="hidden md:flex items-center gap-7 text-sm text-gray-400">
+      <motion.nav initial={{y: -80, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{duration: 0.8, delay: 0.2}} className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[1100px] px-5 py-3 flex items-center justify-between rounded-2xl transition-all duration-300 ${scrolled ? 'glass shadow-lg shadow-black/20' : ''}`} aria-label="Main navigation">
+        <a href="#home" className="font-black text-lg tracking-tight" aria-label="Zaki Akdas Choudhary - Home">ZA<span className="text-purple-400">.</span></a>
+        <div className="hidden md:flex items-center gap-7 text-sm text-gray-400" role="menubar">
           {['Work', 'Skills', 'About', 'Contact'].map(x => (
-            <a key={x} href={`#${x.toLowerCase()}`} className="hover:text-white transition-colors">{x}</a>
+            <a key={x} href={`#${x.toLowerCase()}`} role="menuitem" className="hover:text-white transition-colors">{x}</a>
           ))}
         </div>
         <a href="#contact" className="hidden md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all">
           Let&apos;s talk <ArrowUpRight size={14} />
         </a>
-        <button onClick={() => setNavOpen(!navOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white">
+        <button onClick={() => setNavOpen(!navOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white" aria-label={navOpen ? 'Close menu' : 'Open menu'} aria-expanded={navOpen} aria-controls="mobile-menu">
           {navOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </motion.nav>
@@ -136,7 +150,7 @@ export default function Portfolio() {
       {/* Mobile menu */}
       <AnimatePresence>
         {navOpen && (
-          <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-5 md:hidden">
+          <motion.div id="mobile-menu" role="menu" initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-5 md:hidden" aria-label="Mobile navigation">
             {['Work', 'Skills', 'About', 'Contact'].map((x, i) => (
               <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={`#${x.toLowerCase()}`} onClick={() => setNavOpen(false)} className="block py-3 text-gray-300 hover:text-white font-medium border-b border-white/5 last:border-0">{x}</motion.a>
             ))}
@@ -144,9 +158,9 @@ export default function Portfolio() {
         )}
       </AnimatePresence>
 
-      <main className="relative z-10">
+      <main className="relative z-10" id="main-content">
         {/* ═══ HERO ═══ */}
-        <section id="home" className="min-h-screen flex flex-col items-center justify-center px-5 pt-24 pb-16">
+        <section id="home" aria-label="Hero" className="min-h-screen flex flex-col items-center justify-center px-5 pt-24 pb-16">
           <div className="w-full max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left: Text */}
             <motion.div initial={{opacity: 0, x: -40}} animate={{opacity: 1, x: 0}} transition={{duration: 0.9, delay: 0.4}} className="text-center lg:text-left order-2 lg:order-1">
@@ -187,7 +201,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ STATEMENT ═══ */}
-        <section className="py-20 md:py-32 px-5 border-t border-b border-white/5">
+        <section className="py-20 md:py-32 px-5 border-t border-b border-white/5" aria-label="Approach">
           <div className="max-w-[1100px] mx-auto">
             <Reveal>
               <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">A considered approach</p>
@@ -204,7 +218,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ WORK ═══ */}
-        <section id="work" className="py-20 md:py-32 px-5">
+        <section id="work" aria-label="Selected work" className="py-20 md:py-32 px-5">
           <div className="max-w-[1100px] mx-auto">
             <Reveal>
               <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Selected work</p>
@@ -237,7 +251,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ SERVICES ═══ */}
-        <section id="skills" className="py-20 md:py-32 px-5 border-t border-white/5">
+        <section id="skills" aria-label="Services" className="py-20 md:py-32 px-5 border-t border-white/5">
           <div className="max-w-[1100px] mx-auto">
             <Reveal>
               <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">What I can build</p>
@@ -262,7 +276,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ TECH STACK ═══ */}
-        <section className="py-20 md:py-32 px-5 border-t border-white/5">
+        <section className="py-20 md:py-32 px-5 border-t border-white/5" aria-label="Technology stack">
           <div className="max-w-[1100px] mx-auto">
             <Reveal>
               <p className="text-xs font-bold text-purple-400 tracking-[0.15em] uppercase mb-5">Technology ecosystem</p>
@@ -284,7 +298,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ ABOUT ═══ */}
-        <section id="about" className="py-20 md:py-32 px-5 border-t border-white/5">
+        <section id="about" aria-label="About Zaki" className="py-20 md:py-32 px-5 border-t border-white/5">
           <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Monogram */}
             <Reveal direction="left">
@@ -332,7 +346,7 @@ export default function Portfolio() {
         </section>
 
         {/* ═══ CONTACT ═══ */}
-        <section id="contact" className="py-20 md:py-32 px-5">
+        <section id="contact" aria-label="Contact" className="py-20 md:py-32 px-5">
           <div className="max-w-[1100px] mx-auto">
             <div className="glass-card p-8 md:p-12 lg:p-16 relative overflow-hidden">
               {/* Decorative glow */}
@@ -371,7 +385,7 @@ export default function Portfolio() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 py-8 text-center text-gray-600 text-xs">
+      <footer className="relative z-10 border-t border-white/5 py-8 text-center text-gray-600 text-xs" role="contentinfo">
         © {new Date().getFullYear()} Zaki Akdas Choudhary · Built with intent.
       </footer>
     </>
