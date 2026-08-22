@@ -7,6 +7,7 @@ const mockups: Record<string, {lines: number; colors: string[]; headerColor: str
   night: {lines: 5, colors: ['#3b82f6', '#8b5cf6', '#6366f1', '#a78bfa', '#3b82f6'], headerColor: '#1e3a8a'},
   fashion: {lines: 5, colors: ['#e11d48', '#db2777', '#f43f5e', '#be185d', '#e11d48'], headerColor: '#9f1239'},
   design: {lines: 6, colors: ['#d97706', '#f59e0b', '#b45309', '#fbbf24', '#d97706', '#f59e0b'], headerColor: '#78350f'},
+  boutique: {lines: 6, colors: ['#d97706', '#f59e0b', '#b45309', '#fbbf24', '#d97706', '#f59e0b'], headerColor: '#78350f'},
 };
 
 export default function ProjectMockup({theme, className = ''}: {theme: string; className?: string}) {

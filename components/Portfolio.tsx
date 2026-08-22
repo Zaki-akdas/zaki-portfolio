@@ -289,6 +289,7 @@ export default function Portfolio() {
                   night: {gradient: 'from-blue-700 to-indigo-950', subtitle: 'Your Night · Your Essentials', cta: 'OPEN 24×7', emoji: '🌙'},
                   fashion: {gradient: 'from-rose-700 to-pink-950', subtitle: 'Bold Fashion · Designer Wear', cta: 'BOOK NOW', emoji: '✦'},
                   design: {gradient: 'from-amber-700 to-orange-950', subtitle: 'Design · Craftsmanship', cta: 'EXPLORE', emoji: '✧'},
+                  boutique: {gradient: 'from-amber-700 to-orange-950', subtitle: 'Design · Craftsmanship', cta: 'EXPLORE', emoji: '✧'},
                 };
                 const tc = themeColors[p.theme] ?? themeColors.night;
                 return (
