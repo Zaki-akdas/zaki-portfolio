@@ -1,12 +1,16 @@
 'use client';
 import {useEffect, useState, useRef, useCallback} from 'react';
 import {motion, useInView, AnimatePresence, useScroll, useSpring} from 'framer-motion';
-import {Mail, MessageCircle, Send, CheckCircle, AlertCircle, Sparkles, ExternalLink} from 'lucide-react';
+import {Mail, MessageCircle, Send, CheckCircle, AlertCircle, Sparkles, ExternalLink, ArrowUpRight, Monitor} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
 const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
 const LoadingScreen = dynamic(() => import('./LoadingScreen'), {ssr: false});
+const AnimatedMesh = dynamic(() => import('./AnimatedMesh'), {ssr: false});
+const FloatingParticles = dynamic(() => import('./FloatingParticles'), {ssr: false});
+const TextScramble = dynamic(() => import('./TextScramble'), {ssr: false});
+const ProjectMockup = dynamic(() => import('./ProjectMockup'), {ssr: false});
 
 /* ─── Data ─── */
 const skills = [
@@ -157,8 +161,9 @@ export default function Portfolio() {
       />
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
-      {/* ── Animated Space Background ── */}
-      <SpaceBackground />
+      {/* ── Animated Backgrounds ── */}
+      <AnimatedMesh />
+      <FloatingParticles count={50} />
 
       {/* ── NAV ── */}
       <nav className={`w-full h-[65px] fixed top-0 z-50 px-5 md:px-10 transition-all ${scrolled ? 'bg-[#03001499] backdrop-blur-md shadow-lg shadow-[#2A0E61]/50' : ''}`} aria-label="Main navigation">
@@ -225,7 +230,11 @@ export default function Portfolio() {
 
                 <Reveal delay={0.1}>
                   <div className="flex flex-col gap-2 mt-4 sm:mt-6 font-bold text-white max-w-[700px]">
-                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Providing <span className="gradient-text-cyan">the best</span> project experience.</span>
+                    <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
+                      <TextScramble text="Providing" delay={600} />
+                      {' '}<span className="gradient-text-cyan"><TextScramble text="the best" delay={900} /></span>
+                      {' '}<TextScramble text="project experience." delay={1200} />
+                    </span>
                   </div>
                 </Reveal>
 
@@ -274,24 +283,50 @@ export default function Portfolio() {
             </Reveal>
 
             <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {projects.map((p, i) => (
-                <Reveal key={p.title} delay={i * 0.15}>
-                  <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
-                    <div className={`h-36 sm:h-48 flex flex-col justify-end p-4 sm:p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : p.theme === 'boutique' ? 'bg-gradient-to-br from-pink-700 to-rose-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
-                      <span className="text-white/70 text-[10px] sm:text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : p.theme === 'boutique' ? 'Boutique · Design · Craftsmanship' : 'Your Night · Your Essentials'}</span>
-                      <span className="text-white text-xl sm:text-2xl font-black">{p.title}</span>
-                    </div>
-                    <div className="relative p-4">
-                      <h3 className="text-xl font-semibold text-white">{p.title}</h3>
-                      <p className="mt-2 text-gray-300 text-sm leading-relaxed">{p.description}</p>
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {p.tags.map(t => <span key={t} className="text-xs border border-[#2A0E61] rounded-full px-3 py-1 text-gray-400">{t}</span>)}
+              {projects.map((p, i) => {
+                const themeColors: Record<string, {gradient: string; subtitle: string; cta: string; emoji: string}> = {
+                  food: {gradient: 'from-red-700 to-red-950', subtitle: 'Fast Food · Home Delivery', cta: 'ORDER NOW', emoji: '🍔'},
+                  night: {gradient: 'from-blue-700 to-indigo-950', subtitle: 'Your Night · Your Essentials', cta: 'OPEN 24×7', emoji: '🌙'},
+                  fashion: {gradient: 'from-rose-700 to-pink-950', subtitle: 'Bold Fashion · Designer Wear', cta: 'BOOK NOW', emoji: '✦'},
+                  design: {gradient: 'from-amber-700 to-orange-950', subtitle: 'Design · Craftsmanship', cta: 'EXPLORE', emoji: '✧'},
+                };
+                const tc = themeColors[p.theme] ?? themeColors.night;
+                return (
+                  <Reveal key={p.title} delay={i * 0.15}>
+                    <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
+                      {/* Animated SVG mockup header */}
+                      <div className={`relative h-44 sm:h-56 ${tc.gradient} overflow-hidden`}>
+                        <ProjectMockup theme={p.theme} />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 bg-gradient-to-t from-black/60 to-transparent">
+                          <span className="text-white/60 text-[10px] sm:text-xs font-bold tracking-widest uppercase block mb-1">{tc.emoji} {tc.subtitle}</span>
+                          <span className="text-white text-xl sm:text-2xl font-black leading-tight drop-shadow-lg">{p.title}</span>
+                          <div className="mt-2 inline-block">
+                            <span className="text-[10px] tracking-widest text-white/80 border border-white/30 rounded-full px-3 py-1 font-semibold backdrop-blur-sm bg-black/20">{tc.cta}</span>
+                          </div>
+                        </div>
                       </div>
-                      <span className="flex items-center gap-1.5 text-sm font-bold text-[#7042f8] group-hover:text-[#b49bff] transition mt-3">View live <ExternalLink size={14} /></span>
-                    </div>
-                  </a>
-                </Reveal>
-              ))}
+                      {/* Card body */}
+                      <div className="relative p-4">
+                        <p className="text-[11px] text-[#9d8bed] tracking-wider uppercase font-bold mb-1.5">{p.kind}</p>
+                        <h3 className="text-xl font-semibold text-white">{p.title}</h3>
+                        <p className="mt-2 text-gray-300 text-sm leading-relaxed line-clamp-2">{p.description}</p>
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {p.tags.map(t => <span key={t} className="project-tag text-xs border border-[#2A0E61] rounded-full px-3 py-1 text-gray-400">{t}</span>)}
+                        </div>
+                        <div className="flex items-center justify-between mt-4">
+                          <span className="flex items-center gap-1.5 text-sm font-bold text-[#7042f8] group-hover:text-[#b49bff] transition-colors">
+                            <Monitor size={14} /> Preview
+                          </span>
+                          <span className="flex items-center gap-1.5 text-sm font-bold text-[#7042f8] group-hover:text-[#b49bff] transition-colors">
+                            View live
+                            <ArrowUpRight size={15} className="project-card-arrow transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </Reveal>
+                );
+              })}
             </div>
           </section>
 
