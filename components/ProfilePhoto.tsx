@@ -32,19 +32,17 @@ export default function ProfilePhoto() {
       {/* Photo container */}
       <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-[rgba(139,92,246,0.4)]"
         style={{boxShadow: '0 0 30px rgba(99,102,241,0.2), inset 0 0 20px rgba(0,0,0,0.3)'}}>
-        {/* Placeholder content */}
-        <div className="w-full h-full bg-gradient-to-br from-[#1e1b4b] to-[#0f0a1f] flex items-center justify-center">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" className="text-[#6366f1] opacity-40">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </div>
-        {/* Subtle shimmer overlay */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent"
-          animate={{opacity: [0, 0.1, 0]}}
-          transition={{duration: 4, repeat: Infinity, ease: 'easeInOut'}}
+        {/* Profile video */}
+        <video
+          src="/images/profile-galaxy.mp4"
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
         />
+        {/* Gradient overlay for blending */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent" />
       </div>
     </div>
   );
