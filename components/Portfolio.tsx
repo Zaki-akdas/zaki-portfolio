@@ -5,10 +5,11 @@ import {Mail, MessageCircle, Send, CheckCircle, AlertCircle, Sparkles, ExternalL
 import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
-const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
 const LoadingScreen = dynamic(() => import('./LoadingScreen'), {ssr: false});
-const AnimatedMesh = dynamic(() => import('./AnimatedMesh'), {ssr: false});
-const FloatingParticles = dynamic(() => import('./FloatingParticles'), {ssr: false});
+const GalaxyBackground = dynamic(() => import('./GalaxyBackground'), {ssr: false});
+const CustomCursor = dynamic(() => import('./CustomCursor'), {ssr: false});
+const HeroPlanet = dynamic(() => import('./HeroPlanet'), {ssr: false});
+const ProfilePhoto = dynamic(() => import('./ProfilePhoto'), {ssr: false});
 const TextScramble = dynamic(() => import('./TextScramble'), {ssr: false});
 const ProjectMockup = dynamic(() => import('./ProjectMockup'), {ssr: false});
 
@@ -161,12 +162,12 @@ export default function Portfolio() {
       />
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
-      {/* ── Animated Backgrounds ── */}
-      <AnimatedMesh />
-      <FloatingParticles count={50} />
+      {/* ── Galaxy Background ── */}
+      <GalaxyBackground />
+      <CustomCursor />
 
       {/* ── NAV ── */}
-      <nav className={`w-full h-[65px] fixed top-0 z-50 px-5 md:px-10 transition-all ${scrolled ? 'bg-[#03001499] backdrop-blur-md shadow-lg shadow-[#2A0E61]/50' : ''}`} aria-label="Main navigation">
+      <nav className={`w-full h-[65px] fixed top-0 z-50 px-5 md:px-10 transition-all duration-500 ${scrolled ? 'bg-[rgba(3,0,20,0.7)] backdrop-blur-xl border-b border-[rgba(99,102,241,0.1)] shadow-lg shadow-[rgba(99,102,241,0.08)]' : ''}`} aria-label="Main navigation">
         <div className="w-full h-full flex items-center justify-between m-auto max-w-[1400px]">
           <a href="#home" className="flex items-center gap-2.5" aria-label="Home">
             <span className="text-2xl font-black text-white">ZA<span className="text-[#7042f8]">.</span></span>
@@ -217,14 +218,21 @@ export default function Portfolio() {
         <div className="flex flex-col gap-12 sm:gap-16 lg:gap-20">
 
           {/* ═══ HERO ═══ */}
-          <div id="home" className="relative flex flex-col h-full w-full overflow-hidden">
-            {/* Decorative radial glow */}
-            <div className="absolute top-[20%] left-0 sm:left-[10%] w-[250px] sm:w-[400px] lg:w-[500px] h-[250px] sm:h-[400px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(112,66,248,0.12),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
-            <div className="absolute top-[40%] right-0 sm:right-[5%] w-[200px] sm:w-[350px] lg:w-[400px] h-[200px] sm:h-[350px] lg:h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.08),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
+          <div id="home" className="relative flex flex-col h-full w-full overflow-hidden min-h-[85vh]">
+            {/* Hero planet and orbit rings */}
+            <HeroPlanet />
+
+            {/* Decorative radial glows */}
+            <div className="absolute top-[20%] left-0 sm:left-[10%] w-[250px] sm:w-[400px] lg:w-[500px] h-[250px] sm:h-[400px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.1),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
+            <div className="absolute top-[40%] right-0 sm:right-[5%] w-[200px] sm:w-[350px] lg:w-[400px] h-[200px] sm:h-[350px] lg:h-[400px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.06),transparent_70%)] blur-[80px] pointer-events-none -z-[1]" />
 
             <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-20 mt-24 sm:mt-28 lg:mt-40 w-full max-w-[1400px] m-auto z-[10]">
               <div className="h-full w-full flex flex-col gap-5 justify-center items-center text-center">
                 <Reveal>
+                  <ProfilePhoto />
+                </Reveal>
+
+                <Reveal delay={0.05}>
                   <WelcomeBadge text="Fullstack Developer Portfolio" />
                 </Reveal>
 
@@ -246,8 +254,8 @@ export default function Portfolio() {
 
                 <Reveal delay={0.3}>
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-                    <a href="#work" className="button-primary text-center text-white cursor-pointer w-full sm:w-auto">View projects</a>
-                    <a href="#contact" className="py-2.5 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[#2A0E61] hover:border-[#7042f8] transition font-semibold w-full sm:w-auto">Contact me</a>
+                    <a href="#work" className="galaxy-btn button-primary text-center text-white cursor-pointer w-full sm:w-auto">View projects</a>
+                    <a href="#contact" className="galaxy-btn py-2.5 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[rgba(99,102,241,0.25)] hover:text-white bg-[rgba(5,8,22,0.5)] backdrop-blur-sm font-semibold w-full sm:w-auto">Contact me</a>
                   </div>
                 </Reveal>
               </div>
@@ -255,7 +263,12 @@ export default function Portfolio() {
           </div>
 
           {/* ═══ SKILLS ═══ */}
-          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
+          <section id="skills" className="flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-12 sm:py-20 px-4 sm:px-5">
+            {/* Cosmic orb behind skills */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full pointer-events-none"
+              style={{background: 'radial-gradient(circle, rgba(99,102,241,0.08), rgba(139,92,246,0.04), transparent 70%)', filter: 'blur(40px)'}} />
+            {/* Orbit ring behind skills */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-[rgba(139,92,246,0.06)] pointer-events-none" style={{transform: 'translate(-50%, -50%) rotateX(70deg)'}} />
             <Reveal className="flex flex-col items-center justify-center gap-3">
               <WelcomeBadge text="Think better with Next.js" />
               <div className="text-lg sm:text-xl md:text-[30px] text-white font-medium mt-2 sm:mt-[10px] text-center mb-3 sm:mb-[15px] px-4">Making apps with modern technologies.</div>
@@ -276,6 +289,9 @@ export default function Portfolio() {
             </div>
           </section>
 
+          {/* Cosmic section divider */}
+          <div className="section-divider max-w-[800px] mx-auto" />
+
           {/* ═══ PROJECTS ═══ */}
           <section id="work" className="flex flex-col items-center justify-center py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
             <Reveal className="w-full max-w-[1200px]">
@@ -294,7 +310,7 @@ export default function Portfolio() {
                 const tc = themeColors[p.theme] ?? themeColors.night;
                 return (
                   <Reveal key={p.title} delay={i * 0.15}>
-                    <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
+                    <a href={p.url} target="_blank" rel="noreferrer" className="project-card galaxy-card block group">
                       {/* Animated SVG mockup header */}
                       <div className={`relative h-44 sm:h-56 ${tc.gradient} overflow-hidden`}>
                         <ProjectMockup theme={p.theme} />
@@ -331,8 +347,16 @@ export default function Portfolio() {
             </div>
           </section>
 
+          {/* Cosmic section divider */}
+          <div className="section-divider max-w-[800px] mx-auto" />
+
           {/* ═══ CONTACT ═══ */}
-          <section id="contact" className="py-12 sm:py-20 px-4 sm:px-5" style={{opacity: 1}}>
+          <section id="contact" className="relative py-12 sm:py-20 px-4 sm:px-5 overflow-hidden">
+            {/* Cosmic background for contact */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+              style={{background: 'radial-gradient(circle, rgba(99,102,241,0.06), rgba(6,182,212,0.03), transparent 70%)', filter: 'blur(60px)'}} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-[rgba(139,92,246,0.06)] pointer-events-none" style={{transform: 'translate(-50%, -50%) rotateX(65deg)'}} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full border border-[rgba(6,182,212,0.04)] pointer-events-none" style={{transform: 'translate(-50%, -50%) rotateX(70deg) rotateZ(30deg)'}} />
             <div className="max-w-[800px] mx-auto">
               <Reveal className="flex flex-col items-center mb-12">
                 <WelcomeBadge text="Get in Touch" />
@@ -342,10 +366,10 @@ export default function Portfolio() {
 
               <Reveal delay={0.1}>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 w-full sm:w-auto px-4 sm:px-0">
-                  <a href="mailto:zakiakdas703@gmail.com" className="flex items-center justify-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                  <a href="mailto:zakiakdas703@gmail.com" className="galaxy-btn flex items-center justify-center gap-2 border border-[rgba(99,102,241,0.25)] text-gray-300 font-bold px-5 py-3 rounded-lg hover:text-white bg-[rgba(5,8,22,0.5)] backdrop-blur-sm">
                     <Mail size={18} /> Email Zaki
                   </a>
-                  <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 border border-[#2A0E61] text-gray-300 font-bold px-5 py-3 rounded-lg hover:border-[#7042f8] hover:text-white transition">
+                  <a href="https://wa.me/919131957419" target="_blank" rel="noreferrer" className="galaxy-btn flex items-center justify-center gap-2 border border-[rgba(99,102,241,0.25)] text-gray-300 font-bold px-5 py-3 rounded-lg hover:text-white bg-[rgba(5,8,22,0.5)] backdrop-blur-sm">
                     <MessageCircle size={18} /> WhatsApp
                   </a>
                 </div>
@@ -360,7 +384,7 @@ export default function Portfolio() {
       </main>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="w-full bg-[#030014] border-t border-[#2A0E61] py-8 sm:py-12 px-4 sm:px-5" role="contentinfo">
+      <footer className="w-full bg-[rgba(2,3,10,0.9)] border-t border-[rgba(99,102,241,0.1)] py-8 sm:py-12 px-4 sm:px-5 backdrop-blur-sm" role="contentinfo">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           <div className="footer-col flex flex-col items-center md:items-start">
             <h3 className="text-white">Social Media</h3>
