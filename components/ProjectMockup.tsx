@@ -46,9 +46,9 @@ export default function ProjectMockup({theme, className = ''}: {theme: string; c
         <motion.circle
           cx="305" cy="93" r="20"
           fill={m.colors[2]}
-          opacity="0.3"
-          animate={{r: [18, 22, 18], opacity: [0.2, 0.4, 0.2]}}
+          animate={{opacity: [0.2, 0.4, 0.2], scale: [0.9, 1.1, 0.9]}}
           transition={{duration: 4, repeat: Infinity, ease: 'easeInOut'}}
+          style={{transformOrigin: '305px 93px'}}
         />
 
         {/* Content lines */}
@@ -87,7 +87,7 @@ export default function ProjectMockup({theme, className = ''}: {theme: string; c
         <motion.circle
           cx="350" cy="260" r="3"
           fill={m.colors[0]}
-          animate={{cy: [260, 250, 260], opacity: [0.4, 0.8, 0.4]}}
+          animate={{opacity: [0.4, 0.8, 0.4], y: [-5, 5, -5]}}
           transition={{duration: 2, repeat: Infinity, ease: 'easeInOut'}}
         />
       </svg>

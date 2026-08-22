@@ -383,6 +383,26 @@ export default function Portfolio() {
         </div>
       </main>
 
+      {/* ═══ SCROLL TO TOP ═══ */}
+      <AnimatePresence>
+        {scrolled && (
+          <motion.button
+            key="scroll-top"
+            initial={{opacity: 0, scale: 0.8, y: 20}}
+            animate={{opacity: 1, scale: 1, y: 0}}
+            exit={{opacity: 0, scale: 0.8, y: 20}}
+            transition={{type: 'spring', stiffness: 260, damping: 20}}
+            onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+            className="fixed bottom-6 right-6 z-[90] w-12 h-12 rounded-full bg-[rgba(99,102,241,0.15)] backdrop-blur-xl border border-[rgba(99,102,241,0.3)] text-[#b49bff] flex items-center justify-center hover:bg-gradient-to-br hover:from-[#7042f8] hover:to-[#06b6d4] hover:text-white hover:border-transparent hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(112,66,248,0.4)] active:scale-95 transition-all duration-300 md:bottom-8 md:right-8 md:w-14 md:h-14"
+            aria-label="Scroll to top"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* ═══ FOOTER ═══ */}
       <footer className="w-full bg-[rgba(2,3,10,0.9)] border-t border-[rgba(99,102,241,0.1)] py-8 sm:py-12 px-4 sm:px-5 backdrop-blur-sm" role="contentinfo">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
