@@ -464,6 +464,59 @@ textarea:focus-visible {
   100% { transform: translate(-20px, 30px) scale(0.95); }
 }
 
+/* Project mockup hover glow */
+.project-card:hover .project-mockup-glow {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Text scramble cursor blink */
+.text-scramble-cursor::after {
+  content: '|';
+  animation: cursorBlink 0.7s step-end infinite;
+  color: #7042f8;
+  font-weight: 300;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out 2s infinite;
+}
+
+/* Gradient border glow */
+.gradient-border-glow {
+  position: relative;
+}
+
+.gradient-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #7042f8, #06b6d4, #a855f7);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.gradient-border-glow:hover::before {
+  opacity: 0.5;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
