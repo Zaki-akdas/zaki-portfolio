@@ -1,9 +1,36 @@
 'use client';
-import {useState} from 'react';
+import {useState, useRef, useCallback, useEffect} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 
 export default function ProfilePhoto() {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  }, []);
+
+  const handleVideoReady = useCallback(() => {
+    setVideoLoaded(true);
+  }, []);
+
+  // Fallback: if onLoadedData doesn't fire within 3s, assume ready
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!videoLoaded) {
+        setVideoLoaded(true);
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [videoLoaded]);
+
+  const handleTapPlay = useCallback(() => {
+    const v = videoRef.current;
+    if (v && v.paused) {
+      v.play().then(() => setVideoLoaded(true)).catch(() => {});
+    }
+  }, []);
 
   return (
     <div className="relative w-40 h-40 sm:w-48 sm:h-48 mx-auto" aria-label="Profile photo">
@@ -34,7 +61,10 @@ export default function ProfilePhoto() {
 
       {/* Photo container */}
       <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-[rgba(139,92,246,0.4)]"
-        style={{boxShadow: '0 0 30px rgba(99,102,241,0.2), inset 0 0 20px rgba(0,0,0,0.3)'}}>
+        style={{boxShadow: '0 0 30px rgba(99,102,241,0.2), inset 0 0 20px rgba(0,0,0,0.3)'}}
+        onClick={handleTapPlay}
+        role={isMobile ? 'button' : undefined}
+        aria-label={isMobile ? 'Tap to play profile video' : undefined}>
 
         {/* Shimmer skeleton — visible while video buffers */}
         <AnimatePresence>
@@ -44,7 +74,7 @@ export default function ProfilePhoto() {
               initial={{opacity: 1}}
               exit={{opacity: 0}}
               transition={{duration: 0.6, ease: 'easeOut'}}
-              className="absolute inset-0 rounded-full bg-[rgba(99,102,241,0.15)] overflow-hidden"
+              className="absolute inset-0 rounded-full bg-[rgba(99,102,241,0.15)] overflow-hidden z-10"
             >
               {/* Base pulse */}
               <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-[rgba(99,102,241,0.2)] via-[rgba(139,92,246,0.1)] to-[rgba(6,182,212,0.15)]" />
@@ -63,17 +93,21 @@ export default function ProfilePhoto() {
 
         {/* Profile video */}
         <video
+          ref={videoRef}
           src="/images/profile-galaxy.mp4"
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
           autoPlay
           loop
           muted
           playsInline
-          onLoadedData={() => setVideoLoaded(true)}
+          preload="auto"
+          onLoadedData={handleVideoReady}
+          onCanPlay={handleVideoReady}
+          onLoadedMetadata={handleVideoReady}
         />
 
         {/* Gradient overlay for blending */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent pointer-events-none z-20" />
       </div>
     </div>
   );
