@@ -277,8 +277,8 @@ export default function Portfolio() {
               {projects.map((p, i) => (
                 <Reveal key={p.title} delay={i * 0.15}>
                   <a href={p.url} target="_blank" rel="noreferrer" className="project-card block group">
-                    <div className={`h-36 sm:h-48 flex flex-col justify-end p-4 sm:p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
-                      <span className="text-white/70 text-[10px] sm:text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : 'Your Night · Your Essentials'}</span>
+                    <div className={`h-36 sm:h-48 flex flex-col justify-end p-4 sm:p-5 ${p.theme === 'food' ? 'bg-gradient-to-br from-red-700 to-red-950' : p.theme === 'boutique' ? 'bg-gradient-to-br from-pink-700 to-rose-950' : 'bg-gradient-to-br from-blue-700 to-indigo-950'}`}>
+                      <span className="text-white/70 text-[10px] sm:text-xs font-bold tracking-widest uppercase">{p.theme === 'food' ? 'Fast Food · Home Delivery' : p.theme === 'boutique' ? 'Boutique · Design · Craftsmanship' : 'Your Night · Your Essentials'}</span>
                       <span className="text-white text-xl sm:text-2xl font-black">{p.title}</span>
                     </div>
                     <div className="relative p-4">
