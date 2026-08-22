@@ -141,6 +141,49 @@ html, main, #main-content {
   transform: scale(1.15) translateY(-5px);
 }
 
+/* Scroll to top button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(112, 66, 248, 0.4);
+  background: rgba(3, 0, 20, 0.75);
+  backdrop-filter: blur(12px);
+  color: #b49bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top:hover {
+  background: linear-gradient(135deg, #7042f8, #06b6d4);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(112, 66, 248, 0.35);
+}
+
+.scroll-to-top:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
+@media (max-width: 640px) {
+  .scroll-to-top {
+    bottom: 18px;
+    right: 18px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+}
+
 /* Skip to content */
 .skip-link {
   position: fixed;
@@ -221,16 +264,154 @@ textarea:focus-visible {
 .project-card {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid #2A0E61;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s;
+  border-radius: 16px;
+  border: 1px solid rgba(42, 14, 97, 0.6);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.4s, box-shadow 0.4s;
+  will-change: transform;
 }
 
 .project-card:hover {
+  border-color: rgba(112, 66, 248, 0.5);
+  box-shadow:
+    0 8px 40px rgba(112, 66, 248, 0.25),
+    0 0 0 1px rgba(112, 66, 248, 0.1);
+}
+
+/* Shimmer sweep on hover */
+.project-card-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 70%
+  );
+  transform: translateX(-140%);
+  transition: none;
+}
+
+.project-card:hover .project-card-shimmer {
+  animation: shimmerSweep 0.8s ease forwards;
+}
+
+@keyframes shimmerSweep {
+  to {
+    transform: translateX(140%);
+  }
+}
+
+/* Tags hover glow */
+.project-tag {
+  transition: all 0.3s;
+}
+
+.project-card:hover .project-tag {
+  border-color: rgba(112, 66, 248, 0.35);
+  color: #d1d5db;
+}
+
+/* Arrow slide on hover */
+.project-card-arrow {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover .project-card-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Stats section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 24px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(42, 14, 97, 0.5);
+  background: rgba(3, 0, 20, 0.45);
+  backdrop-filter: blur(8px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(112, 66, 248, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.stat-card:hover {
   border-color: rgba(112, 66, 248, 0.4);
-  box-shadow: 0 8px 32px rgba(112, 66, 248, 0.2);
   transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(112, 66, 248, 0.12);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #b49bff, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stat-value {
+    font-size: 1.7rem;
+  }
+  .stat-card {
+    padding: 18px 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 }
 
 /* Nebula blobs */
