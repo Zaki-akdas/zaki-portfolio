@@ -42,6 +42,17 @@
   </style>
 </head>
 <body>
+<div id="introLanding" style="position:fixed;inset:0;z-index:9999;pointer-events:none;display:none;">
+  <canvas id="landingParticles" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+    <div id="landingLogo" style="opacity:0;transform:scale(2.2);filter:blur(12px);transition:opacity .6s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .7s ease;">
+      <div style="font-family:'Inter',sans-serif;font-size:clamp(5rem,12vw,9rem);font-weight:800;letter-spacing:-.12em;background:linear-gradient(135deg,#fff 20%,#a78bfa 50%,#67c7ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 40px rgba(167,139,250,.5)) drop-shadow(0 0 80px rgba(103,199,255,.3));">ZA</div>
+    </div>
+  </div>
+  <div id="landingGlow" style="position:absolute;top:50%;left:50%;width:0;height:0;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.4),rgba(103,199,255,.2),transparent 70%);opacity:0;transition:width 1.2s cubic-bezier(.16,1,.3,1),height 1.2s cubic-bezier(.16,1,.3,1),opacity .8s ease;"></div>
+  <div id="landingRing" style="position:absolute;top:50%;left:50%;width:80px;height:80px;transform:translate(-50%,-50%) scale(0);border:1px solid rgba(167,139,250,.5);border-radius:50%;opacity:0;transition:transform 1.4s cubic-bezier(.16,1,.3,1),opacity .6s ease;"></div>
+  <div id="landingRing2" style="position:absolute;top:50%;left:50%;width:120px;height:120px;transform:translate(-50%,-50%) scale(0);border:1px solid rgba(103,199,255,.3);border-radius:50%;opacity:0;transition:transform 1.6s cubic-bezier(.16,1,.3,1) .15s,opacity .6s ease .15s;"></div>
+</div>
 <div class="scroll-progress" aria-hidden="true"><span></span></div><canvas id="space" aria-hidden="true"></canvas><div class="aurora a1"></div><div class="aurora a2"></div><div class="noise"></div>
 <nav aria-label="Main navigation"><a class="brand" href="#home" aria-label="Zaki Akdas Choudhary home">ZA<span>.</span><small>WEB SYSTEMS</small></a><div class="nav-links"><a href="#work">Work</a><a href="#services">Services</a><a href="#skills">Skills</a><a href="#about">About</a><a href="#contact">Contact</a></div><a class="mini-cta" href="#contact">Let's talk ↗</a><button class="menu" aria-label="Open menu" aria-expanded="false">☰</button></nav>
 <main>
@@ -57,6 +68,46 @@
 <section id="contact"><div class="wrap"><div class="contact-box"><div class="eyebrow">Start a conversation</div><h2>Have an idea?<br/><span class="gradient">Let’s build it.</span></h2><p>Tell me what you’re building, what it needs to achieve and where you want to take it. I’ll review the details and get back to you.</p><div class="contact-links"><a class="button secondary" href="mailto:zakiakdas703@gmail.com">Email Zaki ↗</a><a class="button secondary" target="_blank" rel="noreferrer" href="https://wa.me/919131957419">WhatsApp ↗</a></div><form class="form" id="inquiry-form"><div class="field"><label for="name">Name</label><input required id="name" name="name" placeholder="Your name" /></div><div class="field"><label for="email">Email</label><input required id="email" name="email" type="email" placeholder="you@company.com" /></div><div class="field"><label for="type">Project type</label><select id="type" name="type"><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div><div class="field"><label for="budget">Budget range</label><select id="budget" name="budget"><option>Let's discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div><div class="field full"><label for="message">Project description</label><textarea required id="message" name="message" placeholder="What would you like to build?"></textarea></div><button class="button primary" type="submit">Send project inquiry <b>→</b></button><div class="form-status" role="status">Opening your email app with the project details…</div></form></div></div></section>
 </main><footer><div class="wrap footer-line"><div><strong style="color:#fff">Zaki Akdas Choudhary</strong> · Web Developer</div><div>© <span id="year"></span> · Bhopal, India · Built with intent.</div></div></footer>
 <script>
+if(location.search.includes('from=intro')){
+  const landing=document.getElementById('introLanding');
+  landing.style.display='block';
+  const logo=document.getElementById('landingLogo'),glow=document.getElementById('landingGlow'),ring=document.getElementById('landingRing'),ring2=document.getElementById('landingRing2');
+  const cvs=document.getElementById('landingParticles'),cx=cvs.getContext('2d');
+  cvs.width=innerWidth*devicePixelRatio;cvs.height=innerHeight*devicePixelRatio;
+  cx.scale(devicePixelRatio,devicePixelRatio);
+  const W=innerWidth,H=innerHeight,cx2=W/2,cy2=H/2;
+  /* particles */
+  const pts=[];for(let i=0;i<40;i++){
+    const a=Math.random()*Math.PI*2,spd=Math.random()*3+.8;
+    pts.push({x:cx2,y:cy2,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*2.5+.8,
+      life:1,decay:Math.random()*.012+.008,color:Math.random()<.5?'rgba(167,139,250,':'rgba(103,199,255,'});
+  }
+  function drawParticles(){
+    cx.clearRect(0,0,W,H);
+    for(const p of pts){
+      if(p.life<=0)continue;
+      p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.vy*=.985;p.life-=p.decay;
+      cx.beginPath();cx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
+      cx.fillStyle=p.color+(p.life*.7)+')';cx.fill();
+    }
+    if(pts.some(p=>p.life>0))requestAnimationFrame(drawParticles);
+  }
+  setTimeout(()=>{
+    /* flash logo in */
+    logo.style.opacity='1';logo.style.transform='scale(1)';logo.style.filter='blur(0px)';
+    glow.style.width='500px';glow.style.height='500px';glow.style.opacity='1';
+    ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='.7';
+    ring2.style.transform='translate(-50%,-50%) scale(1)';ring2.style.opacity='.5';
+    drawParticles();
+    /* hold, then fade everything out */
+    setTimeout(()=>{
+      logo.style.opacity='0';logo.style.transform='scale(.85)';logo.style.filter='blur(6px)';
+      glow.style.opacity='0';ring.style.opacity='0';ring2.style.opacity='0';
+      landing.style.transition='opacity 1s ease .3s';landing.style.opacity='0';
+      setTimeout(()=>landing.remove(),1400);
+    },2000);
+  },200);
+}
 const portfolioDefaults={name:'Zaki Akdas Choudhary',title:'Web Developer',location:'Bhopal, India',availability:'Available to connect',email:'zakiakdas703@gmail.com',whatsapp:'919131957419',intro:'I’m Zaki Akdas Choudhary, a web developer creating professional, modern websites for businesses of every kind — from a strong first online presence to custom digital experiences that support growth.',headline:'I build digital experiences with purpose.',about:'I’m Zaki Akdas Choudhary, a web developer based in Bhopal with a BCA background in Information Technology. I’m drawn to the place where thoughtful design meets practical engineering: websites and digital tools that are easy to use, technically sound and made for a real purpose.'};const portfolioData={...portfolioDefaults,...JSON.parse(localStorage.getItem('zakiPortfolio')||'{}')};document.title=portfolioData.name+' — '+portfolioData.title;document.documentElement.classList.add('js');document.querySelector('.hero .eyebrow').textContent=portfolioData.location+' · '+portfolioData.title;document.querySelector('.hero h1').innerHTML=portfolioData.headline.replace('digital experiences','<span class="gradient">digital experiences</span>');document.querySelector('.hero-copy').textContent=portfolioData.intro;document.querySelector('.about-text p').textContent=portfolioData.about;document.querySelector('.meta div:nth-child(2) strong').textContent=portfolioData.availability;document.querySelectorAll('a[href*="zakiakdas703"]').forEach(a=>a.href='mailto:'+portfolioData.email);document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.href='https://wa.me/'+portfolioData.whatsapp);
 document.documentElement.classList.add('js');
 const progress=document.querySelector('.scroll-progress span');addEventListener('scroll',()=>{progress.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100||0)+'%'},{passive:true});
