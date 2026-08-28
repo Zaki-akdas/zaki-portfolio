@@ -141,8 +141,19 @@ export default function Portfolio() {
     return () => removeEventListener('keydown', handleKeyDown);
   }, [navOpen]);
 
+  const [pageVisible, setPageVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPageVisible(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <>
+    <motion.div
+      initial={{opacity: 0}}
+      animate={{opacity: pageVisible ? 1 : 0}}
+      transition={{duration: 0.8, ease: [0.4, 0, 0.2, 1]}}
+    >
       {/* ── Loading Screen ── */}
       {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
 
@@ -204,6 +215,7 @@ export default function Portfolio() {
                   <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-4 min-h-[44px] text-base text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
                 );
               })}
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -351,6 +363,6 @@ export default function Portfolio() {
           © {new Date().getFullYear()} Zaki Akdas Choudhary. All rights reserved.
         </div>
       </footer>
-    </>
+    </motion.div>
   );
 }

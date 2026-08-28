@@ -164,7 +164,6 @@
     </div>
   </div>
 
-
   <!-- START OVERLAY -->
   <div id="start" class="fixed inset-0 z-[60] flex items-center justify-center">
     <div class="text-center px-8 max-w-2xl">
@@ -232,7 +231,7 @@ const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,12000);
 camera.position.set(0,0,0);
 
 /* ============================================================ procedural textures */
-function radialTex(size,stops){
+function radialTex(size,stops){ // stops: [ [pos, rgba], ... ]
   const c=document.createElement('canvas');c.width=c.height=size;
   const x=c.getContext('2d');
   const g=x.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
@@ -330,6 +329,7 @@ const Audio2={ ctx:null, on:true,
       this.master=this.ctx.createGain(); this.master.gain.value=.85;
       const comp=this.ctx.createDynamicsCompressor();
       this.master.connect(comp); comp.connect(this.ctx.destination);
+      // generated hall impulse
       const len=this.ctx.sampleRate*2.6, ir=this.ctx.createBuffer(2,len,this.ctx.sampleRate);
       for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++){d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}}
       this.verb=this.ctx.createConvolver();this.verb.buffer=ir;
@@ -443,13 +443,14 @@ for(let i=0;i<34;i++){
   sp.userData={rw:rand(-.05,.05)};
   scene.add(sp);nebulas.push(sp);
 }
+/* two far static milky-way wisps */
 [[-1500,700,-4300,3200,0],[1400,-600,-4500,3600,3]].forEach(d=>{
   const m=new THREE.SpriteMaterial({map:nebTexs[d[4]],transparent:true,opacity:.06,blending:THREE.AdditiveBlending,depthWrite:false});
   const sp=new THREE.Sprite(m);sp.position.set(d[0],d[1],d[2]);sp.scale.set(d[3],d[3]*.55,1);m.rotation=rand(0,3);
   scene.add(sp);
 });
 
-/* ============================================================ deep universe */
+/* ============================================================ deep universe : galaxies, milky band, cluster, hero stars, meteors */
 const galaxies=[];
 function makeGalaxyGeo(cfg){
   const count=cfg.count, R=cfg.radius, core=Math.floor(count*.14), total=count+core;
@@ -468,7 +469,7 @@ function makeGalaxyGeo(cfg){
     const dim=.5+.5*Math.random();
     col[i*3]=tmp.r*dim; col[i*3+1]=tmp.g*dim; col[i*3+2]=tmp.b*dim;
   }
-  for(let i=count;i<total;i++){
+  for(let i=count;i<total;i++){ /* dense hot galactic core */
     const r=Math.pow(Math.random(),2.4)*R*.13;
     const th=Math.random()*Math.PI*2, ph=Math.acos(rand(-1,1));
     pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.cos(ph)*.6; pos[i*3+2]=r*Math.sin(ph)*Math.sin(th);
@@ -487,12 +488,12 @@ function addGalaxy(cfg,x,y,z,rx,ry,scale,spin){
   pts.position.set(x,y,z); pts.rotation.set(rx,ry,0); pts.scale.setScalar(scale);
   pts.userData.spin=spin; scene.add(pts); galaxies.push(pts); return pts;
 }
-addGalaxy({count:6500,radius:400,branches:3,spin:1.05,scatter:.45,in:'#ffe6c4',out:'#5e7cff'}, -2700, 950,-5400, .55,.4, 1.0, .020);
-addGalaxy({count:4300,radius:310,branches:5,spin:.55,scatter:.60,in:'#ffd9a2',out:'#7a5a8c'},  2900,-700,-5800, .90,-.3, 1.0, -.014);
-addGalaxy({count:3600,radius:250,branches:2,spin:1.60,scatter:.50,in:'#dbe8ff',out:'#9c7bb8'},  1150,1550,-5100, .35,.2, 1.0, .030);
-addGalaxy({count:2400,radius:200,branches:3,spin:1.20,scatter:.40,in:'#fff1d6',out:'#4f7dff'}, -1650,-1550,-5000, 1.50,.5, 1.05, .025);
+addGalaxy({count:6500,radius:400,branches:3,spin:1.05,scatter:.45,in:'#ffe6c4',out:'#5e7cff'}, -2700, 950,-5400, .55,.4, 1.0, .020);  /* milky-way-like spiral */
+addGalaxy({count:4300,radius:310,branches:5,spin:.55,scatter:.60,in:'#ffd9a2',out:'#7a5a8c'},  2900,-700,-5800, .90,-.3, 1.0, -.014); /* ancient golden */
+addGalaxy({count:3600,radius:250,branches:2,spin:1.60,scatter:.50,in:'#dbe8ff',out:'#9c7bb8'},  1150,1550,-5100, .35,.2, 1.0, .030);  /* barred magenta-blue */
+addGalaxy({count:2400,radius:200,branches:3,spin:1.20,scatter:.40,in:'#fff1d6',out:'#4f7dff'}, -1650,-1550,-5000, 1.50,.5, 1.05, .025); /* edge-on */
 
-/* ---------- milky way bands ---------- */
+/* ---------- milky way bands across the sky ---------- */
 function makeBand(nv,count,op,px,glowOp,segs){
   const n=nv.clone().normalize();
   const u=new THREE.Vector3().crossVectors(n,new THREE.Vector3(0,0,1)).normalize();
@@ -521,8 +522,8 @@ function makeBand(nv,count,op,px,glowOp,segs){
     sp.scale.set(3400,1200,1); scene.add(sp);
   }
 }
-makeBand(new THREE.Vector3(.3,1,.26),2800,.85,1.3,.05,4);
-makeBand(new THREE.Vector3(-.55,-.38,.74),1500,.5,1.2,.03,3);
+makeBand(new THREE.Vector3(.3,1,.26),2800,.85,1.3,.05,4);   /* our galaxy's band */
+makeBand(new THREE.Vector3(-.55,-.38,.74),1500,.5,1.2,.03,3); /* second faint distant band */
 
 /* ---------- globular cluster ---------- */
 const globCluster=(function(){
@@ -542,13 +543,13 @@ const globCluster=(function(){
   const p=new THREE.Points(geo,mat); p.position.set(3200,1750,-5300); scene.add(p); return p;
 })();
 
-/* ---------- distant planets ---------- */
+/* ---------- distant planets (painted discs) ---------- */
 const farPlanets=[];
 function planetDiscTex(o){
   const ring=!!o.ring, s=ring?384:256;
   const c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');
   const cx=s/2, cy=s/2, r=ring?s*.29:s*.40, P=o.pal;
-  if(ring){
+  if(ring){ /* rings behind planet */
     x.save();x.translate(cx,cy);x.scale(1,.3);
     [1.32,1.4,1.47,1.55,1.63].forEach((k,i)=>{
       x.strokeStyle=P.ring+(i%2?'.12)':'.24)'); x.lineWidth=(i===2?9:4);
@@ -613,13 +614,13 @@ function planetDiscTex(o){
   tz.addColorStop(0,'rgba(0,0,8,0)');tz.addColorStop(.55,'rgba(0,0,8,.18)');tz.addColorStop(1,'rgba(0,0,8,.88)');
   x.fillStyle=tz;x.fillRect(cx-r,cy-r,r*2,r*2);
   x.restore();
-  x.save();
+  x.save(); /* atmosphere rim */
   x.strokeStyle=P.rim;x.lineWidth=2;x.shadowColor=P.rim;x.shadowBlur=14;
   x.beginPath();x.arc(cx,cy,r+1,0,Math.PI*2);x.stroke();
   x.strokeStyle=P.rimHi;x.shadowBlur=8;x.lineWidth=2.5;
   x.beginPath();x.arc(cx,cy,r+1,Math.PI*1.05,Math.PI*1.62);x.stroke();
   x.restore();
-  if(ring){
+  if(ring){ /* rings in front (lower half) */
     x.save();x.beginPath();x.rect(0,cy,s,s-cy);x.clip();
     x.translate(cx,cy);x.scale(1,.3);
     [1.32,1.4,1.47,1.55,1.63].forEach((k,i)=>{
@@ -636,16 +637,17 @@ function addFarPlanet(tex,px,py,pz,size,op){
   const sp=new THREE.Sprite(m);sp.position.set(px,py,pz);sp.scale.set(size,size,1);
   sp.userData.y0=py;scene.add(sp);farPlanets.push(sp);return sp;
 }
-addFarPlanet(planetDiscTex({ring:true,type:'gas',pal:{light:'#f4e3c2',mid:'#c9a86e',dark:'#241a0c',bands:['#b3925c','#e8d5ae','#8a6a3c','#d9c093'],rim:'rgba(240,220,170,.35)',rimHi:'rgba(255,240,200,.6)',ring:'rgba(235,215,175,'}}), -3050,1050,-4700, 780);
-addFarPlanet(planetDiscTex({type:'ice',pal:{light:'#a8d4ff',mid:'#3b6fd4',dark:'#050c26',rim:'rgba(140,190,255,.4)',rimHi:'rgba(200,230,255,.6)'}}), 3200,350,-5300, 620);
-addFarPlanet(planetDiscTex({type:'rock',pal:{light:'#cfcfd6',mid:'#6a6a75',dark:'#0a0a10',rim:'rgba(200,200,220,.22)',rimHi:'rgba(240,240,250,.4)'}}), -2150,-1350,-4400, 300);
-addFarPlanet(planetDiscTex({type:'lava',pal:{light:'#84301c',mid:'#33120a',dark:'#050203',rim:'rgba(255,90,40,.22)',rimHi:'rgba(255,140,80,.35)'}}), 1750,-1850,-4800, 380);
-addFarPlanet(planetDiscTex({type:'ice',pal:{light:'#d9c8ff',mid:'#6a4fc4',dark:'#0c0620',rim:'rgba(190,160,255,.35)',rimHi:'rgba(220,200,255,.55)'}}), 600,2300,-5400, 260);
+addFarPlanet(planetDiscTex({ring:true,type:'gas',pal:{light:'#f4e3c2',mid:'#c9a86e',dark:'#241a0c',bands:['#b3925c','#e8d5ae','#8a6a3c','#d9c093'],rim:'rgba(240,220,170,.35)',rimHi:'rgba(255,240,200,.6)',ring:'rgba(235,215,175,'}}), -3050,1050,-4700, 780); /* ringed gas giant */
+addFarPlanet(planetDiscTex({type:'ice',pal:{light:'#a8d4ff',mid:'#3b6fd4',dark:'#050c26',rim:'rgba(140,190,255,.4)',rimHi:'rgba(200,230,255,.6)'}}), 3200,350,-5300, 620);  /* neptune-blue ice giant */
+addFarPlanet(planetDiscTex({type:'rock',pal:{light:'#cfcfd6',mid:'#6a6a75',dark:'#0a0a10',rim:'rgba(200,200,220,.22)',rimHi:'rgba(240,240,250,.4)'}}), -2150,-1350,-4400, 300); /* cratered moon */
+addFarPlanet(planetDiscTex({type:'lava',pal:{light:'#84301c',mid:'#33120a',dark:'#050203',rim:'rgba(255,90,40,.22)',rimHi:'rgba(255,140,80,.35)'}}), 1750,-1850,-4800, 380); /* lava world */
+addFarPlanet(planetDiscTex({type:'ice',pal:{light:'#d9c8ff',mid:'#6a4fc4',dark:'#0c0620',rim:'rgba(190,160,255,.35)',rimHi:'rgba(220,200,255,.55)'}}), 600,2300,-5400, 260);   /* violet ice dwarf */
 
-addGalaxy({count:3000,radius:260,branches:4,spin:1.30,scatter:.50,in:'#d9f6ff',out:'#5f8fc0'},   250,-2450,-5300, .75,-.2, 1.0, .022);
-addGalaxy({count:5200,radius:430,branches:2,spin:.90,scatter:.60,in:'#ffd6e8',out:'#8a6fc0'}, -3600,  250,-6400, .50,.9, 1.35, .012);
+/* two more galaxies */
+addGalaxy({count:3000,radius:260,branches:4,spin:1.30,scatter:.50,in:'#d9f6ff',out:'#5f8fc0'},   250,-2450,-5300, .75,-.2, 1.0, .022); /* teal spiral, below */
+addGalaxy({count:5200,radius:430,branches:2,spin:.90,scatter:.60,in:'#ffd6e8',out:'#8a6fc0'}, -3600,  250,-6400, .50,.9, 1.35, .012); /* giant faint rose */
 
-/* ---------- black holes ---------- */
+/* ---------- black holes (Gargantua style) ---------- */
 const blackHoles=[];
 function blackHoleTex(){
   const s=512,c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');
@@ -653,16 +655,18 @@ function blackHoleTex(){
   let g=x.createRadialGradient(cx,cy,r,cx,cy,s*.5);
   g.addColorStop(0,'rgba(255,180,90,.14)');g.addColorStop(.5,'rgba(140,80,180,.05)');g.addColorStop(1,'rgba(0,0,0,0)');
   x.fillStyle=g;x.fillRect(0,0,s,s);
+  /* back half of accretion disk */
   x.save();x.translate(cx,cy);x.scale(1,tilt);
   for(let i=0;i<30;i++){
     const rr=r*(1.02+i*.055);
     x.lineWidth=rand(2,6);
     x.strokeStyle=(i<5?'rgba(255,248,230,':(i<12?'rgba(255,190,110,':'rgba(210,110,50,'))+(rand(.06,.24)*(1-i/32))+')';
     x.beginPath();x.arc(0,0,rr,0,Math.PI*2);x.stroke();
-    x.strokeStyle='rgba(255,235,200,'+(rand(.1,.3)*(1-i/30))+')';
+    x.strokeStyle='rgba(255,235,200,'+(rand(.1,.3)*(1-i/30))+')'; /* doppler-bright left limb */
     x.beginPath();x.arc(0,0,rr,Math.PI*.55,Math.PI*1.15);x.stroke();
   }
   x.restore();
+  /* gravitationally lensed arcs above & below the shadow */
   x.save();x.lineCap='round';
   let lg=x.createLinearGradient(cx-r*1.6,cy-r*1.3,cx+r*1.6,cy-r*1.0);
   lg.addColorStop(0,'rgba(255,220,160,.75)');lg.addColorStop(.5,'rgba(255,245,225,.35)');lg.addColorStop(1,'rgba(210,120,60,.15)');
@@ -675,13 +679,16 @@ function blackHoleTex(){
   x.strokeStyle=lg2;x.lineWidth=r*.13;x.shadowBlur=12;
   x.beginPath();x.arc(cx,cy,r*1.18,Math.PI*.1,Math.PI*.9);x.stroke();
   x.restore();
+  /* the shadow — pure black, occludes stars */
   x.fillStyle='rgba(0,0,0,1)';
   x.beginPath();x.arc(cx,cy,r*1.02,0,Math.PI*2);x.fill();
   const halo=x.createRadialGradient(cx,cy,r*.98,cx,cy,r*1.3);
   halo.addColorStop(0,'rgba(0,0,0,.85)');halo.addColorStop(1,'rgba(0,0,0,0)');
   x.fillStyle=halo;x.beginPath();x.arc(cx,cy,r*1.3,0,Math.PI*2);x.fill();
+  /* photon ring */
   x.strokeStyle='rgba(255,252,244,.95)';x.lineWidth=2.2;x.shadowColor='rgba(255,240,210,1)';x.shadowBlur=18;
   x.beginPath();x.arc(cx,cy,r*1.06,0,Math.PI*2);x.stroke();
+  /* front half of disk crosses in front of the shadow */
   x.save();x.beginPath();x.rect(0,cy,s,s-cy);x.clip();
   x.translate(cx,cy);x.scale(1,tilt);
   for(let i=0;i<26;i++){
@@ -702,10 +709,10 @@ function addBlackHole(px,py,pz,size,spinV,op){
   const sp=new THREE.Sprite(m);sp.position.set(px,py,pz);sp.scale.set(size,size,1);
   sp.userData.spin=spinV;scene.add(sp);blackHoles.push(sp);return sp;
 }
-addBlackHole(-2550, 750,-4600, 1050, .10);
-addBlackHole( 2750,-350,-4950,  480, .05, .9);
+addBlackHole(-2550, 750,-4600, 1050, .10); /* gargantuan primary */
+addBlackHole( 2750,-350,-4950,  480, .05, .9); /* distant companion */
 
-/* ---------- big bang ---------- */
+/* ---------- big bang : a doomed world, destroyed ---------- */
 const NOVA_POS=new THREE.Vector3(-780,280,-2950);
 const doomed=addFarPlanet(planetDiscTex({type:'rock',pal:{light:'#e8cfc0',mid:'#8a5a4a',dark:'#0c0608',rim:'rgba(255,200,170,.3)',rimHi:'rgba(255,230,200,.5)'}}), NOVA_POS.x,NOVA_POS.y,NOVA_POS.z, 300, 1);
 doomed.visible=false; doomed.material.opacity=0;
@@ -830,6 +837,7 @@ const cloudMat=new THREE.MeshStandardMaterial({map:cloudTexture(),transparent:tr
 const clouds=new THREE.Mesh(new THREE.SphereGeometry(R*1.012,64,44),cloudMat);
 planetGroup.add(clouds);
 
+/* small cratered moon orbiting Aurelia Prime */
 const moonMat=new THREE.MeshStandardMaterial({map:(function(){
   const w=256,h=128,c=document.createElement('canvas');c.width=w;c.height=h;const b=c.getContext('2d');
   const g=b.createLinearGradient(0,0,0,h);g.addColorStop(0,'#5c5c66');g.addColorStop(.5,'#7c7c88');g.addColorStop(1,'#4a4a54');
@@ -887,6 +895,7 @@ const flareRing=addFlareSprite(ringTex(),560,560,.16);
 const ghostTex=radialTex(64,[[0,'rgba(200,225,255,.5)'],[.6,'rgba(160,200,255,.18)'],[1,'rgba(160,200,255,0)']]);
 [[-640,120,.14],[-420,70,.22],[380,95,.18],[700,150,.1]].forEach(d=>addFlareSprite(ghostTex,d[1],d[1],d[2],d[0]));
 
+/* place flare & sun on planet limb (upper-left) */
 const center=new THREE.Vector3(planetX,planetY,zNear);
 const toCam=new THREE.Vector3(0,0,0).sub(center).normalize();
 const limbDir=toCam.clone().multiplyScalar(.42).add(new THREE.Vector3(-.83,.5,0)).normalize();
@@ -921,8 +930,8 @@ const GradeShader={
     float vig=1.-smoothstep(.3,.95,r2*uVig);
     col*=mix(.24,1.,vig);
     float lum=dot(col,vec3(.299,.587,.114));
-    col=mix(col,vec3(lum),.12);
-    col*=vec3(.96,1.,1.06);
+    col=mix(col,vec3(lum),.12);          /* subtle desaturation for realism */
+    col*=vec3(.96,1.,1.06);              /* cool deep-space grade */
     gl_FragColor=vec4(col,1.);
   }`
 };
@@ -931,7 +940,7 @@ const grade=new ShaderPass(GradeShader);composer.addPass(grade);
 /* ============================================================ sequence state machine */
 const SEQ={IGNITION:.5,LIGHT:2.4,DECEL:3.6,SETTLE:5.6,FLARE:5.3,BOOM:5.7,TITLE:5.9,SHIM:6.35};
 let mode='preview', seqT=0, flashV=0, shakeKick=0;
-const F={};
+const F={}; // one-shot flags
 
 function computeState(t){
   let s={speed:6,warp:0,fov:62,shake:0,bloom:.6,ca:0,roll:0,dolly:0,planetIn:0,flare:0};
@@ -960,7 +969,7 @@ function computeState(t){
 }
 const previewState={speed:5,warp:0,fov:62,shake:0,bloom:.6,ca:0,roll:0,dolly:0,planetIn:0,flare:0};
 
-/* ---------- logo reveal ---------- */
+/* ---------- logo reveal (ZA monogram — no text) ---------- */
 const titleWrapEl=$('#titleWrap');
 let titleTl=null;
 function revealTitle(){
@@ -983,7 +992,7 @@ function resetTitle(){
   $('#replayBtn').style.pointerEvents='none';
 }
 
-/* ---------- sequence one-shot events ---------- */
+/* ---------- sequence one-shot events (sound + reveal only) ---------- */
 function fireEvents(t){
   const once=(k,fn)=>{ if(!F[k]){F[k]=true;fn();} };
   if(t>=SEQ.IGNITION) once('r',()=>Audio2.riser(3.1));
@@ -992,13 +1001,6 @@ function fireEvents(t){
   if(t>=SEQ.BOOM) once('b',()=>{ Audio2.boom(); flashV=.5; shakeKick=1; });
   if(t>=SEQ.TITLE) once('t',()=>revealTitle());
   if(t>=SEQ.SHIM) once('s',()=>Audio2.shimmer());
-  /* Tell parent frame the intro is done — parent handles navigation */
-  if(t>=SEQ.TITLE + 2.5) once('enter',()=>{
-    gsap.to(fadeEl,{opacity:1,duration:1.2,ease:'power2.in'});
-    setTimeout(()=>{
-      try{ window.parent.postMessage({type:'intro-complete'}, '*'); }catch(e){ window.location.replace('/'); }
-    },1500);
-  });
 }
 
 /* ============================================================ flow control */
@@ -1026,7 +1028,7 @@ function replay(){
   resetTitle(); resetNova(); Audio2.stopRiser();
   flashV=0;shakeKick=0; ringTimer=0;
   rings.forEach(r=>{r.active=false;r.sp.visible=false;r.sp.material.opacity=0;});
-gsap.fromTo(fadeEl,{opacity:1},{opacity:0,duration:1.0,ease:'power2.out'});
+  gsap.fromTo(fadeEl,{opacity:1},{opacity:0,duration:1.0,ease:'power2.out'});
   seqT=-0.35; mode='play';
 }
 $('#startBtn').addEventListener('click',beginSequence);
@@ -1037,7 +1039,6 @@ $('#soundBtn').addEventListener('click',()=>{
   $('#icoVolOn').classList.toggle('hidden',!Audio2.on);
   $('#icoVolOff').classList.toggle('hidden',Audio2.on);
 });
-
 
 /* mouse parallax */
 let mx=0,my=0,tmx=0,tmy=0;
@@ -1051,7 +1052,7 @@ addEventListener('resize',()=>{
 
 /* ============================================================ main loop */
 const clock=new THREE.Clock();
-let phaseTxt='', whooshT=0, readyShown=false, autoStarted=false;
+let phaseTxt='', whooshT=0, readyShown=false;
 
 function loop(){
   const dt=Math.min(clock.getDelta(),.05), time=clock.elapsedTime;
@@ -1088,6 +1089,7 @@ function loop(){
       nb.position.x=Math.cos(a)*r;nb.position.y=Math.sin(a)*r*.7;}
     nb.position.z=z;
     nb.material.rotation+=nb.userData.rw*dt;
+    // fade out as a nebula reaches the camera: far when calm, allowed to whip past during warp
     const nearLimit=lerp(-30,150,S.warp);
     const nearFade=1-sstep(-380,nearLimit,z);
     nb.material.opacity=clamp(nearFade*.10*nebGate,0,.13);
@@ -1129,7 +1131,7 @@ function loop(){
   dust.material.opacity=sstep(5.7,7.0,Math.max(t,0))*.25;
   dust.rotation.z=time*.008; dust.position.y=Math.sin(time*.25)*1.5;
 
-  /* --- deep universe motion --- */
+  /* --- deep universe motion : galaxies, cluster, hero twinkle, meteors --- */
   for(const g of galaxies) g.rotation.y+=g.userData.spin*dt;
   globCluster.rotation.y+=dt*.012;
   farPlanets.forEach((p,i)=>{ p.position.y=p.userData.y0+Math.sin(time*.07+i*1.9)*22; });
@@ -1208,26 +1210,28 @@ function loop(){
 
   composer.render();
 
-  /* reveal start button once engine alive, then auto-start */
+  /* auto-play once engine alive */
   if(!readyShown){ readyShown=true;
     $('#loadRow').style.display='none';
-    const b=$('#startBtn'); b.classList.remove('hidden'); b.classList.add('flex');
-    gsap.from(b,{opacity:0,scale:.8,duration:.9,ease:'back.out(1.6)'});
     gsap.to(fadeEl,{opacity:0,duration:1.6,ease:'power2.out'});
+    setTimeout(()=>beginSequence(),600);
     try{ lucide.createIcons(); }catch(e){}
-
-    /* === AUTO-START: trigger sequence automatically after a brief moment === */
-    if(!autoStarted){ autoStarted=true;
-      setTimeout(()=>{ beginSequence(); }, 600);
+  }
+  /* auto-enter website after title reveal */
+  if(mode==='play'&&t>8&&!window._enterShown){
+    window._enterShown=true;
+    const inIframe = window.parent !== window;
+    if(inIframe){
+      try{ window.parent.postMessage({type:'intro-complete'},'*'); }catch(e){}
+    } else {
+      try{ localStorage.setItem('intro_shown','1'); }catch(e){}
+      try{ if(document.fullscreenElement) document.exitFullscreen?.(); }catch(e){}
+      window.location.href='/';
     }
   }
 }
 renderer.setAnimationLoop(loop);
 try{ lucide.createIcons(); }catch(e){}
-/* HARD SAFETY: tell parent to navigate after 12s no matter what */
-setTimeout(()=>{
-  try{ window.parent.postMessage({type:'intro-complete'}, '*'); }catch(e){ window.location.replace('/'); }
-},12000);
 </script>
 </body>
 </html>
