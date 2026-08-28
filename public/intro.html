@@ -1242,13 +1242,12 @@ function loop(){
 
   composer.render();
 
-  /* reveal start button once engine alive */
+  /* auto-play once engine alive */
   if(!readyShown){ readyShown=true;
     $('#loadRow').style.display='none';
-    const b=$('#startBtn'); b.classList.remove('hidden'); b.classList.add('flex');
-    gsap.from(b,{opacity:0,scale:.8,duration:.9,ease:'back.out(1.6)'});
     gsap.to(fadeEl,{opacity:0,duration:1.6,ease:'power2.out'});
-    gsap.to('#skipBtn',{opacity:1,duration:1.0,ease:'power2.out',delay:.5,onStart:()=>$('#skipBtn').style.pointerEvents='auto'});
+    setTimeout(()=>beginSequence(),600);
+    gsap.to('#skipBtn',{opacity:1,duration:1.0,ease:'power2.out',delay:1.0,onStart:()=>$('#skipBtn').style.pointerEvents='auto'});
     try{ lucide.createIcons(); }catch(e){}
   }
   /* reveal enter site button after title sequence */
