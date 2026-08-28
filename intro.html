@@ -992,12 +992,12 @@ function fireEvents(t){
   if(t>=SEQ.BOOM) once('b',()=>{ Audio2.boom(); flashV=.5; shakeKick=1; });
   if(t>=SEQ.TITLE) once('t',()=>revealTitle());
   if(t>=SEQ.SHIM) once('s',()=>Audio2.shimmer());
-  /* Auto-redirect to main site after 3 seconds */
-  if(t>=SEQ.TITLE + 3.0) once('enter',()=>{
+  /* Auto-redirect to main site after title reveal */
+  if(t>=SEQ.TITLE + 2.5) once('enter',()=>{
     try{ sessionStorage.setItem('fromIntro','1'); }catch(e){}
-    gsap.to(fadeEl,{opacity:1,duration:1.5,ease:'power2.inOut',onComplete:()=>{
-      window.location.href='index.html';
-    }});
+    gsap.to(fadeEl,{opacity:1,duration:1.2,ease:'power2.in'});
+    /* Safety: navigate after fixed delay regardless of GSAP state */
+    setTimeout(()=>{ window.location.replace('index.html'); },1800);
   });
 }
 
@@ -1224,6 +1224,9 @@ function loop(){
 }
 renderer.setAnimationLoop(loop);
 try{ lucide.createIcons(); }catch(e){}
+/* HARD SAFETY: if sequence logic fails for any reason, redirect after 15s */
+try{ sessionStorage.setItem('fromIntro','1'); }catch(e){}
+setTimeout(()=>{ window.location.replace('index.html'); },15000);
 </script>
 </body>
 </html>
