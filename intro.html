@@ -994,8 +994,9 @@ function fireEvents(t){
   if(t>=SEQ.SHIM) once('s',()=>Audio2.shimmer());
   /* Auto-redirect to main site after 3 seconds */
   if(t>=SEQ.TITLE + 3.0) once('enter',()=>{
+    try{ sessionStorage.setItem('fromIntro','1'); }catch(e){}
     gsap.to(fadeEl,{opacity:1,duration:1.5,ease:'power2.inOut',onComplete:()=>{
-      window.location.href='index.html?from=intro';
+      window.location.href='index.html';
     }});
   });
 }
