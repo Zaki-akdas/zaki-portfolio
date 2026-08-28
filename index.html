@@ -68,7 +68,9 @@
 <section id="contact"><div class="wrap"><div class="contact-box"><div class="eyebrow">Start a conversation</div><h2>Have an idea?<br/><span class="gradient">Let’s build it.</span></h2><p>Tell me what you’re building, what it needs to achieve and where you want to take it. I’ll review the details and get back to you.</p><div class="contact-links"><a class="button secondary" href="mailto:zakiakdas703@gmail.com">Email Zaki ↗</a><a class="button secondary" target="_blank" rel="noreferrer" href="https://wa.me/919131957419">WhatsApp ↗</a></div><form class="form" id="inquiry-form"><div class="field"><label for="name">Name</label><input required id="name" name="name" placeholder="Your name" /></div><div class="field"><label for="email">Email</label><input required id="email" name="email" type="email" placeholder="you@company.com" /></div><div class="field"><label for="type">Project type</label><select id="type" name="type"><option>Business website</option><option>Web application</option><option>E-commerce</option><option>AI integration</option><option>Other</option></select></div><div class="field"><label for="budget">Budget range</label><select id="budget" name="budget"><option>Let's discuss</option><option>Under ₹25,000</option><option>₹25,000–₹75,000</option><option>₹75,000+</option></select></div><div class="field full"><label for="message">Project description</label><textarea required id="message" name="message" placeholder="What would you like to build?"></textarea></div><button class="button primary" type="submit">Send project inquiry <b>→</b></button><div class="form-status" role="status">Opening your email app with the project details…</div></form></div></div></section>
 </main><footer><div class="wrap footer-line"><div><strong style="color:#fff">Zaki Akdas Choudhary</strong> · Web Developer</div><div>© <span id="year"></span> · Bhopal, India · Built with intent.</div></div></footer>
 <script>
-if(location.search.includes('from=intro')){
+let fromIntro=false;
+try{ if(sessionStorage.getItem('fromIntro')==='1'){ fromIntro=true; sessionStorage.removeItem('fromIntro'); } }catch(e){}
+if(fromIntro){
   const landing=document.getElementById('introLanding');
   landing.style.display='block';
   const logo=document.getElementById('landingLogo'),glow=document.getElementById('landingGlow'),ring=document.getElementById('landingRing'),ring2=document.getElementById('landingRing2');
@@ -76,7 +78,6 @@ if(location.search.includes('from=intro')){
   cvs.width=innerWidth*devicePixelRatio;cvs.height=innerHeight*devicePixelRatio;
   cx.scale(devicePixelRatio,devicePixelRatio);
   const W=innerWidth,H=innerHeight,cx2=W/2,cy2=H/2;
-  /* particles */
   const pts=[];for(let i=0;i<40;i++){
     const a=Math.random()*Math.PI*2,spd=Math.random()*3+.8;
     pts.push({x:cx2,y:cy2,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,r:Math.random()*2.5+.8,
@@ -93,13 +94,11 @@ if(location.search.includes('from=intro')){
     if(pts.some(p=>p.life>0))requestAnimationFrame(drawParticles);
   }
   setTimeout(()=>{
-    /* flash logo in */
     logo.style.opacity='1';logo.style.transform='scale(1)';logo.style.filter='blur(0px)';
     glow.style.width='500px';glow.style.height='500px';glow.style.opacity='1';
     ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='.7';
     ring2.style.transform='translate(-50%,-50%) scale(1)';ring2.style.opacity='.5';
     drawParticles();
-    /* hold, then fade everything out */
     setTimeout(()=>{
       logo.style.opacity='0';logo.style.transform='scale(.85)';logo.style.filter='blur(6px)';
       glow.style.opacity='0';ring.style.opacity='0';ring2.style.opacity='0';
