@@ -52,8 +52,6 @@
   @keyframes lev{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-5px); } }
 
   #replayBtn{ opacity: 0; pointer-events: none; }
-  #enterBtn{ opacity: 0; pointer-events: none; }
-  #skipBtn{ opacity: 0; pointer-events: none; }
 
   /* ---------- anamorphic streak across title ---------- */
   #streak{
@@ -118,13 +116,6 @@
     letter-spacing:.32em; transition: all .35s ease; background: rgba(255,255,255,.02);
   }
   .btn-cine:hover{ border-color: rgba(148,163,255,.75); color:#dbe4ff; background: rgba(148,163,255,.07); box-shadow: 0 0 30px rgba(122,144,255,.22); }
-  .btn-enter{
-    border:1px solid rgba(103,232,249,.4); color:rgba(103,232,249,.9);
-    letter-spacing:.32em; transition: all .35s ease; background: rgba(103,232,249,.04);
-  }
-  .btn-enter:hover{ border-color: rgba(103,232,249,.8); color:#e0fcff; background: rgba(103,232,249,.1); box-shadow: 0 0 30px rgba(103,232,249,.25); }
-  #skipBtn{ position:fixed; bottom:20px; right:20px; z-index:65; }
-  @media(min-width:640px){ #skipBtn{ bottom:28px; right:28px; } }
 
 
 </style>
@@ -169,9 +160,6 @@
         <button id="replayBtn" class="btn-cine pointer-events-auto font-mono2 text-[10px] px-8 py-3 rounded-full inline-flex items-center gap-3">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> REPLAY
         </button>
-        <button id="enterBtn" class="btn-enter pointer-events-auto font-mono2 text-[10px] px-8 py-3 rounded-full inline-flex items-center gap-3 mt-4 sm:mt-6">
-          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i> ENTER SITE
-        </button>
       </div>
     </div>
   </div>
@@ -208,11 +196,6 @@
       </div>
     </div>
   </div>
-
-  <!-- SKIP INTRO BUTTON -->
-  <button id="skipBtn" class="btn-cine pointer-events-auto font-mono2 text-[10px] px-6 py-2.5 rounded-full inline-flex items-center gap-2">
-    <i data-lucide="skip-forward" class="w-3 h-3"></i> SKIP INTRO
-  </button>
 
 <script type="module">
 import * as THREE from 'three';
@@ -1048,23 +1031,8 @@ function replay(){
   gsap.fromTo(fadeEl,{opacity:1},{opacity:0,duration:1.0,ease:'power2.out'});
   seqT=-0.35; mode='play';
 }
-function enterSite(){
-  try{ localStorage.setItem('intro_shown','1'); }catch(e){}
-  try{ if(document.fullscreenElement) document.exitFullscreen?.(); }catch(e){}
-  const inIframe = window.parent !== window;
-  if(inIframe){
-    try{ window.parent.postMessage({type:'intro-complete'},'*'); }catch(e){}
-  } else {
-    window.location.href='/';
-  }
-}
 $('#startBtn').addEventListener('click',beginSequence);
 $('#replayBtn').addEventListener('click',replay);
-$('#enterBtn').addEventListener('click',enterSite);
-$('#skipBtn').addEventListener('click',()=>{
-  Audio2.init();
-  enterSite();
-});
 addEventListener('keydown',e=>{ if(e.code==='Enter'&&mode==='preview') beginSequence(); else if(e.code==='KeyR'&&mode==='play'&&seqT>6.5) replay(); });
 $('#soundBtn').addEventListener('click',()=>{
   Audio2.on=!Audio2.on; Audio2.setOn(Audio2.on);
@@ -1247,14 +1215,19 @@ function loop(){
     $('#loadRow').style.display='none';
     gsap.to(fadeEl,{opacity:0,duration:1.6,ease:'power2.out'});
     setTimeout(()=>beginSequence(),600);
-    gsap.to('#skipBtn',{opacity:1,duration:1.0,ease:'power2.out',delay:1.0,onStart:()=>$('#skipBtn').style.pointerEvents='auto'});
     try{ lucide.createIcons(); }catch(e){}
   }
-  /* auto-enter site after title sequence */
-  if(mode==='play'&&t>7.5&&!window._enterShown){
+  /* auto-enter website after title reveal */
+  if(mode==='play'&&t>8&&!window._enterShown){
     window._enterShown=true;
-    gsap.to('#skipBtn',{opacity:0,duration:.5,onComplete:()=>$('#skipBtn').style.pointerEvents='none'});
-    setTimeout(()=>enterSite(),1800);
+    const inIframe = window.parent !== window;
+    if(inIframe){
+      try{ window.parent.postMessage({type:'intro-complete'},'*'); }catch(e){}
+    } else {
+      try{ localStorage.setItem('intro_shown','1'); }catch(e){}
+      try{ if(document.fullscreenElement) document.exitFullscreen?.(); }catch(e){}
+      window.location.href='/';
+    }
   }
 }
 renderer.setAnimationLoop(loop);
