@@ -1250,13 +1250,11 @@ function loop(){
     gsap.to('#skipBtn',{opacity:1,duration:1.0,ease:'power2.out',delay:1.0,onStart:()=>$('#skipBtn').style.pointerEvents='auto'});
     try{ lucide.createIcons(); }catch(e){}
   }
-  /* reveal enter site button after title sequence */
+  /* auto-enter site after title sequence */
   if(mode==='play'&&t>7.5&&!window._enterShown){
     window._enterShown=true;
-    const eb=$('#enterBtn');
-    gsap.to(eb,{opacity:1,y:0,duration:.9,ease:'power2.out',onStart:()=>eb.style.pointerEvents='auto'});
     gsap.to('#skipBtn',{opacity:0,duration:.5,onComplete:()=>$('#skipBtn').style.pointerEvents='none'});
-    try{ lucide.createIcons(); }catch(e){}
+    setTimeout(()=>enterSite(),1800);
   }
 }
 renderer.setAnimationLoop(loop);
