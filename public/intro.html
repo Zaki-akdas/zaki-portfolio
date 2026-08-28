@@ -992,11 +992,12 @@ function fireEvents(t){
   if(t>=SEQ.BOOM) once('b',()=>{ Audio2.boom(); flashV=.5; shakeKick=1; });
   if(t>=SEQ.TITLE) once('t',()=>revealTitle());
   if(t>=SEQ.SHIM) once('s',()=>Audio2.shimmer());
-  /* Auto-redirect to main site after title reveal */
+  /* Tell parent frame the intro is done — parent handles navigation */
   if(t>=SEQ.TITLE + 2.5) once('enter',()=>{
-    try{ sessionStorage.setItem('fromIntro','1'); }catch(e){}
     gsap.to(fadeEl,{opacity:1,duration:1.2,ease:'power2.in'});
-    setTimeout(()=>{ window.location.replace('/'); },1800);
+    setTimeout(()=>{
+      try{ window.parent.postMessage({type:'intro-complete'}, '*'); }catch(e){ window.location.replace('/'); }
+    },1500);
   });
 }
 
@@ -1223,9 +1224,10 @@ function loop(){
 }
 renderer.setAnimationLoop(loop);
 try{ lucide.createIcons(); }catch(e){}
-/* HARD SAFETY: force redirect after 12s no matter what */
-try{ sessionStorage.setItem('fromIntro','1'); }catch(e){}
-setTimeout(()=>{ window.location.replace('/'); },12000);
+/* HARD SAFETY: tell parent to navigate after 12s no matter what */
+setTimeout(()=>{
+  try{ window.parent.postMessage({type:'intro-complete'}, '*'); }catch(e){ window.location.replace('/'); }
+},12000);
 </script>
 </body>
 </html>
