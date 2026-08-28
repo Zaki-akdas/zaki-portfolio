@@ -141,8 +141,27 @@ export default function Portfolio() {
     return () => removeEventListener('keydown', handleKeyDown);
   }, [navOpen]);
 
+  const replayIntro = useCallback(() => {
+    try {
+      localStorage.removeItem('intro_shown');
+      localStorage.removeItem('intro_dismissed');
+    } catch {}
+    window.location.href = '/intro';
+  }, []);
+
+  const [pageVisible, setPageVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPageVisible(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
-    <>
+    <motion.div
+      initial={{opacity: 0}}
+      animate={{opacity: pageVisible ? 1 : 0}}
+      transition={{duration: 0.8, ease: [0.4, 0, 0.2, 1]}}
+    >
       {/* ── Loading Screen ── */}
       {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
 
@@ -174,6 +193,7 @@ export default function Portfolio() {
             <a href="#skills" className="px-3">Skills</a>
             <a href="#work" className="px-3">Projects</a>
             <a href="#contact" className="px-3">Contact</a>
+            <button onClick={replayIntro} className="px-3 cursor-pointer text-inherit bg-transparent border-none font-inherit" title="Replay the cinematic intro">▶ Intro</button>
           </div>
 
           {/* Social icons */}
@@ -201,9 +221,10 @@ export default function Portfolio() {
           <motion.div initial={{opacity: 0, y: -20}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: -20}} className="fixed top-[70px] left-4 right-4 z-50 glass-card p-5 md:hidden" role="menu" aria-label="Mobile navigation">              {['About', 'Skills', 'Projects', 'Contact'].map((x, i) => {
                 const href = x === 'About' ? '#skills' : x === 'Projects' ? '#work' : `#${x.toLowerCase()}`;
                 return (
-                  <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-4 min-h-[44px] text-base text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61] last:border-0">{x}</motion.a>
+                  <motion.a key={x} initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: i * 0.05}} href={href} onClick={() => setNavOpen(false)} role="menuitem" className="block py-4 min-h-[44px] text-base text-gray-300 hover:text-[#7042f8] font-medium border-b border-[#2A0E61]">{x}</motion.a>
                 );
               })}
+              <motion.button initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} transition={{delay: 0.2}} onClick={() => { setNavOpen(false); replayIntro(); }} role="menuitem" className="block w-full text-left py-4 min-h-[44px] text-base text-gray-300 hover:text-[#7042f8] font-medium cursor-pointer bg-transparent border-none font-inherit">▶ Replay Intro</motion.button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -351,6 +372,6 @@ export default function Portfolio() {
           © {new Date().getFullYear()} Zaki Akdas Choudhary. All rights reserved.
         </div>
       </footer>
-    </>
+    </motion.div>
   );
 }
