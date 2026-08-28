@@ -264,6 +264,46 @@ textarea:focus-visible {
 
 
 
+/* Intro video poster shimmer */
+.shimmer-bg {
+  background: linear-gradient(
+    110deg,
+    #030014 30%,
+    rgba(112, 66, 248, 0.06) 50%,
+    #030014 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Gesture hint animations */
+.gesture-ring {
+  animation: gestureRing 2s ease-out infinite;
+}
+
+.gesture-ring-delayed {
+  animation: gestureRing 2s ease-out 0.6s infinite;
+}
+
+.gesture-bob {
+  animation: gestureBob 1.6s ease-in-out infinite;
+}
+
+@keyframes gestureRing {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes gestureBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 /* Loading screen star twinkle */
 @keyframes twinkle {
   0%, 100% { opacity: 0.2; transform: scale(1); }

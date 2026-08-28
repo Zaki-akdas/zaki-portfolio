@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="glow1" cx="50%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#7042f8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#030014" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="30%" cy="70%" r="35%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#030014" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7042f8"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#030014"/>
+
+  <!-- Ambient glows -->
+  <ellipse cx="960" cy="430" rx="600" ry="400" fill="url(#glow1)"/>
+  <ellipse cx="576" cy="756" rx="500" ry="350" fill="url(#glow2)"/>
+
+  <!-- Subtle stars -->
+  <circle cx="120" cy="80" r="1.2" fill="white" opacity="0.5"/>
+  <circle cx="350" cy="200" r="0.8" fill="white" opacity="0.4"/>
+  <circle cx="600" cy="100" r="1" fill="white" opacity="0.6"/>
+  <circle cx="800" cy="250" r="0.7" fill="white" opacity="0.35"/>
+  <circle cx="1100" cy="150" r="1.1" fill="white" opacity="0.5"/>
+  <circle cx="1400" cy="120" r="0.9" fill="white" opacity="0.45"/>
+  <circle cx="1600" cy="280" r="1" fill="white" opacity="0.5"/>
+  <circle cx="1750" cy="180" r="0.8" fill="white" opacity="0.4"/>
+  <circle cx="200" cy="400" r="0.6" fill="white" opacity="0.3"/>
+  <circle cx="450" cy="550" r="0.9" fill="white" opacity="0.45"/>
+  <circle cx="1300" cy="450" r="0.7" fill="white" opacity="0.35"/>
+  <circle cx="1550" cy="600" r="1" fill="white" opacity="0.5"/>
+  <circle cx="900" cy="700" r="0.8" fill="white" opacity="0.4"/>
+  <circle cx="700" cy="850" r="1.1" fill="white" opacity="0.5"/>
+  <circle cx="1150" cy="800" r="0.6" fill="white" opacity="0.3"/>
+  <circle cx="300" cy="750" r="0.9" fill="white" opacity="0.45"/>
+  <circle cx="1700" cy="500" r="0.7" fill="white" opacity="0.35"/>
+  <circle cx="1000" cy="350" r="1" fill="white" opacity="0.5"/>
+
+  <!-- Play ring (outer) -->
+  <circle cx="960" cy="480" r="70" fill="none" stroke="url(#ringGrad)" stroke-width="2" opacity="0.5"/>
+
+  <!-- Play button background -->
+  <circle cx="960" cy="480" r="50" fill="#7042f8" fill-opacity="0.2" stroke="#7042f8" stroke-width="2" stroke-opacity="0.6"/>
+
+  <!-- Play triangle -->
+  <polygon points="948,458 948,502 982,480" fill="white" opacity="0.9"/>
+
+  <!-- ZA logo -->
+  <text x="960" y="370" text-anchor="middle" font-family="'JetBrains Mono', 'Fira Code', 'Courier New', monospace" font-weight="900" font-size="52" fill="white">ZA<span fill="#7042f8">.</span></text>
+
+  <!-- Tagline -->
+  <text x="960" y="570" text-anchor="middle" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-weight="500" font-size="18" fill="#b49bff" letter-spacing="4" text-transform="uppercase">FULLSTACK DEVELOPER PORTFOLIO</text>
+
+  <!-- Bottom gradient bar -->
+  <rect x="0" y="1076" width="1920" height="4" fill="url(#ringGrad)" opacity="0.6"/>
+</svg>

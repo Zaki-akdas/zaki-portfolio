@@ -7,6 +7,7 @@ import {projects} from '@/data/projects';
 
 const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
 const LoadingScreen = dynamic(() => import('./LoadingScreen'), {ssr: false});
+const IntroVideo = dynamic(() => import('./IntroVideo'), {ssr: false});
 
 /* ─── Data ─── */
 const skills = [
@@ -240,6 +241,11 @@ export default function Portfolio() {
                     <a href="#work" className="button-primary text-center text-white cursor-pointer w-full sm:w-auto">View projects</a>
                     <a href="#contact" className="py-2.5 px-6 text-center text-gray-300 cursor-pointer rounded-lg border border-[#2A0E61] hover:border-[#7042f8] transition font-semibold w-full sm:w-auto">Contact me</a>
                   </div>
+                </Reveal>
+
+                {/* Intro Video Section */}
+                <Reveal delay={0.4} className="w-full mt-6 sm:mt-10">
+                  <IntroVideo onComplete={() => {}} />
                 </Reveal>
               </div>
             </div>
