@@ -1015,7 +1015,6 @@ grainEl.style.backgroundImage=`url(${c.toDataURL()})`;})();
 function beginSequence(){
   if(mode==='play')return;
   Audio2.init(); Audio2.setOn(Audio2.on);
-  try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen?.(); }catch(e){}
   gsap.to(startOverlay,{opacity:0,duration:.8,ease:'power2.inOut',onComplete:()=>startOverlay.style.display='none'});
   document.body.classList.add('bars');
   gsap.to(hudEl,{opacity:1,duration:1.6,delay:.6});

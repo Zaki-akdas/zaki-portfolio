@@ -12,6 +12,12 @@ export default function IntroPage() {
 
   useEffect(() => {
     const t = setTimeout(() => setPhase('ready'), 50);
+    // Request fullscreen on page load — works because navigation is a user gesture
+    try {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      }
+    } catch {}
     return () => clearTimeout(t);
   }, []);
 
@@ -33,6 +39,10 @@ export default function IntroPage() {
     }
 
     setPhase('fading-out');
+    // Exit fullscreen before navigating back
+    try {
+      if (document.fullscreenElement) document.exitFullscreen?.();
+    } catch {}
     setTimeout(() => {
       router.push('/');
     }, 800);
