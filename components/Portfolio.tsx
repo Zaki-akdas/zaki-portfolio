@@ -1,12 +1,11 @@
 'use client';
-import {useEffect, useState, useRef, useCallback} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {motion, useInView, AnimatePresence, useScroll, useSpring} from 'framer-motion';
 import {Mail, MessageCircle, Send, CheckCircle, AlertCircle, Sparkles, ExternalLink} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {projects} from '@/data/projects';
 
 const SpaceBackground = dynamic(() => import('./SpaceBackground'), {ssr: false});
-const LoadingScreen = dynamic(() => import('./LoadingScreen'), {ssr: false});
 
 /* ─── Data ─── */
 const skills = [
@@ -119,13 +118,10 @@ function SectionReveal({children, className = '', direction = 'up'}: {children: 
 
 /* ─── Main Portfolio ─── */
 export default function Portfolio() {
-  const [loaded, setLoaded] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const {scrollYProgress} = useScroll();
   const scaleX = useSpring(scrollYProgress, {stiffness: 100, damping: 30, restDelta: 0.001});
-
-  const handleLoadComplete = useCallback(() => setLoaded(true), []);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
@@ -154,9 +150,6 @@ export default function Portfolio() {
       animate={{opacity: pageVisible ? 1 : 0}}
       transition={{duration: 0.8, ease: [0.4, 0, 0.2, 1]}}
     >
-      {/* ── Loading Screen ── */}
-      {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
-
       {/* ── Scroll Progress Bar ── */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
