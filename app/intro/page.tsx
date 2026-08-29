@@ -25,6 +25,9 @@ export default function IntroPage() {
     if (completedRef.current) return;
     completedRef.current = true;
 
+    // Mark intro as shown so IntroRedirect doesn't loop
+    try { localStorage.setItem('intro_shown', '1'); } catch {}
+
     if (dismissForever) {
       try { localStorage.setItem('intro_dismissed', '1'); } catch {}
     }

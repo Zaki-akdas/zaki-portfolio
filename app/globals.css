@@ -71,7 +71,9 @@ html, main, #main-content {
 }
 
 /* Gradient text */
-.gradient-text-cyan {
+.gradient-text-cyan,
+.gradient-text,
+.gradient-text-accent {
   background: linear-gradient(to right, #a855f7, #06b6d4);
   -webkit-background-clip: text;
   background-clip: text;
