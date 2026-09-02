@@ -72,7 +72,7 @@ export default function Nav({
 
         {/* hamburger */}
         <button
-          className="relative z-[80] flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-white/15 bg-ink/70 backdrop-blur-lg md:hidden"
+          className="relative z-[80] flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-white/20 bg-panel backdrop-blur-lg md:hidden"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
