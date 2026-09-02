@@ -61,10 +61,9 @@ export default function Projects({ projects }: { projects: Project[] }) {
               key={p.id}
               href={`/projects/${p.slug}`}
               data-cursor
-              className={`tilt reveal group relative overflow-hidden rounded-2xl border border-white/10 bg-panel p-6 sm:p-8 ${
+              className={`tilt group relative overflow-hidden rounded-2xl border border-white/10 bg-panel p-6 sm:p-8 transition-opacity duration-500 ${
                 active === "All" && i === 0 ? "sm:col-span-2" : ""
               }`}
-              style={{ ["--d" as never]: `${(i % 2) * 100}ms`, animationFillMode: "both" }}
             >
               <div
                 className="pointer-events-none absolute inset-0 opacity-60 transition-opacity duration-500 group-hover:opacity-100"
