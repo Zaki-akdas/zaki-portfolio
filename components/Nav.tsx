@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const LINKS = [
   { href: "/#about", label: "About" },
@@ -45,6 +45,24 @@ export default function Nav({
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  // Swipe-to-close: track touch start/end on the overlay
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStart.current.x;
+    const dy = Math.abs(t.clientY - touchStart.current.y);
+    touchStart.current = null;
+    // Swipe right ≥ 80px and mostly horizontal
+    if (dx > 80 && Math.abs(dx) > dy * 1.2) setOpen(false);
+  };
 
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
@@ -98,6 +116,8 @@ export default function Nav({
       {/* mobile off-canvas menu — OUTSIDE header for proper z-index stacking */}
       <div
         className="fixed inset-0 flex flex-col md:hidden"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
         style={{
           zIndex: 90,
           backgroundColor: "#05060d",
