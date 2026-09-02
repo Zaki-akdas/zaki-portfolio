@@ -72,14 +72,14 @@ export default function Nav({
 
         {/* hamburger */}
         <button
-          className="relative z-[60] flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="relative z-[60] flex h-11 w-11 flex-col items-center justify-center gap-1 md:hidden rounded-lg"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
         >
-          <span className={`h-0.5 w-6 rounded bg-white transition-all duration-300 ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`h-0.5 w-6 rounded bg-white transition-all duration-300 ${open ? "opacity-0" : ""}`} />
-          <span className={`h-0.5 w-6 rounded bg-white transition-all duration-300 ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "scale-x-0 opacity-0" : ""}`} />
+          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
         </button>
       </nav>
 
