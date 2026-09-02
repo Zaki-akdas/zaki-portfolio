@@ -36,6 +36,16 @@ export default function Nav({
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  // Close menu on Escape key
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
