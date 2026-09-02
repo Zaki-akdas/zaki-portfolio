@@ -85,7 +85,7 @@ export default function Nav({
 
       {/* mobile off-canvas menu */}
       <div
-        className={`fixed inset-0 z-50 flex flex-col bg-ink/95 backdrop-blur-xl transition-all duration-400 md:hidden ${
+        className={`fixed inset-0 z-[70] flex flex-col bg-ink transition-all duration-400 md:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
