@@ -39,57 +39,79 @@ export default function Nav({
   const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "border-b border-white/5 bg-ink/70 backdrop-blur-xl" : "bg-transparent"
-      }`}
-    >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8" aria-label="Main">
-        <Link href="/#top" className="flex min-h-[44px] items-center gap-2.5 font-display font-bold text-white" data-cursor>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full text-xs text-ink"
-            style={{ background: "linear-gradient(135deg, var(--accent), #4cc9f0)" }}>
-            {initials}
-          </span>
-          <span className="hidden sm:inline">{name}</span>
-        </Link>
-
-        <ul className="hidden items-center gap-1 md:flex">
-          {LINKS.map((l) => (
-            <li key={l.href}>
-              <Link href={l.href} className="inline-flex min-h-[44px] items-center rounded-full px-4 text-sm text-slate-300 transition hover:text-white" data-cursor>
-                {l.label}
-              </Link>
-            </li>
-          ))}
-          <li className="ml-2">
-            <Link href="/#contact"
-              className="magnetic inline-flex min-h-[44px] items-center rounded-full bg-accent px-5 text-sm font-semibold text-ink transition hover:brightness-110"
-              data-cursor>
-              Hire me
-            </Link>
-          </li>
-        </ul>
-
-        {/* hamburger */}
-        <button
-          className="relative z-[80] flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-white/20 bg-panel md:hidden"
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`} />
-          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "scale-x-0 opacity-0" : ""}`} />
-          <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
-        </button>
-      </nav>
-
-      {/* mobile off-canvas menu */}
-      <div
-        className={`fixed inset-0 z-[70] flex flex-col bg-ink transition-all duration-400 md:hidden ${
-          open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled ? "border-b border-white/5 bg-ink/70 backdrop-blur-xl" : "bg-transparent"
         }`}
       >
-        <ul className="mt-28 flex flex-col gap-1 px-8">
+        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8" aria-label="Main">
+          <Link href="/#top" className="flex min-h-[44px] items-center gap-2.5 font-display font-bold text-white" data-cursor>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full text-xs text-ink"
+              style={{ background: "linear-gradient(135deg, var(--accent), #4cc9f0)" }}>
+              {initials}
+            </span>
+            <span className="hidden sm:inline">{name}</span>
+          </Link>
+
+          <ul className="hidden items-center gap-1 md:flex">
+            {LINKS.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="inline-flex min-h-[44px] items-center rounded-full px-4 text-sm text-slate-300 transition hover:text-white" data-cursor>
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li className="ml-2">
+              <Link href="/#contact"
+                className="magnetic inline-flex min-h-[44px] items-center rounded-full bg-accent px-5 text-sm font-semibold text-ink transition hover:brightness-110"
+                data-cursor>
+                Hire me
+              </Link>
+            </li>
+          </ul>
+
+          {/* hamburger */}
+          <button
+            className="relative z-[80] flex h-11 w-11 flex-col items-center justify-center gap-1 rounded-full border border-white/20 bg-panel md:hidden"
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+            <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "scale-x-0 opacity-0" : ""}`} />
+            <span className={`h-[3px] w-6 rounded-full bg-white transition-all duration-300 ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+          </button>
+        </nav>
+      </header>
+
+      {/* mobile off-canvas menu — OUTSIDE header for proper z-index stacking */}
+      <div
+        className="fixed inset-0 flex flex-col md:hidden"
+        style={{
+          zIndex: 90,
+          backgroundColor: "#05060d",
+          pointerEvents: open ? "auto" : "none",
+          opacity: open ? 1 : 0,
+          transition: "opacity 400ms ease",
+        }}
+      >
+        {/* close button */}
+        <div className="flex justify-end p-4">
+          <button
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-panel text-white"
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+            style={{ zIndex: 95 }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <ul className="mt-20 flex flex-col gap-1 px-8">
           {LINKS.map((l, i) => (
             <li key={l.href}
               className={`transition-all duration-500 ${open ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}`}
@@ -109,6 +131,6 @@ export default function Nav({
           </span>
         </div>
       </div>
-    </header>
+    </>
   );
 }
