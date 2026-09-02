@@ -1,0 +1,110 @@
+[
+  {
+    "id": "9b738809-e99b-4736-abbc-dd015e25a5b5",
+    "name": "State Test",
+    "email": "state@test.com",
+    "subject": "",
+    "message": "Testing button state.",
+    "date": "2026-09-02T07:23:36.377Z",
+    "read": false
+  },
+  {
+    "id": "66e1dab3-8c81-4a8a-82fe-6b2ed6eb71f4",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T07:22:04.829Z",
+    "read": false
+  },
+  {
+    "id": "e15c2a15-14d4-4ea5-b57a-3b54850269c2",
+    "name": "State Test",
+    "email": "state@test.com",
+    "subject": "",
+    "message": "Testing button state.",
+    "date": "2026-09-02T06:53:10.877Z",
+    "read": false
+  },
+  {
+    "id": "649999ab-1e7a-4941-85ea-006bae5baeb2",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T06:51:52.724Z",
+    "read": false
+  },
+  {
+    "id": "59baab4e-d2b2-4d25-b0fa-e7bbb360b265",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T06:47:58.835Z",
+    "read": false
+  },
+  {
+    "id": "f183c1e2-bf1b-453c-84f4-775552422aac",
+    "name": "Reset Test",
+    "email": "reset@test.com",
+    "subject": "",
+    "message": "Testing form reset.",
+    "date": "2026-09-02T06:45:36.402Z",
+    "read": false
+  },
+  {
+    "id": "b105d76f-b399-415c-9a76-6aa2aa10291f",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T06:44:07.138Z",
+    "read": false
+  },
+  {
+    "id": "32ef5ac6-a2c7-4587-8673-5071ad62afde",
+    "name": "Reset Test",
+    "email": "reset@test.com",
+    "subject": "",
+    "message": "Testing form reset.",
+    "date": "2026-09-02T06:41:26.337Z",
+    "read": false
+  },
+  {
+    "id": "92e12998-2701-4609-a0a3-19b26e07419d",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T06:39:54.783Z",
+    "read": false
+  },
+  {
+    "id": "24f56c34-38af-4fd2-8e32-61d10ab032f4",
+    "name": "Reset Test",
+    "email": "reset@test.com",
+    "subject": "",
+    "message": "Testing form reset.",
+    "date": "2026-09-02T06:36:17.865Z",
+    "read": false
+  },
+  {
+    "id": "dca02f95-79e5-4551-86d4-38126b298c54",
+    "name": "E2E Test User",
+    "email": "e2e@test.com",
+    "subject": "E2E test message",
+    "message": "This is an automated test message.",
+    "date": "2026-09-02T06:34:42.565Z",
+    "read": false
+  },
+  {
+    "id": "207db314-aa0e-4263-9edf-0398490bbc72",
+    "name": "Reset Test",
+    "email": "reset@test.com",
+    "subject": "",
+    "message": "Testing form reset.",
+    "date": "2026-09-02T06:30:48.958Z",
+    "read": false
+  }
+]

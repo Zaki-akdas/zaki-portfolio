@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: zaki-portfolio
+    runtime: node
+    plan: starter # persistent disks require a paid instance; use "free" only if you accept data resets on redeploy
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: portfolio-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.1
+      - key: DATA_DIR
+        value: /var/data/data
+      - key: UPLOADS_DIR
+        value: /var/data/uploads
+      - key: ADMIN_PASSWORD
+        sync: false # Render will prompt you for this — set a strong password
+      - key: AUTH_SECRET
+        generateValue: true

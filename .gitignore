@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# environment & secrets
+.env
+.env.*
+!.env.example
+data/auth.json
+
+# runtime uploads (kept on the server's persistent disk, not in git)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# misc
+.DS_Store
+npm-debug.log*
+test-results/

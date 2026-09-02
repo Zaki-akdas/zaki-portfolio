@@ -1,0 +1,862 @@
+{
+  "profile": {
+    "name": "Zaki Akdas Choudhary",
+    "role": "Software Developer · BCA (IT)",
+    "headline": "Crafting stellar digital experiences",
+    "tagline": "I design and build fast, immersive, 3D-animated websites and web apps that turn first-time visitors into paying clients.",
+    "about": "I'm Zaki Akdas Choudhary, a software developer with a BCA (IT) background who lives at the intersection of engineering and art. I help startups, studios and founders ship products that don't just work — they feel alive. My specialty is combining rock-solid full-stack architecture with real-time 3D, motion design and obsessive performance tuning.",
+    "aboutMore": "When I'm not pushing pixels through a GPU, I'm writing about WebGL performance, contributing to open source, or mentoring junior developers. I work with clients worldwide, remote-first, and I treat every project like a mission launch: clear plan, tight feedback loops, zero surprises.",
+    "email": "zakiakdas703@gmail.com",
+    "location": "Indore, India",
+    "resumeUrl": "#",
+    "socials": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/Zaki-akdas"
+      },
+      {
+        "label": "Instagram",
+        "url": "https://instagram.com/zaki_choudhary15"
+      },
+      {
+        "label": "WhatsApp",
+        "url": "https://wa.me/919131957419"
+      }
+    ],
+    "stats": [
+      {
+        "label": "Live client websites",
+        "value": 26
+      },
+      {
+        "label": "Cities served",
+        "value": 6
+      },
+      {
+        "label": "Happy clients",
+        "value": 24
+      }
+    ],
+    "timeline": [
+      {
+        "year": "2019",
+        "title": "First lines of code for hire",
+        "text": "Started freelancing while studying — small business sites, WordPress rescues, and a growing obsession with the web."
+      },
+      {
+        "year": "2021",
+        "title": "Went full-time freelance",
+        "text": "Specialized in React and Node.js. Shipped my first SaaS dashboard and never looked back."
+      },
+      {
+        "year": "2023",
+        "title": "Fell into the third dimension",
+        "text": "Discovered Three.js and WebGL. Began building immersive product sites and interactive 3D experiences."
+      },
+      {
+        "year": "2025",
+        "title": "Full-stack, full-orbit",
+        "text": "Today I deliver end-to-end: strategy, design systems, 3D experiences, backends, and deployment pipelines."
+      }
+    ],
+    "phone": "+91 91319 57419"
+  },
+  "settings": {
+    "accent": "#8b7cff",
+    "preloader": true,
+    "effects3d": true,
+    "availability": "open",
+    "availabilityText": "Open for new projects",
+    "metaTitle": "Zaki Akdas Choudhary — Software Developer | 3D & Interactive Web Experiences",
+    "metaDescription": "Zaki Akdas Choudhary, BCA (IT) software developer building fast, immersive, 3D-animated websites and web apps. React, Next.js, Three.js, Node.js."
+  },
+  "skills": [
+    {
+      "id": "s1",
+      "name": "React / Next.js",
+      "level": 95,
+      "category": "Frontend"
+    },
+    {
+      "id": "s2",
+      "name": "TypeScript",
+      "level": 92,
+      "category": "Frontend"
+    },
+    {
+      "id": "s3",
+      "name": "Three.js / WebGL",
+      "level": 86,
+      "category": "Frontend"
+    },
+    {
+      "id": "s4",
+      "name": "Tailwind CSS",
+      "level": 94,
+      "category": "Frontend"
+    },
+    {
+      "id": "s5",
+      "name": "GSAP / Motion",
+      "level": 88,
+      "category": "Frontend"
+    },
+    {
+      "id": "s6",
+      "name": "Node.js / Express",
+      "level": 90,
+      "category": "Backend"
+    },
+    {
+      "id": "s7",
+      "name": "PostgreSQL / Prisma",
+      "level": 84,
+      "category": "Backend"
+    },
+    {
+      "id": "s8",
+      "name": "REST / GraphQL APIs",
+      "level": 87,
+      "category": "Backend"
+    },
+    {
+      "id": "s9",
+      "name": "Auth & Security",
+      "level": 82,
+      "category": "Backend"
+    },
+    {
+      "id": "s10",
+      "name": "Git / CI-CD",
+      "level": 90,
+      "category": "Tools"
+    },
+    {
+      "id": "s11",
+      "name": "Docker",
+      "level": 76,
+      "category": "Tools"
+    },
+    {
+      "id": "s12",
+      "name": "Figma / Design Systems",
+      "level": 80,
+      "category": "Tools"
+    },
+    {
+      "id": "s13",
+      "name": "Business Websites & Landing Pages",
+      "level": 96,
+      "category": "Client Delivery"
+    },
+    {
+      "id": "s14",
+      "name": "Local SEO & Google Visibility",
+      "level": 88,
+      "category": "Client Delivery"
+    },
+    {
+      "id": "s15",
+      "name": "WhatsApp / Booking Integrations",
+      "level": 92,
+      "category": "Client Delivery"
+    },
+    {
+      "id": "s16",
+      "name": "Vercel & Netlify Deployment",
+      "level": 93,
+      "category": "Client Delivery"
+    }
+  ],
+  "projects": [
+    {
+      "id": "pr1",
+      "slug": "nikky-bawa-salon",
+      "title": "Nikky Bawa Ladies Salon",
+      "summary": "Digital home for Bhopal's most trusted ladies salon — running since 1982. Services, bridal makeup portfolio and instant WhatsApp booking.",
+      "description": "Nikky Bawa has been Bhopal's go-to ladies salon since 1982 — but their online presence didn't reflect four decades of trust.\n\nI built a fast, elegant site showcasing their hair, skin, nail and bridal makeup services, with a portfolio gallery and one-tap WhatsApp appointment booking so clients can book the way they already chat.\n\nThe site is fully responsive, SEO-tuned for 'ladies salon Bhopal' searches, and loads in under two seconds on mobile data.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Booking"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://nikky-bawa-salon.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 1,
+      "year": "2025",
+      "cover": "/previews/nikky-bawa-salon.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr2",
+      "slug": "saddle-london",
+      "title": "Saddle London",
+      "summary": "Specialty coffee & matcha bar in South Kensington — menu, brunch highlights and location, wrapped in a premium brand feel.",
+      "description": "Saddle serves specialty coffee, signature matcha and brunch at 7 Montpelier Street, South Kensington — a premium neighbourhood spot that needed a website to match.\n\nI designed and built a clean, image-led site: menu, opening hours, location and the brand's calm aesthetic, optimised for the tourist-heavy mobile traffic the area gets.\n\nFast static delivery on Vercel keeps it snappy worldwide.\n\nClient location: London, UK.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://saddle-london.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 2,
+      "year": "2025",
+      "cover": "/previews/saddle-london.jpg",
+      "embed": false
+    },
+    {
+      "id": "pr3",
+      "slug": "cute-look-beauty-salon",
+      "title": "Cute Look Beauty Salon",
+      "summary": "Ladies salon in Al Karama, Dubai — services, bridal & henna packages, and home-service enquiries in one bilingual-friendly site.",
+      "description": "Cute Look Beauty Salon in Al Karama, Bur Dubai offers hair, makeup, bridal, henna, nails and home beauty services to a busy, mobile-first clientele.\n\nThe site presents every service clearly, highlights the convenient home-service option, and routes enquiries straight to WhatsApp — the channel Dubai customers actually use.\n\nStructured data and local SEO help it surface for Karama beauty searches.\n\nClient location: Dubai, UAE.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Booking"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://cute-look-beauty-salon.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 3,
+      "year": "2025",
+      "cover": "/previews/cute-look-beauty-salon.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr4",
+      "slug": "surti-boutique",
+      "title": "Surti Designer Boutique",
+      "summary": "Designer wear, bridal and custom stitching boutique — portfolio-first site built to turn Instagram followers into enquiries.",
+      "description": "Surti Designer Boutique creates designer clothing, bridal wear and custom stitching in Bhopal, with a strong Instagram following that wasn't converting into enquiries.\n\nI built a portfolio-first website: lookbook galleries, service pages for custom stitching and bridal work, and a frictionless enquiry flow connected to WhatsApp and Instagram.\n\nThe boutique now has a professional destination to send followers to — and enquiries come in with size and occasion details already filled.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "Instagram Integration"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://surti-boutique.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 4,
+      "year": "2025",
+      "cover": "/previews/surti-boutique.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr5",
+      "slug": "night-corner",
+      "title": "Night Corner",
+      "summary": "24×7 late-night essentials delivery — snacks, bakery and instant food within 10 KM. Built order-first for a night-owl audience.",
+      "description": "Night Corner delivers late-night snacks, bakery items, chocolates, instant food and drinks 24×7 within a 10 KM radius — a business that lives entirely on impulse mobile orders.\n\nThe site is built order-first: bold night-mode design, a fast product catalogue, and direct-to-WhatsApp ordering with zero friction between craving and checkout.\n\nOptimised to stay lightweight on slow late-night mobile networks.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Ordering"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://night-corner.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 5,
+      "year": "2026",
+      "cover": "/previews/night-corner.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr6",
+      "slug": "latte-love",
+      "title": "Latte Love",
+      "summary": "Arera Colony café with handcrafted coffee and creative events — a warm, editorial site that matches the interiors.",
+      "description": "Latte Love in Arera Colony is about handcrafted coffee, comforting food, warm interiors and good conversations — the website needed the same warmth.\n\nI built an editorial-style site with rich photography, the menu, events and the café's story, tuned so it feels as inviting as the space itself.\n\nLocal SEO for 'café Arera Colony Bhopal' brings steady organic footfall.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://latte-love.vercel.app/",
+      "repoUrl": "",
+      "featured": true,
+      "order": 6,
+      "year": "2025",
+      "cover": "/previews/latte-love.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr7",
+      "slug": "mohaka-boutique",
+      "title": "Mohaka Boutique",
+      "summary": "Bold fashion & designer wear boutique — catalogue browsing and boutique visit bookings.",
+      "description": "MOHAKA BOUTIQUE curates bold fashion, designer wear and occasion collections in Bhopal.\n\nThe site delivers a striking catalogue experience with collection highlights and a direct booking/enquiry flow for boutique visits.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://mohaka-boutique.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 7,
+      "year": "2025",
+      "cover": "/previews/mohaka-boutique.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr8",
+      "slug": "nehanki-collection-boutique",
+      "title": "Nehanki Collection & Boutique",
+      "summary": "Fashion boutique in Ayodhya Bypass — curated collections with direct enquiry.",
+      "description": "Nehanki Collection and Boutique on Ayodhya Bypass, Bhopal needed a simple, elegant catalogue presence.\n\nCurated collection galleries, boutique info and direct enquiry — deployed on Netlify with instant global delivery.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Netlify"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://nehanki-collection-boutique.netlify.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 8,
+      "year": "2024",
+      "cover": "/previews/nehanki-collection-boutique.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr9",
+      "slug": "bhartis-boutique",
+      "title": "Bharti's Boutique",
+      "summary": "Elegant designer fashion boutique in Mali Market — portfolio, catalogue and enquiries.",
+      "description": "Bharti's Boutique in Mali Market, Bhopal offers elegant designer fashion and curated collections.\n\nI built a refined portfolio site with catalogue browsing and a clean enquiry path that respects the brand's understated style.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://bhartis-boutique.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 9,
+      "year": "2025",
+      "cover": "/previews/bhartis-boutique.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr10",
+      "slug": "aishana-fashion-hub",
+      "title": "Aishana The Fashion Hub",
+      "summary": "Govindpura fashion hub — new arrivals, curated collections and social-connected catalogue.",
+      "description": "Aishana The Fashion Hub in Govindpura, Bhopal turns over new arrivals fast — the site keeps up.\n\nA catalogue-driven build with a new-arrivals spotlight and social links that keep the boutique's Instagram audience engaged.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://aishana-fashion-hub.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 10,
+      "year": "2025",
+      "cover": "/previews/aishana-fashion-hub.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr11",
+      "slug": "chhayas-3d",
+      "title": "Chhaya's Collection & Boutique",
+      "summary": "Premium ladies boutique in Ashoka Garden — ethnic wear, sarees, suits and festive collections.",
+      "description": "Chhaya's Collection And Boutique is a premium ladies boutique in Ashoka Garden, Bhopal, specialising in ethnic wear, sarees, suits and kurti sets.\n\nThe site showcases festive and occasion collections with rich visual galleries and effortless enquiry, built to feel as premium as the fabrics.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://chhayas-3d.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 11,
+      "year": "2026",
+      "cover": "/previews/chhayas-3d.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr12",
+      "slug": "reyansha-fabric-creation",
+      "title": "Reyansha Fabric Creation",
+      "summary": "Ethnic wear & fabric house — visual catalogues with Instagram-first enquiries.",
+      "description": "Reyansha Fabric Creation curates ethnic wear and fabric collections in Bhopal.\n\nA visual-catalogue site with Instagram-connected enquiry, giving the brand a polished storefront beyond social media.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "Instagram Integration"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://reyansha-fabric-creation.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 12,
+      "year": "2025",
+      "cover": "/previews/reyansha-fabric-creation.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr13",
+      "slug": "hereafter-opal",
+      "title": "Here After Vintage",
+      "summary": "Curated vintage clothing on Brick Lane — 1950s through Y2K, with a suitably retro-cool web presence.",
+      "description": "Here After Vintage curates clothing and accessories from the 1950s through Y2K on Brick Lane, London — a store with serious character.\n\nThe website channels that same energy: collection highlights, the store's story and visit info, designed to feel at home in East London's vintage scene.\n\nClient location: London, UK.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://hereafter-opal.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 13,
+      "year": "2025",
+      "cover": "/previews/hereafter-opal.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr14",
+      "slug": "rockstar-bhopal",
+      "title": "Rock Star The Fashion Store",
+      "summary": "'Dress like you own the night' — men's sportswear & streetwear store with attitude.",
+      "description": "Rock Star The Fashion Store in Ashoka Garden, Bhopal sells men's sportswear, streetwear and fashion with the tagline 'Dress Like You Own the Night'.\n\nI gave them a website with the same attitude — bold dark design, product highlights and a direct line to the store.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://rockstar-bhopal.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 14,
+      "year": "2025",
+      "cover": "/previews/rockstar-bhopal.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr15",
+      "slug": "royalfab-boutique",
+      "title": "RoyalFab Designer Boutique",
+      "summary": "Designer suits & kurtis with FREE pick-and-drop across Bhopal — the USP front and centre.",
+      "description": "RoyalFab Designer Boutique in Semra, Bhopal offers designer suits, kurtis, festive and bridal wear — with a free pick & drop service across the city.\n\nThe site puts that USP front and centre, pairs it with collection galleries, and converts interest into WhatsApp enquiries.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Booking"
+      ],
+      "category": "Boutique & Fashion",
+      "liveUrl": "https://royalfab-boutique.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 15,
+      "year": "2025",
+      "cover": "/previews/royalfab-boutique.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr16",
+      "slug": "ideal-salon-nine",
+      "title": "Ideal Family Salon",
+      "summary": "Family salon covering hair, beauty, grooming and occasion services — services plus portfolio plus enquiry.",
+      "description": "Ideal Family Salon in Bhopal serves the whole family: hair, beauty, grooming and occasion packages.\n\nA clear, friendly site with full service listings, a work portfolio and quick enquiry — built to convert local searches into walk-ins.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://ideal-salon-nine.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 16,
+      "year": "2025",
+      "cover": "/previews/ideal-salon-nine.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr17",
+      "slug": "studio27-beta",
+      "title": "Studio 27",
+      "summary": "Premium men's grooming studio in Bittan Market — haircuts, beard, skin — with WhatsApp appointments.",
+      "description": "Studio 27 is a premium grooming studio in Bittan Market, Bhopal — haircuts, beard grooming, skincare and styling for men.\n\nThe site sells the premium experience with moody photography and books appointments straight through WhatsApp.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Booking"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://studio27-beta.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 17,
+      "year": "2025",
+      "cover": "/previews/studio27-beta.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr18",
+      "slug": "rickys-salon",
+      "title": "Ricky's Ladies Salon",
+      "summary": "Established Dubai ladies salon — rebonding, keratin, skin and nails — with a service-first site.",
+      "description": "Ricky's Ladies Salon has served Dubai since the 2000s with hair, rebonding, keratin, skin, facial, nail and massage services.\n\nI structured the extensive service list into a scannable, mobile-first site that makes choosing and enquiring effortless.\n\nClient location: Dubai, UAE.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://rickys-salon.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 18,
+      "year": "2025",
+      "cover": "/previews/rickys-salon.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr19",
+      "slug": "luzan-golden-beauty-salon",
+      "title": "Luzan Golden Beauty Salon",
+      "summary": "Beauty, spa, henna and hair in Madinat Zayed — an elegant gold-accented digital storefront.",
+      "description": "Luzan Golden Beauty Salon in Madinat Zayed, Abu Dhabi offers beauty, makeup, spa, hair, nail and henna services.\n\nThe site wraps the full service menu in an elegant gold-accented design with direct booking contact.\n\nClient location: Abu Dhabi, UAE.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://luzan-golden-beauty-salon.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 19,
+      "year": "2025",
+      "cover": "/previews/luzan-golden-beauty-salon.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr20",
+      "slug": "astra-salon",
+      "title": "Astra Salon",
+      "summary": "Hair, bridal beauty and art on St. Clair Ave W — a salon-meets-gallery brand, online.",
+      "description": "Astra Salon on St. Clair Avenue West, Toronto is part salon, part art space — hair styling, colour, bridal beauty and a distinctive gallery vibe.\n\nThe website carries that dual identity: service pages with clean Canadian-market polish, plus the salon's artistic edge.\n\nClient location: Toronto, Canada.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://astra-salon.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 20,
+      "year": "2026",
+      "cover": "/previews/astra-salon.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr21",
+      "slug": "newstyle-next",
+      "title": "New Style Salon & Spa",
+      "summary": "Brampton salon & spa — colour, styling, sugaring and skincare with easy booking.",
+      "description": "New Style Salon & Spa in Brampton offers professional hair colour, styling, waxing, sugaring, facials and skincare.\n\nA conversion-focused build: services, pricing clarity and a booking path designed for the busy GTA customer.\n\nClient location: Brampton, Canada.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Salon & Beauty",
+      "liveUrl": "https://newstyle-next.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 21,
+      "year": "2026",
+      "cover": "/previews/newstyle-next.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr22",
+      "slug": "al-baik-zayka",
+      "title": "Al-Baik Zayka",
+      "summary": "Fast food & home delivery — menu, combo offers and food updates built for hungry mobile users.",
+      "description": "Al-Baik Zayka serves fast food, affordable combos and home delivery.\n\nThe site is a straight shot from craving to order: menu, offers, latest updates and delivery contact, all optimised for mobile.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel",
+        "WhatsApp Ordering"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://al-baik-zayka.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 22,
+      "year": "2025",
+      "cover": "/previews/al-baik-zayka.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr23",
+      "slug": "pin-pan-cafe",
+      "title": "Pin & Pan Cafe",
+      "summary": "Café & restaurant in Bawadiya Kalan — menu, gallery, events and table reservations.",
+      "description": "Pin & Pan Cafe in Bawadiya Kalan, Bhopal wanted more than a menu online — they wanted their vibe online.\n\nMenu, food gallery, upcoming events and table reservations, all in a site that mirrors the café's playful branding.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://pin-pan-cafe.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 23,
+      "year": "2025",
+      "cover": "/previews/pin-pan-cafe.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr24",
+      "slug": "becks-cafe-one",
+      "title": "Beck's Cafe",
+      "summary": "Family-run traditional English breakfast café in Holborn — hearty, honest and open from 7 AM.",
+      "description": "Beck's Cafe is a family-run traditional café on Red Lion Street, Holborn — Full English breakfasts from 7 AM, fresh coffee and homemade lunches.\n\nThe site keeps it honest and warm like the café itself: menu, hours, location and the family story, fast to load for the morning commuter crowd.\n\nClient location: London, UK.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://becks-cafe-one.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 24,
+      "year": "2025",
+      "cover": "/previews/becks-cafe-one.jpg",
+      "embed": true
+    },
+    {
+      "id": "pr25",
+      "slug": "art-cafe-london-seven",
+      "title": "Art Cafe London",
+      "summary": "Artisan coffee meets independent art — menu, exhibitions and a creative community hub.",
+      "description": "Art Cafe London blends artisan coffee and fresh food with independent art exhibitions.\n\nI built a site that serves both halves: café menu and hours alongside current exhibitions and the creative community programme.\n\nClient location: London, UK.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Café & Restaurant",
+      "liveUrl": "https://art-cafe-london-seven.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 25,
+      "year": "2026",
+      "cover": "/previews/art-cafe-london-seven.jpg",
+      "embed": false
+    },
+    {
+      "id": "pr26",
+      "slug": "saaj-next",
+      "title": "SAAJ – The Decor Shop",
+      "summary": "Premium home décor store in Vidya Nagar — wall décor, lighting and vases in a gallery-style catalogue.",
+      "description": "SAAJ – The Decor Shop is Bhopal's premium home décor boutique on Narmadapuram Road, Vidya Nagar — curated wall décor, lighting, vases and more.\n\nA gallery-style catalogue site that lets the products breathe, with clean category browsing and enquiry.\n\nClient location: Bhopal.",
+      "stack": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "Vercel"
+      ],
+      "category": "Retail & Décor",
+      "liveUrl": "https://saaj-next.vercel.app/",
+      "repoUrl": "",
+      "featured": false,
+      "order": 26,
+      "year": "2025",
+      "cover": "/previews/saaj-next.jpg",
+      "embed": true
+    }
+  ],
+  "services": [
+    {
+      "id": "sv1",
+      "title": "Web App Development",
+      "text": "Full-stack product builds with React, Next.js and Node.js — from MVP to scale, with clean architecture and tests."
+    },
+    {
+      "id": "sv2",
+      "title": "3D & Interactive Experiences",
+      "text": "Immersive WebGL scenes, product configurators, scroll-driven storytelling and micro-interactions that make brands unforgettable."
+    },
+    {
+      "id": "sv3",
+      "title": "Performance & SEO Rescue",
+      "text": "Core Web Vitals audits and fixes. I take slow, heavy sites and make them load in under 2 seconds — without losing the wow."
+    },
+    {
+      "id": "sv4",
+      "title": "Ongoing Partnership",
+      "text": "Retainer-based support: new features, content updates, monitoring and monthly performance reports. Your on-call dev crew."
+    }
+  ],
+  "process": [
+    {
+      "step": "01",
+      "title": "Discover",
+      "text": "A deep-dive call to map goals, audience, scope and success metrics. You get a written plan and fixed quote."
+    },
+    {
+      "step": "02",
+      "title": "Design",
+      "text": "Wireframes, moodboards and motion prototypes. We agree on the look and feel before a line of production code."
+    },
+    {
+      "step": "03",
+      "title": "Build",
+      "text": "Weekly demo builds on a staging URL. You watch the product come alive and steer it in real time."
+    },
+    {
+      "step": "04",
+      "title": "Launch",
+      "text": "Performance passes, QA on real devices, SEO setup, analytics, and a zero-drama production deploy."
+    },
+    {
+      "step": "05",
+      "title": "Support",
+      "text": "Handover docs, admin training, and optional retainer so the site keeps evolving after launch."
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "t1",
+      "name": "Nikky Bawa",
+      "role": "Founder, Nikky Bawa Ladies Salon · Bhopal",
+      "rating": 5,
+      "published": true,
+      "quote": "Our salon has been trusted since 1982, and finally our website feels the same way. Clients now book on WhatsApp straight from the site — bridal enquiries have clearly gone up."
+    },
+    {
+      "id": "t2",
+      "name": "Surti Boutique Team",
+      "role": "Surti Designer Boutique · Bhopal",
+      "rating": 5,
+      "published": true,
+      "quote": "We used to lose Instagram followers who asked 'do you have a website?'. Now they land on our lookbook and message us with the outfit details already decided. Exactly what we needed."
+    },
+    {
+      "id": "t3",
+      "name": "Cute Look Salon",
+      "role": "Ladies Salon · Al Karama, Dubai",
+      "rating": 5,
+      "published": true,
+      "quote": "Very professional work. The website is fast, looks premium and our home-service bookings from it started within the first week. Delivered everything on time from another country!"
+    },
+    {
+      "id": "t4",
+      "name": "Pin & Pan Cafe",
+      "role": "Café & Restaurant · Bhopal",
+      "rating": 5,
+      "published": true,
+      "quote": "He understood our vibe immediately — the site feels like our café. Menu, events, reservations, everything just works, and customers keep complimenting it."
+    },
+    {
+      "id": "t5",
+      "name": "Studio 27",
+      "role": "Premium Grooming Studio · Bhopal",
+      "rating": 5,
+      "published": true,
+      "quote": "Sharp design, quick delivery, zero headaches. WhatsApp appointment bookings doubled within a month of going live. Highly recommended for any local business."
+    },
+    {
+      "id": "t6",
+      "name": "Astra Salon",
+      "role": "Hair & Beauty · Toronto, Canada",
+      "rating": 5,
+      "published": true,
+      "quote": "Working remotely across time zones was seamless. He translated our salon-meets-art-gallery concept into a website our Toronto clients genuinely love."
+    }
+  ],
+  "posts": [
+    {
+      "id": "b1",
+      "slug": "webgl-performance-mid-range-android",
+      "title": "Making WebGL fly on mid-range Android phones",
+      "excerpt": "Most 3D websites die on a Pixel 6a. Here is the exact playbook I use to keep 60fps on the phones your real visitors actually own.",
+      "content": "Every client asks for a site that *wows*. Nobody asks for a site that wows **only on a MacBook Pro** — but that is what most 3D portfolios deliver.\n\nHere is the playbook I use on every WebGL project.\n\n## 1. Budget your pixels, not your polygons\n\nOn mobile, fill-rate kills you long before vertex count does. The single biggest win is capping device pixel ratio:\n\n```js\n<Canvas dpr={[1, 1.5]} />\n```\n\nA phone with DPR 3 renders **4x fewer pixels** at DPR 1.5. Nobody notices the difference on a 6-inch screen. Everybody notices 22fps.\n\n## 2. Feature-detect, then degrade gracefully\n\n- Check `navigator.hardwareConcurrency` — 4 cores or fewer gets the lite scene\n- Check for WebGL2, fall back to a CSS starfield if missing\n- Respect `prefers-reduced-motion` — accessibility is not optional\n\n## 3. Kill postprocessing on mobile\n\nBloom and depth-of-field are full-screen passes. On a 750-wide phone they can cost more than your entire scene. Fake bloom with additive-blended sprites instead — it is close to free.\n\n## 4. Instance everything that repeats\n\nMy asteroid belt renders 420 rocks in **one draw call** with InstancedMesh. The naive version was 420 draw calls. Frame time went from 11ms to 1.3ms.\n\n## 5. Test on the phone your users own\n\nNot your iPhone 15 Pro. A three-year-old mid-ranger. If it runs there, it runs everywhere.\n\n> The wow factor is worthless if half your visitors bounce before it loads.",
+      "cover": "",
+      "tags": [
+        "WebGL",
+        "Performance",
+        "Three.js"
+      ],
+      "published": true,
+      "date": "2026-08-14T09:00:00.000Z",
+      "metaTitle": "WebGL Performance on Mid-Range Android — Field Guide",
+      "metaDescription": "A practical playbook for keeping 3D websites at 60fps on the phones real users own: DPR caps, feature detection, instancing and graceful degradation."
+    },
+    {
+      "id": "b2",
+      "slug": "case-study-nebula-commerce-34-percent",
+      "title": "Case study: how a 3D configurator lifted conversion 34%",
+      "excerpt": "The full story behind Nebula Commerce — why the old store failed, what we built instead, and the numbers after 90 days.",
+      "content": "Nebula Audio came to me with a template store and a problem: **2.1% conversion on desktop, 0.8% on mobile**, for a premium product that photographs beautifully.\n\n## The diagnosis\n\nTheir product pages looked like every competitor. Static gallery, spec table, buy button. For a 300-dollar headphone, buyers need to *feel* the product — and photos were not doing it.\n\n## What we built\n\n- A real-time 3D product configurator (React Three Fiber) — rotate, zoom, change colourways and materials live\n- Edge-cached product pages with Next.js — TTFB under 100ms worldwide\n- One-page checkout with Stripe Payment Element\n\n## The constraints that mattered\n\n1. The 3D model had to load in under 1.5 seconds on 4G — we Draco-compressed the GLB from 8.4MB to 640KB\n2. Mobile had to keep 60fps — baked lighting, one directional light, DPR capped at 1.5\n3. SEO could not suffer — all product copy stays in server-rendered HTML, the canvas is purely additive\n\n## Results after 90 days\n\n- Conversion: 2.1% → **2.8% desktop**, 0.8% → **1.4% mobile** (+34% blended)\n- Average session time on product pages: **4.2x longer**\n- Support tickets asking about colour options: down 61%\n\n> Takeaway: 3D is not decoration. Done right, it answers buying questions that photos cannot.",
+      "cover": "",
+      "tags": [
+        "Case Study",
+        "E-commerce",
+        "React Three Fiber"
+      ],
+      "published": true,
+      "date": "2026-07-02T09:00:00.000Z",
+      "metaTitle": "Case Study: 3D Product Configurator, +34% Conversion",
+      "metaDescription": "How a real-time 3D product configurator built with React Three Fiber lifted e-commerce conversion by 34% in 90 days."
+    }
+  ]
+}
