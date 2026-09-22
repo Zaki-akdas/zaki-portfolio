@@ -69,9 +69,9 @@ export default function Nav({
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-          scrolled ? "border-b border-white/5 bg-ink/70 backdrop-blur-xl" : "bg-transparent"
-        }`}
+        className={`fixed inset-x-0 top-0 transition-all duration-300 ${
+          open ? "z-[95]" : "z-50"
+        } ${scrolled ? "border-b border-white/5 bg-ink/70 backdrop-blur-xl" : "bg-transparent"}`}
       >
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8" aria-label="Main">
           <Link href="/#top" className="flex min-h-[44px] items-center gap-2.5 font-display font-bold text-white" data-cursor>

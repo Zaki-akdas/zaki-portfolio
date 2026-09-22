@@ -54,14 +54,16 @@ test.describe("Navigation", () => {
 
     // Open menu
     await hamburger.click();
-    await expect(page.locator("button[aria-label='Close menu']")).toBeVisible();
+    await expect(page.locator("nav button[aria-label='Close menu']")).toBeVisible();
 
     // Mobile menu should show a large "About" link (in the off-canvas overlay)
-    await expect(page.locator(".fixed.inset-0 >> a >> text=About")).toBeVisible();
+    // (.fixed.inset-0 also matches other overlays; the overlay menu is the md:hidden one)
+    const overlay = page.locator("div.fixed.inset-0.md\\:hidden");
+    await expect(overlay.locator("a:has-text('About')")).toBeVisible();
 
     // Close menu
-    await page.click("button[aria-label='Close menu']");
-    await expect(page.locator("button[aria-label='Open menu']")).toBeVisible();
+    await page.click("nav button[aria-label='Close menu']");
+    await expect(page.locator("nav button[aria-label='Open menu']")).toBeVisible();
   });
 
   test("hamburger menu link navigates and closes menu", async ({ page }) => {

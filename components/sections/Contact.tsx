@@ -70,8 +70,11 @@ export default function Contact({ profile, settings }: { profile: Profile; setti
             <textarea name="message" required rows={5} placeholder="What are we building? Budget range and timeline help too."
               className="w-full rounded-xl border border-white/10 bg-ink/60 px-4 py-3 text-white placeholder:text-slate-600 focus:border-accent" />
           </label>
+          {/* no "magnetic" here: a full-width button that chases the pointer
+              destabilizes clicks (Playwright "element is not stable", and hard
+              to hit on slow devices) — a plain, still submit button is better UX */}
           <button type="submit" disabled={status === "sending"} data-cursor
-            className="magnetic inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
+            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-ink transition hover:brightness-110 disabled:opacity-60 sm:w-auto">
             {status === "sending" ? "Transmitting…" : "Send message 🚀"}
           </button>
           {status === "ok" && (

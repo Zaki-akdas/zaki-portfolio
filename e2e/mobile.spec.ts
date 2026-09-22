@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import { waitForPreloader } from "./helpers";
 
 /**
@@ -192,10 +192,10 @@ test.describe("Mobile — Hamburger Menu", () => {
 
   test("hamburger opens and shows all navigation links", async ({ page }) => {
     await page.click("button[aria-label='Open menu']");
-    await expect(page.locator("button[aria-label='Close menu']")).toBeVisible();
+    await expect(page.locator("nav button[aria-label='Close menu']")).toBeVisible();
 
     // All links should be visible in the overlay
-    const overlay = page.locator(".fixed.inset-0.z-50");
+    const overlay = page.locator("div.fixed.inset-0.md\\:hidden");
     await expect(overlay.locator("a:has-text('About')")).toBeVisible();
     await expect(overlay.locator("a:has-text('Skills')")).toBeVisible();
     await expect(overlay.locator("a:has-text('Work')")).toBeVisible();

@@ -3,7 +3,8 @@ import { type Page } from "@playwright/test";
 /**
  * Wait for the preloader overlay to fully dismiss.
  * The preloader renders a div[aria-label="Loading"] at z-[100] that blocks
- * all pointer events.  It fades out after ~5.5s on a fast connection.
+ * all pointer events.  It fades out after ~5.5s on a fast connection (hard
+ * cap at 7s + 3.1s unmount, so 12s covers slow CI machines).
  * This helper waits for it to be removed from the DOM.
  */
 export async function waitForPreloader(page: Page) {
@@ -12,5 +13,5 @@ export async function waitForPreloader(page: Page) {
   const preloader = page.locator('[aria-label="Loading"]');
   const count = await preloader.count();
   if (count === 0) return;
-  await preloader.waitFor({ state: "detached", timeout: 20_000 });
+  await preloader.waitFor({ state: "detached", timeout: 15_000 });
 }
