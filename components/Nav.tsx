@@ -115,6 +115,8 @@ export default function Nav({
 
       {/* mobile off-canvas menu — OUTSIDE header for proper z-index stacking */}
       <div
+        role="navigation"
+        aria-label="Menu"
         className="fixed inset-0 flex flex-col md:hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -126,20 +128,8 @@ export default function Nav({
           transition: "opacity 400ms ease",
         }}
       >
-        {/* close button */}
-        <div className="flex justify-end p-4">
-          <button
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-panel text-white"
-            onClick={() => setOpen(false)}
-            aria-label="Close menu"
-            style={{ zIndex: 95 }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
+        {/* no close button here: the header's hamburger→X toggle stacks above
+            this overlay (z-95) in the same top-right spot and is the live control */}
 
         <ul className="mt-20 flex flex-col gap-1 px-8">
           {LINKS.map((l, i) => (

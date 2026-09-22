@@ -1,97 +1,71 @@
 import { test, expect } from "@playwright/test";
 import { waitForPreloader } from "./helpers";
 
-test.describe("Contact Form", () => {
+test.describe("Contact form", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await waitForPreloader(page);
   });
 
-  test("contact form renders all fields and submit button", async ({ page }) => {
-    const form = page.locator("#contact form").first();
-    await expect(form).toBeVisible();
+  // Field contract: presence and constraints each control promises.
+  const FIELDS: {
+    selector: string;
+    required: boolean;
+    type?: string;
+    inputMode?: string;
+    rows?: string;
+  }[] = [
+    { selector: "input[name='name']", required: true },
+    { selector: "input[name='email']", required: true, type: "email", inputMode: "email" },
+    { selector: "input[name='subject']", required: false },
+    { selector: "textarea[name='message']", required: true, rows: "5" },
+  ];
 
-    await expect(form.locator("input[name='name']")).toBeVisible();
-    await expect(form.locator("input[name='email']")).toBeVisible();
-    await expect(form.locator("input[name='subject']")).toBeVisible();
-    await expect(form.locator("textarea[name='message']")).toBeVisible();
-    await expect(form.locator("button[type='submit']")).toContainText("Send message");
+  test("fields are present with their constraints", async ({ page }) => {
+    for (const f of FIELDS) {
+      const el = page.locator(f.selector);
+      await expect(el).toBeVisible();
+      if (f.required) await expect(el).toHaveAttribute("required", "");
+      else await expect(el).not.toHaveAttribute("required", "");
+      if (f.type) await expect(el).toHaveAttribute("type", f.type);
+      if (f.inputMode) await expect(el).toHaveAttribute("inputMode", f.inputMode);
+      if (f.rows) await expect(el).toHaveAttribute("rows", f.rows);
+    }
+    await expect(page.locator("#contact form button[type='submit']")).toContainText("Send message");
   });
 
-  test("contact form validates required fields via attributes", async ({ page }) => {
-    const nameInput = page.locator("input[name='name']");
-    const emailInput = page.locator("input[name='email']");
-    const msgInput = page.locator("textarea[name='message']");
-
-    await expect(nameInput).toHaveAttribute("required", "");
-    await expect(emailInput).toHaveAttribute("required", "");
-    await expect(msgInput).toHaveAttribute("required", "");
+  test("accepts and retains valid input", async ({ page }) => {
+    const values: [string, string][] = [
+      ["input[name='name']", "Test User"],
+      ["input[name='email']", "test@example.com"],
+      ["input[name='subject']", "Project inquiry"],
+      ["textarea[name='message']", "Hello, I'd like to discuss a project."],
+    ];
+    for (const [selector, value] of values) {
+      await page.locator(selector).fill(value);
+      await expect(page.locator(selector)).toHaveValue(value);
+    }
   });
 
-  test("contact form accepts valid input", async ({ page }) => {
-    const form = page.locator("#contact form").first();
-    await form.locator("input[name='name']").fill("Test User");
-    await form.locator("input[name='email']").fill("test@example.com");
-    await form.locator("input[name='subject']").fill("Project inquiry");
-    await form.locator("textarea[name='message']").fill("Hello, I'd like to discuss a project.");
+  test("submits a message, confirms, and restores the button", async ({ page }) => {
+    await page.locator("input[name='name']").fill("E2E Test User");
+    await page.locator("input[name='email']").fill("e2e@test.com");
+    await page.locator("input[name='subject']").fill("E2E test message");
+    await page.locator("textarea[name='message']").fill("This is an automated test message.");
 
-    await expect(form.locator("input[name='name']")).toHaveValue("Test User");
-    await expect(form.locator("input[name='email']")).toHaveValue("test@example.com");
-    await expect(form.locator("textarea[name='message']")).toHaveValue("Hello, I'd like to discuss a project.");
+    await page.locator("#contact form button[type='submit']").click();
+    await expect(page.locator("text=Message received")).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator("#contact form button[type='submit']")).toContainText("Send message");
   });
 
-  test("contact form submits successfully", async ({ page }) => {
-    const form = page.locator("#contact form").first();
-    await form.locator("input[name='name']").fill("E2E Test User");
-    await form.locator("input[name='email']").fill("e2e@test.com");
-    await form.locator("input[name='subject']").fill("E2E test message");
-    await form.locator("textarea[name='message']").fill("This is an automated test message.");
-
-    await form.locator("button[type='submit']").click();
-
-    // Should show success message
-    await expect(page.locator("text=Message received")).toBeVisible({ timeout: 10000 });
-  });
-
-  test("contact section shows availability status", async ({ page }) => {
-    await expect(page.locator("#contact")).toBeVisible();
+  test("shows availability, contact details, and social links", async ({ page }) => {
     await expect(page.locator("#contact >> text=Open for new projects")).toBeVisible();
-  });
+    await expect(page.locator("#contact >> text=zakiakdas703@gmail.com")).toBeVisible();
+    await expect(page.locator("#contact >> text=Indore, India")).toBeVisible();
 
-  test("contact section shows email and location", async ({ page }) => {
-    await expect(page.locator("text=zakiakdas703@gmail.com")).toBeVisible();
-    await expect(page.locator("text=Indore, India")).toBeVisible();
-  });
-
-  test("contact section shows social links", async ({ page }) => {
-    const contactSocials = page.locator("#contact").locator("ul");
-    await expect(contactSocials.locator("a:has-text('GitHub')")).toBeVisible();
-    await expect(contactSocials.locator("a:has-text('Instagram')")).toBeVisible();
-    await expect(contactSocials.locator("a:has-text('WhatsApp')")).toBeVisible();
-  });
-
-  test("contact form email input validates format", async ({ page }) => {
-    const emailInput = page.locator("input[name='email']");
-    await expect(emailInput).toHaveAttribute("type", "email");
-    await expect(emailInput).toHaveAttribute("inputMode", "email");
-  });
-
-  test("contact form textarea has appropriate rows", async ({ page }) => {
-    const textarea = page.locator("textarea[name='message']");
-    await expect(textarea).toHaveAttribute("rows", "5");
-    await expect(textarea).toHaveAttribute("required", "");
-  });
-
-  test("contact form shows sending state while submitting", async ({ page }) => {
-    const form = page.locator("#contact form").first();
-    await form.locator("input[name='name']").fill("State Test");
-    await form.locator("input[name='email']").fill("state@test.com");
-    await form.locator("textarea[name='message']").fill("Testing button state.");
-
-    await form.locator("button[type='submit']").click();
-
-    // Button should show loading state briefly, then success
-    await expect(page.locator("text=Message received")).toBeVisible({ timeout: 15000 });
-    await expect(form.locator("button[type='submit']")).toContainText("Send message");
+    const socials = page.locator("#contact").locator("ul");
+    for (const label of ["GitHub", "Instagram", "WhatsApp"]) {
+      await expect(socials.locator(`a:has-text('${label}')`)).toBeVisible();
+    }
   });
 });
