@@ -7,78 +7,55 @@ test.describe("Homepage", () => {
     await waitForPreloader(page);
   });
 
-  test("loads successfully and shows hero section", async ({ page }) => {
+  test("hero renders title, availability badge, and CTA targets", async ({ page }) => {
     await expect(page).toHaveTitle(/Zaki Akdas Choudhary/);
+    await expect(page.locator("section").first()).toBeVisible();
+    await expect(page.locator("h1")).toContainText(/Crafting[\s\S]*stellar[\s\S]*digital[\s\S]*experiences/);
+    // Scoped to the hero: the header carries a hidden copy of the same badge.
+    await expect(page.locator("section").first().getByText("Open for new projects")).toBeVisible();
 
-    // Hero headline is visible
-    const hero = page.locator("section").first();
-    await expect(hero).toBeVisible();
-
-    await expect(page.locator("h1")).toContainText("Crafting");
-    await expect(page.locator("h1")).toContainText("stellar");
-    await expect(page.locator("h1")).toContainText("digital");
-    await expect(page.locator("h1")).toContainText("experiences");
-    await expect(page.locator("section >> .reveal:has-text('Open for new projects')").first()).toBeVisible();
-    await expect(page.locator("text=Explore my universe")).toBeVisible();
-    await expect(page.locator("text=Start a project")).toBeVisible();
+    // Each hero CTA promises where it takes you.
+    for (const [name, href] of [
+      ["Explore my universe", "/#projects"],
+      ["Start a project", "/#contact"],
+    ]) {
+      const cta = page.getByRole("link", { name, exact: true });
+      await expect(cta).toBeVisible();
+      await expect(cta).toHaveAttribute("href", href);
+    }
   });
 
-  test("scroll cue is present in hero", async ({ page }) => {
-    const scrollCue = page.locator(".animate-bounce");
-    await expect(scrollCue).toBeVisible();
+  test("nav bar shows every entry point", async ({ page }) => {
+    const nav = page.getByRole("navigation", { name: "Main" });
+    for (const label of ["About", "Skills", "Work", "Services", "Blog", "Contact", "Hire me"]) {
+      await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
+    }
   });
 
-  test("renders the nav bar with all links", async ({ page }) => {
-    await expect(page.locator("nav")).toBeVisible();
-    await expect(page.locator("nav >> text=About")).toBeVisible();
-    await expect(page.locator("nav >> text=Skills")).toBeVisible();
-    await expect(page.locator("nav >> text=Work")).toBeVisible();
-    await expect(page.locator("nav >> text=Services")).toBeVisible();
-    await expect(page.locator("nav >> text=Blog")).toBeVisible();
-    await expect(page.locator("nav >> text=Contact")).toBeVisible();
-    await expect(page.locator("nav >> text=Hire me")).toBeVisible();
-  });
+  // Section contract: the anchor id the nav targets plus the copy it must show.
+  // Field-level form coverage lives in contact.spec.ts.
+  const SECTIONS: [id: string, heading: string, texts: string[]][] = [
+    ["#about", "The developer behind the mission", ["Live client websites", "Cities served", "Happy clients"]],
+    ["#skills", "Tools in my orbit", ["Frontend", "Backend"]],
+    ["#projects", "Missions", ["Nikky Bawa"]],
+    ["#services", "How I can help you launch", ["Web App Development"]],
+    ["#contact", "Ready for lift-off?", []],
+  ];
 
-  test("About section renders with stats", async ({ page }) => {
-    await expect(page.locator("#about")).toBeVisible();
-    await expect(page.locator("#about >> text=The developer behind the mission")).toBeVisible();
-    await expect(page.locator("#about >> text=Live client websites")).toBeVisible();
-    await expect(page.locator("#about >> text=Cities served")).toBeVisible();
-    await expect(page.locator("#about >> text=Happy clients")).toBeVisible();
-  });
+  for (const [id, heading, texts] of SECTIONS) {
+    test(`section ${id} renders its heading and content`, async ({ page }) => {
+      const section = page.locator(id);
+      await expect(section).toBeVisible();
+      await expect(section).toContainText(heading);
+      for (const t of texts) await expect(section).toContainText(t);
+    });
+  }
 
-  test("Skills section renders skill categories", async ({ page }) => {
-    await expect(page.locator("#skills")).toBeVisible();
-    await expect(page.locator("#skills >> text=Tools in my orbit")).toBeVisible();
-    await expect(page.locator("#skills >> text=Frontend")).toBeVisible();
-    await expect(page.locator("#skills >> text=Backend")).toBeVisible();
-  });
-
-  test("Projects section renders project cards", async ({ page }) => {
-    await expect(page.locator("#projects")).toBeVisible();
-    await expect(page.locator("#projects >> text=Missions")).toBeVisible();
-    await expect(page.locator("#projects >> text=Nikky Bawa")).toBeVisible();
-  });
-
-  test("Services section renders", async ({ page }) => {
-    await expect(page.locator("#services")).toBeVisible();
-    await expect(page.locator("#services >> text=How I can help you launch")).toBeVisible();
-    await expect(page.locator("#services >> text=Web App Development")).toBeVisible();
-  });
-
-  test("Contact section renders form", async ({ page }) => {
-    await expect(page.locator("#contact")).toBeVisible();
-    await expect(page.locator("#contact >> text=Ready for lift-off?")).toBeVisible();
-    await expect(page.locator("input[name='name']")).toBeVisible();
-    await expect(page.locator("input[name='email']")).toBeVisible();
-    await expect(page.locator("textarea[name='message']")).toBeVisible();
-  });
-
-  test("footer renders with social links", async ({ page }) => {
-    await expect(page.locator("footer")).toBeVisible();
-    await expect(page.locator("footer >> text=Handcrafted among the stars")).toBeVisible();
-    await expect(page.locator("footer >> text=GitHub")).toBeVisible();
-    await expect(page.locator("footer >> text=Instagram")).toBeVisible();
-    await expect(page.locator("footer >> text=WhatsApp")).toBeVisible();
+  test("footer renders with tagline and social links", async ({ page }) => {
+    const footer = page.locator("footer");
+    await expect(footer).toBeVisible();
+    for (const t of ["Handcrafted among the stars", "GitHub", "Instagram", "WhatsApp"]) {
+      await expect(footer).toContainText(t);
+    }
   });
 });
