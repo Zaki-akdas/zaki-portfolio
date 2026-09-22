@@ -45,9 +45,9 @@ test.describe("Navigation", () => {
   });
 
   test("hamburger menu opens and closes on mobile viewport", async ({ page }) => {
+    // beforeEach already loaded "/" and dismissed the preloader; resizing
+    // reflows to mobile (fresh mobile loads are covered by mobile.spec).
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
-    await waitForPreloader(page);
 
     const hamburger = page.locator("button[aria-label='Open menu']");
     await expect(hamburger).toBeVisible();
@@ -67,9 +67,9 @@ test.describe("Navigation", () => {
   });
 
   test("hamburger menu link navigates and closes menu", async ({ page }) => {
+    // beforeEach already loaded "/" and dismissed the preloader; resizing
+    // reflows to mobile (fresh mobile loads are covered by mobile.spec).
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
-    await waitForPreloader(page);
 
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.waitForTimeout(300);
