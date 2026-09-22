@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getMessages, saveMessages } from "@/lib/store";
+import { reserve } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
-// naive in-memory rate limit: max 5 submissions / 10 min / IP
-const hits = new Map<string, number[]>();
+// Rate limit: max 10 valid submissions / 10 min / IP, file-backed so restarts
+// don't reset it (the e2e suite submits several messages per run from the same
+// IP; a tight budget makes the tests non-deterministic — 10 still blocks spam)
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_MESSAGES = 10;
 
 export async function POST(req: Request) {
   const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0].trim();
-  const now = Date.now();
-  const windowHits = (hits.get(ip) || []).filter((t) => now - t < 10 * 60 * 1000);
-  if (windowHits.length >= 5) {
-    return NextResponse.json({ error: "Too many messages — please try again later." }, { status: 429 });
-  }
+  const key = `contact:${ip}`;
 
   let body: Record<string, unknown>;
   try {
@@ -31,8 +31,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Please fill in a valid name, email and message." }, { status: 400 });
   }
 
-  windowHits.push(now);
-  hits.set(ip, windowHits);
+  // One synchronous admission step after all awaits: only valid submissions
+  // count, and parallel bursts can't race past the cap (checking before the
+  // awaits and recording after them accepted 12/12 against a limit of 10).
+  if (!reserve(key, MAX_MESSAGES, WINDOW_MS)) {
+    return NextResponse.json({ error: "Too many messages — please try again later." }, { status: 429 });
+  }
 
   const messages = getMessages();
   messages.unshift({

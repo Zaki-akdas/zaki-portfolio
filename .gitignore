@@ -11,6 +11,7 @@ tsconfig.tsbuildinfo
 .env.*
 !.env.example
 data/auth.json
+data/rate-limit.json
 
 # runtime uploads (kept on the server's persistent disk, not in git)
 public/uploads/*
