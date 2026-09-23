@@ -1,10 +1,19 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 
-// DATA_DIR can be pointed at a persistent disk in production (e.g. /var/data/data on Render).
-// Falls back to the repo's ./data folder for local development.
+// DATA_DIR picks the store location: an explicit env var wins (a persistent
+// disk in production, e.g. /var/data/data on Render; the isolated .e2e-data
+// dir for tests). Without one, Vercel's bundle filesystem is read-only — every
+// write there threw and 500ed login/contact — so fall back to os.tmpdir():
+// writable per instance, with instance-local lifetime (not durable storage;
+// point DATA_DIR at real storage for that). Local dev keeps ./data.
 const REPO_DATA_DIR = path.join(process.cwd(), "data");
-const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : REPO_DATA_DIR;
+const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : process.env.VERCEL
+    ? path.join(os.tmpdir(), "portfolio-data")
+    : REPO_DATA_DIR;
 
 /** When running with an external DATA_DIR (fresh persistent disk), seed it from the repo's data folder. */
 function seedIfMissing(name: string): boolean {
