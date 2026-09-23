@@ -45,39 +45,41 @@ test.describe("Navigation", () => {
   });
 
   test("hamburger menu opens and closes on mobile viewport", async ({ page }) => {
+    // beforeEach already loaded "/" and dismissed the preloader; resizing
+    // reflows to mobile (fresh mobile loads are covered by mobile.spec).
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
-    await waitForPreloader(page);
 
     const hamburger = page.locator("button[aria-label='Open menu']");
     await expect(hamburger).toBeVisible();
 
     // Open menu
     await hamburger.click();
-    await expect(page.locator("button[aria-label='Close menu']")).toBeVisible();
+    const menu = page.getByRole("navigation", { name: "Menu" });
+    const headerClose = page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Close menu" });
+    await expect(headerClose).toBeVisible(); // header toggle stays clickable above the overlay
 
-    // Mobile menu should show a large "About" link (in the off-canvas overlay)
-    await expect(page.locator(".fixed.inset-0 >> a >> text=About")).toBeVisible();
+    // Mobile menu shows its own nav landmark with the section links
+    await expect(menu.getByRole("link", { name: "About", exact: true })).toBeVisible();
 
-    // Close menu
-    await page.click("button[aria-label='Close menu']");
-    await expect(page.locator("button[aria-label='Open menu']")).toBeVisible();
+    // Close menu via the header toggle (regression: overlay used to cover it)
+    await headerClose.click();
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   });
 
   test("hamburger menu link navigates and closes menu", async ({ page }) => {
+    // beforeEach already loaded "/" and dismissed the preloader; resizing
+    // reflows to mobile (fresh mobile loads are covered by mobile.spec).
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
-    await waitForPreloader(page);
 
-    await page.click("button[aria-label='Open menu']");
+    await page.getByRole("button", { name: "Open menu" }).click();
     await page.waitForTimeout(300);
 
     // Click the About link in the mobile overlay menu
-    const aboutLink = page.locator(".fixed.inset-0 a:has-text('About')").first();
-    await aboutLink.click();
+    const menu = page.getByRole("navigation", { name: "Menu" });
+    await menu.getByRole("link", { name: "About", exact: true }).click();
 
     // Menu should be closed (hamburger visible again)
-    await expect(page.locator("button[aria-label='Open menu']")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   });
 
   test("nav becomes opaque on scroll", async ({ page }) => {

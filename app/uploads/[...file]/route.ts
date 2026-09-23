@@ -28,12 +28,18 @@ export async function GET(_req: NextRequest, { params }: { params: { file: strin
   try {
     const data = fs.readFileSync(filePath);
     const ext = path.extname(filePath).toLowerCase();
-    return new NextResponse(data, {
-      headers: {
-        "Content-Type": MIME[ext] || "application/octet-stream",
-        "Cache-Control": "public, max-age=31536000, immutable",
-      },
-    });
+    const headers: Record<string, string> = {
+      "Content-Type": MIME[ext] || "application/octet-stream",
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "X-Content-Type-Options": "nosniff",
+    };
+    if (ext === ".svg") {
+      // SVGs are documents on our origin: rendering stays intact (for <img>
+      // embeds) but scripts and external loads are dead on direct open.
+      headers["Content-Security-Policy"] =
+        "default-src 'none'; style-src 'unsafe-inline'; sandbox";
+    }
+    return new NextResponse(data, { headers });
   } catch {
     return new NextResponse("Not found", { status: 404 });
   }

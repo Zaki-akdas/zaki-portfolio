@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
 import { checkPassword, makeToken, COOKIE_NAME } from "@/lib/auth";
+import { reserve } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
-// rate limit login attempts: max 10 / 10 min / IP
-const attempts = new Map<string, number[]>();
+// rate limit login attempts: max 10 / 10 min / IP (file-backed → survives restarts)
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_ATTEMPTS = 10;
 
 export async function POST(req: Request) {
   const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0].trim();
-  const now = Date.now();
-  const recent = (attempts.get(ip) || []).filter((t) => now - t < 10 * 60 * 1000);
-  if (recent.length >= 10) {
+  // synchronous reserve before the first await: every attempt counts and
+  // parallel bursts can't race past the cap
+  if (!reserve(`login:${ip}`, MAX_ATTEMPTS, WINDOW_MS)) {
     return NextResponse.json({ error: "Too many attempts. Try again in a few minutes." }, { status: 429 });
   }
-  recent.push(now);
-  attempts.set(ip, recent);
 
   const body = await req.json().catch(() => ({}));
   if (!checkPassword(String(body.password || ""))) {

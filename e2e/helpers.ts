@@ -1,16 +1,11 @@
 import { type Page } from "@playwright/test";
 
 /**
- * Wait for the preloader overlay to fully dismiss.
- * The preloader renders a div[aria-label="Loading"] at z-[100] that blocks
- * all pointer events.  It fades out after ~5.5s on a fast connection.
- * This helper waits for it to be removed from the DOM.
+ * Wait for the preloader overlay to stop blocking the page.
+ * It renders as div[aria-label="Loading"] at z-[100] and unmounts after its
+ * ~7s hard cap + 3.1s fade (15s bounds slow CI). One detached-wait covers all
+ * cases: it resolves instantly when the preloader is disabled and absent.
  */
 export async function waitForPreloader(page: Page) {
-  // Wait for the preloader overlay (role=status aria-label=Loading) to be removed.
-  // If no preloader is enabled, it won't be present and this returns instantly.
-  const preloader = page.locator('[aria-label="Loading"]');
-  const count = await preloader.count();
-  if (count === 0) return;
-  await preloader.waitFor({ state: "detached", timeout: 20_000 });
+  await page.locator('[aria-label="Loading"]').waitFor({ state: "detached", timeout: 15_000 });
 }

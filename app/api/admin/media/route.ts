@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { isAdmin } from "@/lib/auth";
+import { scrubSvg } from "@/lib/svg";
 
 export const runtime = "nodejs";
 
@@ -46,7 +47,10 @@ export async function POST(req: Request) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
   const stem = safeName(file.name).replace(/\.[^.]+$/, "");
   const name = `${Date.now().toString(36)}-${stem}.${ext}`;
-  const buf = Buffer.from(await file.arrayBuffer());
+  const raw = Buffer.from(await file.arrayBuffer());
+  // SVGs can carry scripts that would run on our origin if opened directly —
+  // strip active content before it ever reaches disk
+  const buf = ext === "svg" ? scrubSvg(raw) : raw;
   fs.writeFileSync(path.join(UPLOAD_DIR, name), buf);
   return NextResponse.json({ ok: true, name, url: `/uploads/${name}` });
 }
