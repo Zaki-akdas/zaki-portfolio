@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
-import { getContent, saveContent, getMessages, saveMessages, type Content } from "@/lib/store";
+import {
+  getContent,
+  saveContent,
+  getMessagesAsync,
+  replaceMessages,
+  type Content,
+} from "@/lib/store";
 
 export const runtime = "nodejs";
 
@@ -14,7 +20,14 @@ function isContentKey(k: string): k is ContentKey {
 export async function GET(req: Request, { params }: { params: { collection: string } }) {
   if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { collection } = params;
-  if (collection === "messages") return NextResponse.json(getMessages());
+  if (collection === "messages") {
+    try {
+      return NextResponse.json(await getMessagesAsync());
+    } catch {
+      // Redis down while configured: surface the outage instead of an empty inbox.
+      return NextResponse.json({ error: "Message store unavailable" }, { status: 503 });
+    }
+  }
   if (isContentKey(collection)) {
     const content = getContent();
     return NextResponse.json(content[collection] ?? null);
@@ -34,8 +47,12 @@ export async function PUT(req: Request, { params }: { params: { collection: stri
 
   if (collection === "messages") {
     if (!Array.isArray(body)) return NextResponse.json({ error: "Expected an array" }, { status: 400 });
-    saveMessages(body);
-    return NextResponse.json({ ok: true });
+    try {
+      await replaceMessages(body as never);
+      return NextResponse.json({ ok: true });
+    } catch {
+      return NextResponse.json({ error: "Message store unavailable" }, { status: 503 });
+    }
   }
 
   if (isContentKey(collection)) {

@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { getMessages, saveMessages } from "@/lib/store";
-import { reserve } from "@/lib/rateLimit";
+import { addMessage } from "@/lib/store";
+import { reserveAsync, KVUnavailableError } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
-// Rate limit: max 10 valid submissions / 10 min / IP, file-backed so restarts
-// don't reset it (the e2e suite submits several messages per run from the same
-// IP; a tight budget makes the tests non-deterministic — 10 still blocks spam)
+// Rate limit: max 10 valid submissions / 10 min / IP. Redis-backed (global
+// across instances) when Upstash is configured; file-backed fallback locally.
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_MESSAGES = 10;
 
@@ -31,24 +30,47 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Please fill in a valid name, email and message." }, { status: 400 });
   }
 
-  // One synchronous admission step after all awaits: only valid submissions
-  // count, and parallel bursts can't race past the cap (checking before the
-  // awaits and recording after them accepted 12/12 against a limit of 10).
-  if (!reserve(key, MAX_MESSAGES, WINDOW_MS)) {
+  // One admission step after all awaits: only valid submissions count, and
+  // (on Redis) the INCR is atomic — parallel bursts can't race past the cap.
+  let admitted: boolean;
+  try {
+    admitted = await reserveAsync(key, MAX_MESSAGES, WINDOW_MS);
+  } catch (e) {
+    if (e instanceof KVUnavailableError) {
+      // Redis down while configured: never accept a message we'd lose on
+      // cold start — fail loud instead.
+      return NextResponse.json(
+        { error: "Can't receive messages right now — please try again later." },
+        { status: 503 },
+      );
+    }
+    throw e;
+  }
+  if (!admitted) {
     return NextResponse.json({ error: "Too many messages — please try again later." }, { status: 429 });
   }
 
-  const messages = getMessages();
-  messages.unshift({
-    id: crypto.randomUUID(),
-    name,
-    email,
-    subject,
-    message,
-    date: new Date().toISOString(),
-    read: false,
-  });
-  saveMessages(messages);
+  try {
+    await addMessage({
+      id: crypto.randomUUID(),
+      name,
+      email,
+      subject,
+      message,
+      date: new Date().toISOString(),
+      read: false,
+    });
+  } catch (e) {
+    if (e instanceof KVUnavailableError) {
+      // The budget was consumed for a write that failed — admitted=false next
+      // time is acceptable; losing the message silently is not.
+      return NextResponse.json(
+        { error: "Can't receive messages right now — please try again later." },
+        { status: 503 },
+      );
+    }
+    throw e;
+  }
 
   return NextResponse.json({ ok: true });
 }

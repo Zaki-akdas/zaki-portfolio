@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkPassword, makeToken, COOKIE_NAME } from "@/lib/auth";
-import { reserve } from "@/lib/rateLimit";
+import { reserve, reserveAsync } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -10,9 +10,16 @@ const MAX_ATTEMPTS = 10;
 
 export async function POST(req: Request) {
   const ip = (req.headers.get("x-forwarded-for") || "local").split(",")[0].trim();
-  // synchronous reserve before the first await: every attempt counts and
-  // parallel bursts can't race past the cap
-  if (!reserve(`login:${ip}`, MAX_ATTEMPTS, WINDOW_MS)) {
+  // One admission step before the first await: every attempt counts and
+  // (on Redis) parallel bursts can't race past the cap. On a Redis outage the
+  // limiter degrades to the local backend rather than blocking logins.
+  let admitted: boolean;
+  try {
+    admitted = await reserveAsync(`login:${ip}`, MAX_ATTEMPTS, WINDOW_MS);
+  } catch {
+    admitted = reserve(`login:${ip}`, MAX_ATTEMPTS, WINDOW_MS);
+  }
+  if (!admitted) {
     return NextResponse.json({ error: "Too many attempts. Try again in a few minutes." }, { status: 429 });
   }
 

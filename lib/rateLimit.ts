@@ -1,29 +1,33 @@
+import { KV_ENABLED, KVUnavailableError, cmd, pipeline } from "./kv";
 import { readJSON, writeJSON } from "./store";
 
-// File-backed sliding-window rate limiter shared by the API routes
-// (store.ts owns the data dir and atomic writes, so limits survive restarts
-// when the dir is writable). Admission is one synchronous read → check →
-// record → write block: splitting check and record across an await let 12
-// parallel posts beat a cap of 10. Single-node deploy target — no
-// cross-process locking.
+// Rate limiter with two backends, chosen by environment:
 //
-// If the data dir can't be written (Vercel's read-only bundle, a bad
-// DATA_DIR), the first failed write latches to an in-memory copy: the limit
-// keeps enforcing per process instead of 500ing every admitted request.
-// Rejections never write, so hammering the limit creates no disk churn.
+// - KV_ENABLED (Upstash env present): fixed window via atomic INCR + EXPIRE NX
+//   in one pipelined call. Redis's single-threaded execution gives check-and-
+//   increment atomicity — no TOCTOU — and the budget is GLOBAL across
+//   instances (closes the multi-instance hole observed on Vercel).
+// - Otherwise (local dev, e2e): the file-backed sliding window below, with the
+//   in-memory latch when the data dir is unwritable. Same behavior as before
+//   this change; e2e contract tests run entirely on this path.
+//
+// Window semantics differ by backend (documented trade-off from the design
+// doc): sliding window locally, fixed window on Redis — worst case admits up
+// to ~2x the limit across a window boundary. Rejections never persist any-
+// where, so hammering the limit creates no writes (file) or commands (Redis).
 
 type Store = Record<string, number[]>; // key → hit timestamps (ms)
 const DAY_MS = 24 * 60 * 60 * 1000; // sweep long-dead keys
 
-// Non-null once persistence has failed this process: authoritative copy of
-// the store (pre-failure disk state plus every admission since).
+// Non-null once file persistence has failed this process: authoritative copy
+// of the store (pre-failure disk state plus every admission since).
 let mem: Store | null = null;
 
 /**
- * Record an attempt for `key` and admit it iff under `limit` per `windowMs`.
- * Call synchronously before the handler's first `await`, or in one
- * uninterrupted block after all awaits — or concurrent requests race past
- * `limit`.
+ * Synchronous admission for the file/memory backend: record an attempt for
+ * `key` and admit it iff under `limit` per `windowMs`. Call synchronously
+ * before the handler's first `await`, or in one uninterrupted block after all
+ * awaits — or concurrent requests race past `limit`.
  */
 export function reserve(key: string, limit: number, windowMs: number): boolean {
   const now = Date.now();
@@ -51,6 +55,25 @@ export function reserve(key: string, limit: number, windowMs: number): boolean {
   }
   return true;
 }
+
+/**
+ * Async admission — routes should call this instead of `reserve` whenever
+ * they can await. Uses Redis when configured (global, atomic), else falls
+ * back to the file/memory backend. Throws KVUnavailableError only when Redis
+ * is configured AND unreachable; callers decide between failing loud and
+ * degrading to the local backend.
+ */
+export async function reserveAsync(key: string, limit: number, windowMs: number): Promise<boolean> {
+  if (!KV_ENABLED) return reserve(key, limit, windowMs);
+
+  const windowSec = Math.ceil(windowMs / 1000);
+  const redisKey = `ratelimit:${key}`;
+  const [count] = await pipeline(cmd.incr(redisKey), cmd.expireNx(redisKey, windowSec));
+  // INCR returns the post-increment count: 1 = first hit in this window.
+  return Number(count) <= limit;
+}
+
+export { KVUnavailableError };
 
 function sweep(s: Store, now: number) {
   for (const k of Object.keys(s)) {
