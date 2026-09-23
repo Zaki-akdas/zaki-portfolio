@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { addMessage } from "@/lib/store";
 import { reserveAsync, KVUnavailableError } from "@/lib/rateLimit";
+import { notifyNewMessage } from "@/lib/notify";
 
 export const runtime = "nodejs";
 
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await addMessage({
+    const msg = {
       id: crypto.randomUUID(),
       name,
       email,
@@ -59,7 +60,14 @@ export async function POST(req: Request) {
       message,
       date: new Date().toISOString(),
       read: false,
-    });
+    };
+    await addMessage(msg);
+    // Owner notification — best-effort by contract (never throws, so it can
+    // never fail the request): Redis is the record of truth, email is a
+    // convenience. Awaited because a serverless lambda freezes dangling
+    // promises when the response returns — fire-and-forget would silently
+    // drop the send.
+    await notifyNewMessage({ name, email, subject, message });
   } catch (e) {
     if (e instanceof KVUnavailableError) {
       // The budget was consumed for a write that failed — admitted=false next
