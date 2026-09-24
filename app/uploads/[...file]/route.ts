@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { STORAGE_ENABLED, SB_URL } from "@/lib/supabaseStorage";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +16,10 @@ const MIME: Record<string, string> = {
   ".mp4": "video/mp4", ".webm": "video/webm", ".mp3": "audio/mpeg",
 };
 
-// Serves /uploads/* from UPLOADS_DIR at runtime (needed when uploads live on a
-// persistent disk outside public/). Locally, files in public/uploads are served
-// statically by Next before this route is ever reached.
+// Serves /uploads/* — local disk first (public/ or UPLOADS_DIR), then, when
+// Storage is configured and the file isn't local, a 302 to the object's
+// public Supabase CDN URL. That keeps every historical /uploads/<name> URL
+// working after the Storage migration, with the CDN taking the load.
 export async function GET(_req: NextRequest, { params }: { params: { file: string[] } }) {
   const name = params.file.join("/");
   const safe = path.normalize(name).replace(/^(\.\.(\/|\\|$))+/g, "");
@@ -41,6 +43,12 @@ export async function GET(_req: NextRequest, { params }: { params: { file: strin
     }
     return new NextResponse(data, { headers });
   } catch {
+    // Not on disk — if it was uploaded to Storage (or will be fetched from
+    // there), hand off to the CDN. 302 (not 301) so removals self-heal fast.
+    if (STORAGE_ENABLED) {
+      const encoded = safe.split("/").map(encodeURIComponent).join("/");
+      return NextResponse.redirect(`${SB_URL}/storage/v1/object/public/media/${encoded}`, 302);
+    }
     return new NextResponse("Not found", { status: 404 });
   }
 }
