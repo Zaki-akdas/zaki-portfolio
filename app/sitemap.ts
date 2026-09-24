@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const c = getContent();
+export default async function sitemap() {
+  const c = await getContentAsync();
   const base = (c.settings?.siteUrl || "https://example.com").replace(/\/$/, "");
   const now = new Date();
 

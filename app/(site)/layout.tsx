@@ -1,4 +1,4 @@
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import Background from "@/components/Background";
 import Preloader from "@/components/Preloader";
 import Cursor from "@/components/Cursor";
@@ -9,8 +9,8 @@ import BackToTop from "@/components/BackToTop";
 
 export const dynamic = "force-dynamic";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  const c = getContent();
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const c = await getContentAsync();
   return (
     <>
       {c.settings?.preloader && <Preloader name={c.profile?.name || "Portfolio"} />}

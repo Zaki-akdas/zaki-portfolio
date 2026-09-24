@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { isAdminAsync } from "@/lib/auth";
 import {
-  getContent,
-  saveContent,
+  getContentKeyAsync,
+  saveContentKeyAsync,
   getMessagesAsync,
   replaceMessages,
   type Content,
@@ -29,8 +29,8 @@ export async function GET(req: Request, { params }: { params: { collection: stri
     }
   }
   if (isContentKey(collection)) {
-    const content = getContent();
-    return NextResponse.json(content[collection] ?? null);
+    const value = await getContentKeyAsync(collection);
+    return NextResponse.json(value ?? null);
   }
   return NextResponse.json({ error: "Unknown collection" }, { status: 404 });
 }
@@ -56,10 +56,12 @@ export async function PUT(req: Request, { params }: { params: { collection: stri
   }
 
   if (isContentKey(collection)) {
-    const content = getContent();
-    (content as Content)[collection] = body as never;
-    saveContent(content);
-    return NextResponse.json({ ok: true });
+    try {
+      await saveContentKeyAsync(collection, body as never);
+      return NextResponse.json({ ok: true });
+    } catch {
+      return NextResponse.json({ error: "Content store unavailable" }, { status: 503 });
+    }
   }
 
   return NextResponse.json({ error: "Unknown collection" }, { status: 404 });

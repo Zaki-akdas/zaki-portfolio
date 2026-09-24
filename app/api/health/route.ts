@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import { KV_ENABLED } from "@/lib/kv";
 import { PG_ENABLED, query } from "@/lib/db";
 
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const content = getContent();
+    const content = await getContentAsync();
     const ok = !!content?.profile?.name;
     // Report the active durable backend; when Postgres is configured, prove it.
     let backend: string | boolean = KV_ENABLED;

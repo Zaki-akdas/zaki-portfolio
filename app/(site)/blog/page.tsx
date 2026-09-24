@@ -1,19 +1,19 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const c = getContent();
+  const c = await getContentAsync();
   return {
     title: `Blog — ${c.profile?.name || "Portfolio"}`,
     description: "Notes on web development, WebGL performance, and case studies from real client projects.",
   };
 }
 
-export default function BlogPage() {
-  const c = getContent();
+export default async function BlogPage() {
+  const c = await getContentAsync();
   const posts = (c.posts || [])
     .filter((p) => p.published)
     .sort((a, b) => +new Date(b.date) - +new Date(a.date));

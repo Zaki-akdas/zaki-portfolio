@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const c = getContent();
+  const c = await getContentAsync();
   let metadataBase: URL | undefined;
   try {
     metadataBase = new URL(c.settings?.siteUrl || "https://example.com");
@@ -15,8 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const c = getContent();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const c = await getContentAsync();
   const accent = c.settings?.accent || "#8b7cff";
   return (
     <html lang="en">

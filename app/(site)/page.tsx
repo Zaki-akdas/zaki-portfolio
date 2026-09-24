@@ -1,4 +1,4 @@
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
@@ -11,8 +11,8 @@ import Footer from "@/components/sections/Footer";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const c = getContent();
+export default async function Home() {
+  const c = await getContentAsync();
   return (
     <main id="top">
       <Hero profile={c.profile} settings={c.settings} />
