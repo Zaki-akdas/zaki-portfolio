@@ -6,11 +6,22 @@ import { apiGet } from "@/lib/adminApi";
 import { Card, PageHead } from "@/components/admin/ui";
 import type { Project, Skill, Testimonial, Message } from "@/lib/store";
 
+type SbStatus = {
+  ok?: boolean;
+  project?: string;
+  authAdminApi?: string;
+  users?: number;
+  adminUserPresent?: boolean;
+  mediaObjects?: number;
+  time?: string;
+};
+
 export default function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [sb, setSb] = useState<SbStatus | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -26,6 +37,11 @@ export default function Dashboard() {
       setMessages(m || []);
       setLoaded(true);
     }).catch(() => setLoaded(true));
+    // Diagnostics may 503/401 — shown as "unavailable" rather than breaking the page
+    fetch("/api/admin/supabase", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : {}))
+      .then(setSb)
+      .catch(() => setSb({}));
   }, []);
 
   const unread = messages.filter((m) => !m.read).length;
@@ -51,6 +67,35 @@ export default function Dashboard() {
           </Link>
         ))}
       </div>
+
+      <h2 className="mt-10 mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Supabase status</h2>
+      <Card>
+        {sb === null ? (
+          <p className="text-sm text-slate-500">Checking…</p>
+        ) : sb.ok ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { label: "Auth API", value: sb.authAdminApi || "unknown", ok: sb.authAdminApi === "ok" },
+              { label: "Admin user", value: sb.adminUserPresent ? "present" : "missing", ok: !!sb.adminUserPresent },
+              { label: "Users", value: String(sb.users ?? 0), ok: true },
+              { label: "Media objects", value: String(sb.mediaObjects ?? 0), ok: true },
+            ].map((i) => (
+              <div key={i.label}>
+                <p className="flex items-center gap-1.5 text-lg font-bold text-white">
+                  <span className={`h-2 w-2 rounded-full ${i.ok ? "bg-emerald-400" : "bg-red-400"}`} />
+                  {i.value}
+                </p>
+                <p className="mt-0.5 text-sm text-slate-400">{i.label}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">
+            Supabase diagnostics unavailable — check env vars or try again later.
+          </p>
+        )}
+        {sb?.project && <p className="mt-3 text-xs text-slate-600">project: {sb.project} · checked {sb.time ? new Date(sb.time).toLocaleTimeString() : "—"}</p>}
+      </Card>
 
       <h2 className="mt-10 mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Latest messages</h2>
       <Card className="p-0">
