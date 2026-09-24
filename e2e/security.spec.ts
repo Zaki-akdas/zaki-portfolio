@@ -98,7 +98,12 @@ test.describe("SVG upload hardening", () => {
     "base64"
   );
 
+  // Media lives in Supabase Storage (needs SUPABASE_URL/SECRET_KEY env).
+  // Without env the media API fails loud with 503 — nothing to exercise.
+  const MEDIA_ENABLED = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY);
+
   test("uploads are scrubbed; SVG serves sandboxed and PNG does not", async ({ request }) => {
+    test.skip(!MEDIA_ENABLED, "Supabase Storage not configured in this environment");
     const login = await request.post("/api/admin/login", {
       data: { password: process.env.ADMIN_PASSWORD },
     });

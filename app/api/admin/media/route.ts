@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
 import path from "path";
 import { isAdminAsync } from "@/lib/auth";
 import { scrubSvg } from "@/lib/svg";
@@ -7,9 +6,6 @@ import { STORAGE_ENABLED, listMedia, uploadMedia, deleteMedia } from "@/lib/supa
 
 export const runtime = "nodejs";
 
-const UPLOAD_DIR = process.env.UPLOADS_DIR
-  ? path.resolve(process.env.UPLOADS_DIR)
-  : path.join(process.cwd(), "public", "uploads");
 const ALLOWED = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "pdf", "glb", "mp4", "webm"]);
 const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 const MIME_BY_EXT: Record<string, string> = {
@@ -25,23 +21,18 @@ function safeName(name: string) {
 
 export async function GET(req: Request) {
   if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (STORAGE_ENABLED) {
-    const files = await listMedia();
-    return NextResponse.json(files.sort((a, b) => b.mtime - a.mtime));
+  if (!STORAGE_ENABLED) {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
   }
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-  const files = fs.readdirSync(UPLOAD_DIR)
-    .filter((f) => !f.startsWith("."))
-    .map((f) => {
-      const st = fs.statSync(path.join(UPLOAD_DIR, f));
-      return { name: f, url: `/uploads/${f}`, size: st.size, mtime: st.mtimeMs };
-    })
-    .sort((a, b) => b.mtime - a.mtime);
-  return NextResponse.json(files);
+  const files = await listMedia();
+  return NextResponse.json(files.sort((a, b) => b.mtime - a.mtime));
 }
 
 export async function POST(req: Request) {
   if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!STORAGE_ENABLED) {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
+  }
   const form = await req.formData().catch(() => null);
   const file = form?.get("file");
   if (!file || typeof file === "string") {
@@ -60,32 +51,22 @@ export async function POST(req: Request) {
   // SVGs can carry scripts that would run on our origin if opened directly —
   // strip active content before it is stored anywhere
   const buf = ext === "svg" ? scrubSvg(raw) : raw;
-
-  if (STORAGE_ENABLED) {
+  try {
     const stored = await uploadMedia(name, buf, MIME_BY_EXT[ext] || "application/octet-stream");
     return NextResponse.json({ ok: true, name: stored.name, url: stored.url });
+  } catch {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
   }
-
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-  fs.writeFileSync(path.join(UPLOAD_DIR, name), buf);
-  return NextResponse.json({ ok: true, name, url: `/uploads/${name}` });
 }
 
 export async function DELETE(req: Request) {
   if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!STORAGE_ENABLED) {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
+  }
   const { searchParams } = new URL(req.url);
   const name = path.basename(searchParams.get("name") || "");
   if (!name || name.startsWith(".")) return NextResponse.json({ error: "Invalid name" }, { status: 400 });
-
-  if (STORAGE_ENABLED) {
-    await deleteMedia(name);
-    return NextResponse.json({ ok: true });
-  }
-
-  const target = path.join(UPLOAD_DIR, name);
-  if (!target.startsWith(UPLOAD_DIR) || !fs.existsSync(target)) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-  fs.unlinkSync(target);
+  await deleteMedia(name);
   return NextResponse.json({ ok: true });
 }
