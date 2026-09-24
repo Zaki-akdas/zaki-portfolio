@@ -13,6 +13,8 @@ const SB_SECRET = process.env.SUPABASE_SECRET_KEY;
 
 export const STORAGE_ENABLED = Boolean(SB_URL && SB_SECRET);
 
+export { SB_URL };
+
 const BUCKET = "media";
 
 export type MediaFile = { name: string; url: string; size: number; mtime: number };
