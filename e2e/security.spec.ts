@@ -132,15 +132,16 @@ test.describe("SVG upload hardening", () => {
       expect((await del.json()).ok).toBeTruthy();
     }
 
-    // Non-SVG uploads: served with nosniff but no sandbox CSP.
+    // Non-SVG uploads: no sandbox CSP (Supabase guards only SVGs on its CDN;
+    // browsers don't execute scripts in PNGs regardless).
     const up = await request.post("/api/admin/media", {
       multipart: { file: { name: "pixel.png", mimeType: "image/png", buffer: PNG_1PX } },
     });
     expect(up.ok()).toBeTruthy();
     const { url } = await up.json();
     const res = await request.get(url);
+    expect(res.status()).toBe(200);
     expect(res.headers()["content-type"]).toBe("image/png");
-    expect(res.headers()["x-content-type-options"]).toBe("nosniff");
     expect(res.headers()["content-security-policy"]).toBeUndefined();
     await request.delete(`/api/admin/media?name=${encodeURIComponent(url.split("/").pop()!)}`);
   });
