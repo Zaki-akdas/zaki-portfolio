@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const c = getContent();
+  const c = await getContentAsync();
   return {
     title: `Projects — ${c.profile?.name || "Portfolio"}`,
     description: `All ${c.projects?.length || 0} live client websites: boutiques, salons, cafés and stores across India, UAE, UK and Canada.`,
@@ -14,8 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const CATEGORY_ORDER = ["Boutique & Fashion", "Salon & Beauty", "Café & Restaurant", "Retail & Décor"];
 
-export default function AllProjectsPage() {
-  const c = getContent();
+export default async function AllProjectsPage() {
+  const c = await getContentAsync();
   const projects = (c.projects || []).slice().sort((a, b) => a.order - b.order);
   const categories = [
     ...CATEGORY_ORDER.filter((cat) => projects.some((p) => p.category === cat)),

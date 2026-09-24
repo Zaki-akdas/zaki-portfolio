@@ -97,6 +97,60 @@ export function saveContent(c: Content) {
   writeJSON("content", c);
 }
 
+// --- Durable content layer (PG_ENABLED = DATABASE_URL present) --------------
+//
+// Content (projects, posts, profile, ...) lives in the portfolio_content
+// table — one JSONB document per content key, seeded from the repo bundle.
+// Admin PUTs are durable: every lambda instance and cold start reads the
+// same Postgres-backed document instead of per-instance tmp copies.
+// Without DATABASE_URL the sync file path above remains the store (local
+// dev, e2e).
+
+/** Reads one content key durably; falls back to the bundled file on any failure. */
+export async function getContentKeyAsync<K extends keyof Content>(key: K): Promise<Content[K]> {
+  if (PG_ENABLED) {
+    try {
+      const r = await query<{ data: Content[K] }>("select data from portfolio_content where key = $1", [key]);
+      if (r.rows[0]?.data !== undefined) return r.rows[0].data;
+    } catch {
+      // Postgres unavailable: fall through to the bundled seed rather than
+      // taking the public site down — content reads are render-path.
+    }
+  }
+  return getContent()[key];
+}
+
+/** Reads the whole content object durably (all keys), merged over the seed. */
+export async function getContentAsync(): Promise<Content> {
+  if (PG_ENABLED) {
+    try {
+      const r = await query<{ key: string; data: unknown }>("select key, data from portfolio_content");
+      const merged: Content = { ...getContent() };
+      for (const row of r.rows) {
+        (merged as Record<string, unknown>)[row.key] = row.data;
+      }
+      return merged;
+    } catch {
+      return getContent();
+    }
+  }
+  return getContent();
+}
+
+/** Replaces one content key durably (admin PUT path). Falls back to the file when no DATABASE_URL. */
+export async function saveContentKeyAsync<K extends keyof Content>(key: K, value: Content[K]): Promise<void> {
+  if (PG_ENABLED) {
+    await query(
+      "insert into portfolio_content (key, data) values ($1, $2) on conflict (key) do update set data = excluded.data, updated_at = now()",
+      [key, JSON.stringify(value)],
+    );
+    return;
+  }
+  const content = getContent();
+  (content as Record<string, unknown>)[key] = value;
+  saveContent(content);
+}
+
 export function getMessages(): Message[] {
   return readJSON<Message[]>("messages", []);
 }

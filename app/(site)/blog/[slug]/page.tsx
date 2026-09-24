@@ -1,13 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import { mdToHtml } from "@/lib/markdown";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const c = getContent();
+  const c = await getContentAsync();
   const post = (c.posts || []).find((p) => p.slug === params.slug && p.published);
   if (!post) return { title: "Post not found" };
   return {
@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
-  const c = getContent();
+export default async function BlogPost({ params }: { params: { slug: string } }) {
+  const c = await getContentAsync();
   const post = (c.posts || []).find((p) => p.slug === params.slug && p.published);
   if (!post) notFound();
 

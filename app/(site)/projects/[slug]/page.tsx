@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 import LiveSite from "@/components/LiveSite";
 
 export const dynamic = "force-dynamic";
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const c = getContent();
+export default async function ProjectPage({ params }: { params: { slug: string } }) {
+  const c = await getContentAsync();
   const project = (c.projects || []).find((p) => p.slug === params.slug);
   if (!project) notFound();
 

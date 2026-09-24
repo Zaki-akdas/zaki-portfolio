@@ -1,13 +1,13 @@
 import { ImageResponse } from "next/og";
-import { getContent } from "@/lib/store";
+import { getContentAsync } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const alt = "Blog post";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function PostOgImage({ params }: { params: { slug: string } }) {
-  const c = getContent();
+export default async function PostOgImage({ params }: { params: { slug: string } }) {
+  const c = await getContentAsync();
   const post = (c.posts || []).find((p) => p.slug === params.slug);
   const accent = c.settings?.accent || "#8b7cff";
   const title = post?.title || "Blog";
