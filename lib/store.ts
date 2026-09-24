@@ -2,6 +2,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { KV_ENABLED, KVUnavailableError, cmd, pipeline } from "./kv";
+import { PG_ENABLED, query, withClient } from "./db";
 
 // DATA_DIR picks the file-store location: an explicit env var wins (a
 // persistent disk in production, e.g. /var/data/data on Render; the isolated
@@ -126,6 +127,10 @@ function parseMessage(raw: unknown): Message | null {
 
 /** Newest first (date desc); unparseable entries dropped defensively. */
 export async function getMessagesAsync(): Promise<Message[]> {
+  if (PG_ENABLED) {
+    const r = await query<{ data: Message }>("select data from portfolio_messages order by date desc");
+    return r.rows.map((row) => row.data).filter((m) => m && typeof m.id === "string");
+  }
   if (!KV_ENABLED) return getMessages();
   const [seedLock, initial] = await pipeline(cmd.setnx(SEED_KEY, "1"), cmd.hgetall(MSG_HASH));
   let hash = initial as Record<string, string>;
@@ -144,8 +149,15 @@ export async function getMessagesAsync(): Promise<Message[]> {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Throws KVUnavailableError when Redis is down and KV is enabled — routes fail loud. */
+/** Throws KVUnavailableError when the durable store is down and configured — routes fail loud. */
 export async function addMessage(m: Message): Promise<void> {
+  if (PG_ENABLED) {
+    await query(
+      "insert into portfolio_messages (id, data, date) values ($1, $2, $3) on conflict (id) do update set data = excluded.data",
+      [m.id, JSON.stringify(m), m.date],
+    );
+    return;
+  }
   if (!KV_ENABLED) {
     const messages = getMessages();
     messages.unshift(m);
@@ -157,6 +169,21 @@ export async function addMessage(m: Message): Promise<void> {
 
 /** Full replace (admin PUT reads the array, edits, writes it back). */
 export async function replaceMessages(m: Message[]): Promise<void> {
+  if (PG_ENABLED) {
+    // One transaction: upsert every incoming row, delete ids absent from it.
+    await withClient(async (client) => {
+      await client.query("begin");
+      for (const x of m) {
+        await client.query(
+          "insert into portfolio_messages (id, data, date) values ($1, $2, $3) on conflict (id) do update set data = excluded.data",
+          [x.id, JSON.stringify(x), x.date],
+        );
+      }
+      await client.query("delete from portfolio_messages where id <> all($1::text[])", [m.map((x) => x.id)]);
+      await client.query("commit");
+    });
+    return;
+  }
   if (!KV_ENABLED) {
     saveMessages(m);
     return;

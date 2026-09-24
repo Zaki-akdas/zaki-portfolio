@@ -1,5 +1,6 @@
 import { KV_ENABLED, KVUnavailableError, cmd, pipeline } from "./kv";
 import { readJSON, writeJSON } from "./store";
+import { PG_ENABLED, query } from "./db";
 
 // Rate limiter with two backends, chosen by environment:
 //
@@ -64,6 +65,26 @@ export function reserve(key: string, limit: number, windowMs: number): boolean {
  * degrading to the local backend.
  */
 export async function reserveAsync(key: string, limit: number, windowMs: number): Promise<boolean> {
+  if (PG_ENABLED) {
+    // Atomic fixed-window upsert: one statement does read+compare+write, so
+    // parallel lambda instances can't race past the cap. Budget is global.
+    const r = await query<{ admitted: boolean }>(
+      `insert into portfolio_rate_counters (key, count, window_start)
+       values ($1, 1, now())
+       on conflict (key) do update set
+         count = case
+           when portfolio_rate_counters.window_start < now() - make_interval(secs => $2)
+             then 1
+           else portfolio_rate_counters.count + 1 end,
+         window_start = case
+           when portfolio_rate_counters.window_start < now() - make_interval(secs => $2)
+             then now()
+           else portfolio_rate_counters.window_start end
+       returning count <= $3 as admitted`,
+      [key, Math.ceil(windowMs / 1000), limit],
+    );
+    return r.rows[0].admitted;
+  }
   if (!KV_ENABLED) return reserve(key, limit, windowMs);
 
   const windowSec = Math.ceil(windowMs / 1000);
