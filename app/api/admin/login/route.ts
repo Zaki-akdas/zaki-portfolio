@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkPassword, makeToken, COOKIE_NAME } from "@/lib/auth";
 import { reserve, reserveAsync } from "@/lib/rateLimit";
+import { SB_AUTH_ENABLED, signInAdmin, ADMIN_EMAIL, type SignInResult } from "@/lib/supabaseAuth";
 
 export const runtime = "nodejs";
 
@@ -24,7 +25,36 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => ({}));
-  if (!checkPassword(String(body.password || ""))) {
+  const password = String(body.password || "");
+
+  // Supabase Auth when configured: real user session (ES256 JWT signed by
+  // Supabase, verified against the project JWKS on every admin request).
+  if (SB_AUTH_ENABLED) {
+    const email = String(body.email || ADMIN_EMAIL).toLowerCase();
+    let result: SignInResult;
+    try {
+      result = await signInAdmin(email, password);
+    } catch {
+      // Supabase unreachable: fall back rather than locking the owner out.
+      result = { ok: false, reason: "unavailable" };
+    }
+    if (result.ok) {
+      const res = NextResponse.json({ ok: true });
+      res.cookies.set(COOKIE_NAME, result.accessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: result.expiresInSec,
+      });
+      return res;
+    }
+    if (result.reason === "invalid_credentials") {
+      return NextResponse.json({ error: "Incorrect email or password." }, { status: 401 });
+    }
+    // reason === "unavailable": fall through to the homegrown check below.
+  }
+
+  if (!checkPassword(password)) {
     return NextResponse.json({ error: "Incorrect password." }, { status: 401 });
   }
 
