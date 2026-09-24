@@ -10,10 +10,10 @@
 import pg from "pg";
 import { KVUnavailableError } from "./kv";
 
-const URL = process.env.DATABASE_URL;
+const DB_URL = process.env.DATABASE_URL;
 
 /** True when the Postgres layer is active. */
-export const PG_ENABLED = Boolean(URL);
+export const PG_ENABLED = Boolean(DB_URL);
 
 let pool: pg.Pool | null = null;
 
@@ -23,9 +23,9 @@ function getPool(): pg.Pool {
       connectionString: URL,
       // Supabase's pooler routes by SNI hostname — required, not optional.
       // Other hosts (direct db.*.supabase.co, plain Postgres) ignore it.
-      ssl: URL.includes("pooler.supabase.com")
+      ssl: DB_URL.includes("pooler.supabase.com")
         ? { rejectUnauthorized: false }
-        : { rejectUnauthorized: false, servername: new URL(URL).hostname },
+        : { rejectUnauthorized: false, servername: new URL(DB_URL).hostname },
       max: 3, // small: many warm lambda instances share one Postgres
       connectionTimeoutMillis: 10_000,
     });
@@ -39,7 +39,7 @@ function getPool(): pg.Pool {
  * routes already fail loud on.
  */
 export async function withClient<T>(fn: (client: pg.PoolClient) => Promise<T>): Promise<T> {
-  if (!URL) throw new KVUnavailableError("DATABASE_URL not configured");
+  if (!DB_URL) throw new KVUnavailableError("DATABASE_URL not configured");
   const client = await getPool().connect();
   try {
     return await fn(client);
