@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAdmin } from "@/lib/auth";
+import { isAdminAsync } from "@/lib/auth";
 import {
   getContent,
   saveContent,
@@ -18,7 +18,7 @@ function isContentKey(k: string): k is ContentKey {
 }
 
 export async function GET(req: Request, { params }: { params: { collection: string } }) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { collection } = params;
   if (collection === "messages") {
     try {
@@ -36,7 +36,7 @@ export async function GET(req: Request, { params }: { params: { collection: stri
 }
 
 export async function PUT(req: Request, { params }: { params: { collection: string } }) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { collection } = params;
   let body: unknown;
   try {

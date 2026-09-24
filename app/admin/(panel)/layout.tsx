@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { verifyToken, COOKIE_NAME } from "@/lib/auth";
+import { isAdminAsync, COOKIE_NAME } from "@/lib/auth";
 import LogoutButton from "@/components/admin/LogoutButton";
 
 export const dynamic = "force-dynamic";
@@ -17,9 +17,9 @@ const NAV = [
   { href: "/admin/settings", label: "Settings", icon: "⚙" },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const token = cookies().get(COOKIE_NAME)?.value;
-  if (!verifyToken(token)) redirect("/admin/login");
+  if (!(await isAdminAsync(token))) redirect("/admin/login");
 
   return (
     <div className="min-h-screen bg-[#0a0c18] text-slate-200">

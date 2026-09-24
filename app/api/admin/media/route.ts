@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { isAdmin } from "@/lib/auth";
+import { isAdminAsync } from "@/lib/auth";
 import { scrubSvg } from "@/lib/svg";
 
 export const runtime = "nodejs";
@@ -18,7 +18,7 @@ function safeName(name: string) {
 }
 
 export async function GET(req: Request) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
   const files = fs.readdirSync(UPLOAD_DIR)
     .filter((f) => !f.startsWith("."))
@@ -31,7 +31,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const form = await req.formData().catch(() => null);
   const file = form?.get("file");
   if (!file || typeof file === "string") {
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { searchParams } = new URL(req.url);
   const name = path.basename(searchParams.get("name") || "");
   if (!name || name.startsWith(".")) return NextResponse.json({ error: "Invalid name" }, { status: 400 });

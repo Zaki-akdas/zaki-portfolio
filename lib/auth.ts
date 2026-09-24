@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { readJSON, writeJSON } from "./store";
+import { SB_AUTH_ENABLED, verifySupabaseToken } from "./supabaseAuth";
 
 type AuthData = { salt: string; hash: string; secret: string };
 
@@ -69,4 +70,16 @@ export function tokenFromRequest(req: Request): string | null {
 
 export function isAdmin(req: Request) {
   return verifyToken(tokenFromRequest(req));
+}
+
+/**
+ * Async admin check: accepts the Supabase session JWT when Supabase Auth is
+ * configured (verified against the project JWKS, email allow-listed), else/
+ * otherwise the homegrown HMAC token. Admin routes use this. Also accepts a
+ * raw token string (server components reading cookies()).
+ */
+export async function isAdminAsync(reqOrToken: Request | string | null | undefined) {
+  const token = typeof reqOrToken === "string" || reqOrToken == null ? reqOrToken : tokenFromRequest(reqOrToken);
+  if (SB_AUTH_ENABLED && (await verifySupabaseToken(token))) return true;
+  return verifyToken(token);
 }

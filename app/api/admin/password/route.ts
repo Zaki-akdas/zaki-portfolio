@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { isAdmin, setPassword, checkPassword } from "@/lib/auth";
+import { isAdminAsync, setPassword, checkPassword } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  if (!isAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json().catch(() => ({}));
   const current = String(body.current || "");
   const next = String(body.next || "");
