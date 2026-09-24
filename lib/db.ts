@@ -19,8 +19,9 @@ let pool: pg.Pool | null = null;
 
 function getPool(): pg.Pool {
   if (!pool) {
+    if (!DB_URL) throw new KVUnavailableError("DATABASE_URL not configured");
     pool = new pg.Pool({
-      connectionString: URL,
+      connectionString: DB_URL,
       // Supabase's pooler routes by SNI hostname — required, not optional.
       // Other hosts (direct db.*.supabase.co, plain Postgres) ignore it.
       ssl: DB_URL.includes("pooler.supabase.com")
