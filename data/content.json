@@ -188,7 +188,7 @@
       "featured": true,
       "order": 1,
       "year": "2025",
-      "cover": "/previews/nikky-bawa-salon.jpg",
+      "cover": "/uploads/nikky-bawa-salon.jpg",
       "embed": true
     },
     {
@@ -209,7 +209,7 @@
       "featured": true,
       "order": 2,
       "year": "2025",
-      "cover": "/previews/saddle-london.jpg",
+      "cover": "/uploads/saddle-london.jpg",
       "embed": false
     },
     {
@@ -231,7 +231,7 @@
       "featured": true,
       "order": 3,
       "year": "2025",
-      "cover": "/previews/cute-look-beauty-salon.jpg",
+      "cover": "/uploads/cute-look-beauty-salon.jpg",
       "embed": true
     },
     {
@@ -253,7 +253,7 @@
       "featured": true,
       "order": 4,
       "year": "2025",
-      "cover": "/previews/surti-boutique.jpg",
+      "cover": "/uploads/surti-boutique.jpg",
       "embed": true
     },
     {
@@ -275,7 +275,7 @@
       "featured": true,
       "order": 5,
       "year": "2026",
-      "cover": "/previews/night-corner.jpg",
+      "cover": "/uploads/night-corner.jpg",
       "embed": true
     },
     {
@@ -296,7 +296,7 @@
       "featured": true,
       "order": 6,
       "year": "2025",
-      "cover": "/previews/latte-love.jpg",
+      "cover": "/uploads/latte-love.jpg",
       "embed": true
     },
     {
@@ -317,7 +317,7 @@
       "featured": false,
       "order": 7,
       "year": "2025",
-      "cover": "/previews/mohaka-boutique.jpg",
+      "cover": "/uploads/mohaka-boutique.jpg",
       "embed": true
     },
     {
@@ -338,7 +338,7 @@
       "featured": false,
       "order": 8,
       "year": "2024",
-      "cover": "/previews/nehanki-collection-boutique.jpg",
+      "cover": "/uploads/nehanki-collection-boutique.jpg",
       "embed": true
     },
     {
@@ -359,7 +359,7 @@
       "featured": false,
       "order": 9,
       "year": "2025",
-      "cover": "/previews/bhartis-boutique.jpg",
+      "cover": "/uploads/bhartis-boutique.jpg",
       "embed": true
     },
     {
@@ -380,7 +380,7 @@
       "featured": false,
       "order": 10,
       "year": "2025",
-      "cover": "/previews/aishana-fashion-hub.jpg",
+      "cover": "/uploads/aishana-fashion-hub.jpg",
       "embed": true
     },
     {
@@ -401,7 +401,7 @@
       "featured": false,
       "order": 11,
       "year": "2026",
-      "cover": "/previews/chhayas-3d.jpg",
+      "cover": "/uploads/chhayas-3d.jpg",
       "embed": true
     },
     {
@@ -423,7 +423,7 @@
       "featured": false,
       "order": 12,
       "year": "2025",
-      "cover": "/previews/reyansha-fabric-creation.jpg",
+      "cover": "/uploads/reyansha-fabric-creation.jpg",
       "embed": true
     },
     {
@@ -444,7 +444,7 @@
       "featured": false,
       "order": 13,
       "year": "2025",
-      "cover": "/previews/hereafter-opal.jpg",
+      "cover": "/uploads/hereafter-opal.jpg",
       "embed": true
     },
     {
@@ -465,7 +465,7 @@
       "featured": false,
       "order": 14,
       "year": "2025",
-      "cover": "/previews/rockstar-bhopal.jpg",
+      "cover": "/uploads/rockstar-bhopal.jpg",
       "embed": true
     },
     {
@@ -487,7 +487,7 @@
       "featured": false,
       "order": 15,
       "year": "2025",
-      "cover": "/previews/royalfab-boutique.jpg",
+      "cover": "/uploads/royalfab-boutique.jpg",
       "embed": true
     },
     {
@@ -508,7 +508,7 @@
       "featured": false,
       "order": 16,
       "year": "2025",
-      "cover": "/previews/ideal-salon-nine.jpg",
+      "cover": "/uploads/ideal-salon-nine.jpg",
       "embed": true
     },
     {
@@ -530,7 +530,7 @@
       "featured": false,
       "order": 17,
       "year": "2025",
-      "cover": "/previews/studio27-beta.jpg",
+      "cover": "/uploads/studio27-beta.jpg",
       "embed": true
     },
     {
@@ -551,7 +551,7 @@
       "featured": false,
       "order": 18,
       "year": "2025",
-      "cover": "/previews/rickys-salon.jpg",
+      "cover": "/uploads/rickys-salon.jpg",
       "embed": true
     },
     {
@@ -572,7 +572,7 @@
       "featured": false,
       "order": 19,
       "year": "2025",
-      "cover": "/previews/luzan-golden-beauty-salon.jpg",
+      "cover": "/uploads/luzan-golden-beauty-salon.jpg",
       "embed": true
     },
     {
@@ -593,7 +593,7 @@
       "featured": false,
       "order": 20,
       "year": "2026",
-      "cover": "/previews/astra-salon.jpg",
+      "cover": "/uploads/astra-salon.jpg",
       "embed": true
     },
     {
@@ -614,7 +614,7 @@
       "featured": false,
       "order": 21,
       "year": "2026",
-      "cover": "/previews/newstyle-next.jpg",
+      "cover": "/uploads/newstyle-next.jpg",
       "embed": true
     },
     {
@@ -636,7 +636,7 @@
       "featured": false,
       "order": 22,
       "year": "2025",
-      "cover": "/previews/al-baik-zayka.jpg",
+      "cover": "/uploads/al-baik-zayka.jpg",
       "embed": true
     },
     {
@@ -657,7 +657,7 @@
       "featured": false,
       "order": 23,
       "year": "2025",
-      "cover": "/previews/pin-pan-cafe.jpg",
+      "cover": "/uploads/pin-pan-cafe.jpg",
       "embed": true
     },
     {
@@ -678,7 +678,7 @@
       "featured": false,
       "order": 24,
       "year": "2025",
-      "cover": "/previews/becks-cafe-one.jpg",
+      "cover": "/uploads/becks-cafe-one.jpg",
       "embed": true
     },
     {
@@ -699,7 +699,7 @@
       "featured": false,
       "order": 25,
       "year": "2026",
-      "cover": "/previews/art-cafe-london-seven.jpg",
+      "cover": "/uploads/art-cafe-london-seven.jpg",
       "embed": false
     },
     {
