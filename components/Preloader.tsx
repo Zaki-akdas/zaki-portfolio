@@ -8,6 +8,26 @@ import dynamic from "next/dynamic";
 const PreloaderScene = dynamic(() => import("./PreloaderScene"), { ssr: false });
 
 const SEEN_KEY = "preloader-seen";
+// Skip the cinematic for 30 days across sessions/tabs — frequent visitors
+// should rarely see it, but a returning visitor after a month gets the
+// (occasionally updated) experience again.
+const SEEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+function markSeen() {
+  try {
+    localStorage.setItem(SEEN_KEY, String(Date.now()));
+    sessionStorage.setItem(SEEN_KEY, "seen");
+  } catch { /* private mode */ }
+}
+
+function hasSeen(): boolean {
+  try {
+    const ts = Number(localStorage.getItem(SEEN_KEY));
+    if (ts && Date.now() - ts < SEEN_TTL_MS) return true;
+    // fall back to the tab-session flag (set by finish() before this check)
+    return sessionStorage.getItem(SEEN_KEY) === "seen";
+  } catch { return false; }
+}
 
 export default function Preloader({ name }: { name: string }) {
   // Returning visitors (same browser session) skip the cinematic entirely.
@@ -24,7 +44,7 @@ export default function Preloader({ name }: { name: string }) {
   // One shared teardown for every exit path (natural end, skip button,
   // Save-Data): marks seen, releases scroll, hands off to the journey scene.
   const finish = () => {
-    try { sessionStorage.setItem(SEEN_KEY, "seen"); } catch { /* private mode */ }
+    markSeen();
     document.body.style.overflow = "";
     (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
     window.dispatchEvent(new Event("preloader-done"));
@@ -32,9 +52,7 @@ export default function Preloader({ name }: { name: string }) {
   };
 
   useLayoutEffect(() => {
-    let seen = false;
-    try { seen = sessionStorage.getItem(SEEN_KEY) === "seen"; } catch { /* private mode */ }
-    if (seen) {
+    if (hasSeen()) {
       skipped.current = true;
       setVisible(false); // pre-paint: returning visitors never see the overlay
     }
