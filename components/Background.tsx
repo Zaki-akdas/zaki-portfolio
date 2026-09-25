@@ -64,6 +64,11 @@ export default function Background({ effects3d }: { effects3d: boolean }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return setMode("css");
 
+    // Data-saver users opted out of heavy media — the ~700 KB three.js
+    // journey is exactly what Save-Data asks us not to send
+    const conn = (navigator as unknown as { connection?: { saveData?: boolean } }).connection;
+    if (conn?.saveData) return setMode("css");
+
     let webgl = false;
     try {
       const canvas = document.createElement("canvas");

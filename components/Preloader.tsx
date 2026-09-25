@@ -21,6 +21,16 @@ export default function Preloader({ name }: { name: string }) {
   const [use3d, setUse3d] = useState<boolean | null>(null);
   const skipped = useRef(false);
 
+  // One shared teardown for every exit path (natural end, skip button,
+  // Save-Data): marks seen, releases scroll, hands off to the journey scene.
+  const finish = () => {
+    try { sessionStorage.setItem(SEEN_KEY, "seen"); } catch { /* private mode */ }
+    document.body.style.overflow = "";
+    (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
+    window.dispatchEvent(new Event("preloader-done"));
+    setVisible(false);
+  };
+
   useLayoutEffect(() => {
     let seen = false;
     try { seen = sessionStorage.getItem(SEEN_KEY) === "seen"; } catch { /* private mode */ }
@@ -35,11 +45,19 @@ export default function Preloader({ name }: { name: string }) {
     // but this closure captured the initial value — so ask the ref instead.
     if (skipped.current) {
       // skip path: flag first (order-proof for Background), then the event
-      (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
-      window.dispatchEvent(new Event("preloader-done"));
+      finish();
       return;
     }
     document.body.style.overflow = "hidden";
+
+    // Data-saver users opted out of heavy media — no cinematic, no 3D journey
+    const conn = (navigator as unknown as { connection?: { saveData?: boolean } }).connection;
+    if (conn?.saveData) {
+      skipped.current = true;
+      setUse3d(false);
+      finish();
+      return;
+    }
 
     // 3D black-hole movie whenever the device can run it
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -76,13 +94,7 @@ export default function Preloader({ name }: { name: string }) {
         setPct(100);
         setLeaving(true); // camera plunge into the event horizon
         setTimeout(() => {
-          try { sessionStorage.setItem(SEEN_KEY, "seen"); } catch { /* private mode */ }
-          setVisible(false);
-          document.body.style.overflow = "";
-          // signal the WebGL journey background that it may mount now —
-          // keeps two three.js scenes from running simultaneously
-          (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
-          window.dispatchEvent(new Event("preloader-done"));
+          finish();
         }, 3100); // full 2.5s Hollywood plunge + fade
         return;
       }
@@ -157,6 +169,16 @@ export default function Preloader({ name }: { name: string }) {
           <div className="h-full rounded-full transition-[width] duration-150"
             style={{ width: `${pct}%`, background: "linear-gradient(90deg, var(--accent), #4cc9f0)" }} />
         </div>
+        {!leaving && (
+          <button
+            type="button"
+            onClick={finish}
+            data-cursor
+            className="pointer-events-auto mt-6 inline-flex min-h-[36px] items-center rounded-full border border-white/15 px-4 py-1.5 text-xs font-medium text-slate-400 transition hover:border-white/30 hover:text-white"
+          >
+            Skip intro →
+          </button>
+        )}
       </div>
     </div>
   );
