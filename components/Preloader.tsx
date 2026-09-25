@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 
 // The 3D scene is ~700 KB of three.js — loaded on demand only when the
 // device actually qualifies, so it never blocks first paint of the page.
 const PreloaderScene = dynamic(() => import("./PreloaderScene"), { ssr: false });
 
+const SEEN_KEY = "preloader-seen";
+
 export default function Preloader({ name }: { name: string }) {
+  // Returning visitors (same browser session) skip the cinematic entirely.
+  // The server always renders the shell (it paints the HUD instantly during
+  // hydration — good for first-timers); for returners a layout effect removes
+  // it BEFORE the browser paints, so nothing ever flashes.
   const [visible, setVisible] = useState(true);
   const [leaving, setLeaving] = useState(false);
   const [pct, setPct] = useState(0);
@@ -15,7 +21,24 @@ export default function Preloader({ name }: { name: string }) {
   const [use3d, setUse3d] = useState<boolean | null>(null);
   const skipped = useRef(false);
 
+  useLayoutEffect(() => {
+    let seen = false;
+    try { seen = sessionStorage.getItem(SEEN_KEY) === "seen"; } catch { /* private mode */ }
+    if (seen) {
+      skipped.current = true;
+      setVisible(false); // pre-paint: returning visitors never see the overlay
+    }
+  }, []);
+
   useEffect(() => {
+    // Returning visitor? The layout effect above already flipped `visible`,
+    // but this closure captured the initial value — so ask the ref instead.
+    if (skipped.current) {
+      // skip path: flag first (order-proof for Background), then the event
+      (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
+      window.dispatchEvent(new Event("preloader-done"));
+      return;
+    }
     document.body.style.overflow = "hidden";
 
     // 3D black-hole movie whenever the device can run it
@@ -53,10 +76,12 @@ export default function Preloader({ name }: { name: string }) {
         setPct(100);
         setLeaving(true); // camera plunge into the event horizon
         setTimeout(() => {
+          try { sessionStorage.setItem(SEEN_KEY, "seen"); } catch { /* private mode */ }
           setVisible(false);
           document.body.style.overflow = "";
           // signal the WebGL journey background that it may mount now —
           // keeps two three.js scenes from running simultaneously
+          (window as unknown as { __preloaderDone?: boolean }).__preloaderDone = true;
           window.dispatchEvent(new Event("preloader-done"));
         }, 3100); // full 2.5s Hollywood plunge + fade
         return;
