@@ -45,10 +45,20 @@ export async function listMedia(): Promise<MediaFile[]> {
     }));
 }
 
+// Cacheability: every object carries a 1-year immutable max-age so the CDN
+// (and browsers) serve repeat visits without hitting the origin. The admin
+// upload path therefore gives every file a unique timestamped name — an
+// updated image must land at a new path, never overwrite an old one.
+const CACHE_CONTROL = "max-age=31536000";
+
 export async function uploadMedia(name: string, buf: Uint8Array, contentType: string): Promise<MediaFile> {
   const res = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${encodeURIComponent(name)}`, {
     method: "POST",
-    headers: authHeaders({ "Content-Type": contentType, "x-upsert": "false" }),
+    headers: authHeaders({
+      "Content-Type": contentType,
+      "x-upsert": "false",
+      "cache-control": CACHE_CONTROL,
+    }),
     body: buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer,
   });
   if (!res.ok) throw new Error(`Storage upload failed: ${res.status} ${(await res.text()).slice(0, 200)}`);
