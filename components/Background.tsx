@@ -39,17 +39,20 @@ export default function Background({ effects3d }: { effects3d: boolean }) {
   // Capability detection → pick full / lite / css fallback. The 3D scene
   // itself stays unmounted until the page has painted (allow3d below).
   useEffect(() => {
-    const preloader = document.querySelector('[aria-label="Loading"]');
-    if (preloader) {
-      // preloader present: mount the journey scene only after it signals done
-      window.addEventListener("preloader-done", () => setAllow3d(true), { once: true });
-      return;
-    }
     const start = () => {
       const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
       if (idle) idle(() => setAllow3d(true));
       else setTimeout(() => setAllow3d(true), 200);
     };
+    const done = (window as unknown as { __preloaderDone?: boolean }).__preloaderDone;
+    const preloader = document.querySelector('[aria-label="Loading"]');
+    if (!done && preloader && !preloader.classList.contains("pointer-events-none")) {
+      // preloader actively running: mount the journey scene after it signals done
+      window.addEventListener("preloader-done", () => setAllow3d(true), { once: true });
+      return;
+    }
+    // no preloader (disabled or already skipped by a returning visitor):
+    // mount once the page has painted and the browser goes idle
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
     return () => window.removeEventListener("load", start);
