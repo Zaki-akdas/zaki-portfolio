@@ -74,6 +74,8 @@ export default function LiveSite({
           <img
             src={cover}
             alt={`${title} website preview`}
+            width={1280}
+            height={853}
             className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ${
               embeddable && loaded ? "pointer-events-none opacity-0" : "opacity-100"
             }`}

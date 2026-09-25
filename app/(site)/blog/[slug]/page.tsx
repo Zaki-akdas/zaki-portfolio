@@ -42,7 +42,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
       {post.cover && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.cover} alt="" className="mt-10 w-full rounded-2xl border border-white/10 object-cover" />
+        <img src={post.cover} alt="" width={1280} height={853} loading="lazy"
+          className="mt-10 w-full rounded-2xl border border-white/10 object-cover" />
       )}
 
       <article className="prose-md mt-10" dangerouslySetInnerHTML={{ __html: mdToHtml(post.content) }} />
