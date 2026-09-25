@@ -32,7 +32,7 @@ export default async function BlogPage() {
             className="tilt group overflow-hidden rounded-2xl border border-white/10 bg-panel transition hover:border-accent/40">
             {post.cover ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={post.cover} alt="" className="zoom-img h-44 w-full object-cover" />
+              <img src={post.cover} alt="" width={1280} height={853} loading="lazy" className="zoom-img h-44 w-full object-cover" />
             ) : (
               <div className="h-44 w-full"
                 style={{ background: `radial-gradient(ellipse 90% 100% at ${i % 2 ? 15 : 85}% 0%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), #0b0d1a` }} />

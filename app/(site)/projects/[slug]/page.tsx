@@ -59,6 +59,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
       ) : project.cover ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={project.cover} alt={`${project.title} cover`}
+          width={1280} height={853}
           className="mt-12 max-h-96 w-full rounded-2xl border border-white/10 object-cover" />
       ) : (
         <div
