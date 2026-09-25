@@ -10,6 +10,11 @@ type Mode = "loading" | "full" | "lite" | "css";
 
 export default function Background({ effects3d }: { effects3d: boolean }) {
   const [mode, setMode] = useState<Mode>("loading");
+  // The WebGL journey mounts only after the cinematic preloader finishes
+  // (or, when the preloader is off, once the browser has painted the page
+  // and gone idle) — keeps two heavy three.js scenes from ever running at
+  // the same time and lets the page content paint first.
+  const [allow3d, setAllow3d] = useState(false);
 
   // Wire scroll + pointer listeners into the shared view state
   useEffect(() => {
@@ -29,6 +34,25 @@ export default function Background({ effects3d }: { effects3d: boolean }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointer);
     };
+  }, []);
+
+  // Capability detection → pick full / lite / css fallback. The 3D scene
+  // itself stays unmounted until the page has painted (allow3d below).
+  useEffect(() => {
+    const preloader = document.querySelector('[aria-label="Loading"]');
+    if (preloader) {
+      // preloader present: mount the journey scene only after it signals done
+      window.addEventListener("preloader-done", () => setAllow3d(true), { once: true });
+      return;
+    }
+    const start = () => {
+      const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+      if (idle) idle(() => setAllow3d(true));
+      else setTimeout(() => setAllow3d(true), 200);
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
   }, []);
 
   // Capability detection → pick full / lite / css fallback
@@ -59,6 +83,9 @@ export default function Background({ effects3d }: { effects3d: boolean }) {
     return <div className="css-stars fixed inset-0 -z-10" aria-hidden />;
   }
   if (mode === "css") {
+    return <div className="css-stars fixed inset-0 -z-10" aria-hidden />;
+  }
+  if (!allow3d) {
     return <div className="css-stars fixed inset-0 -z-10" aria-hidden />;
   }
   return (
