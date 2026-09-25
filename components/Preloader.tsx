@@ -122,8 +122,11 @@ export default function Preloader({ name }: { name: string }) {
       {/* cinematic vignette over the movie */}
       <div className="vignette absolute inset-0 pointer-events-none" />
 
-      {/* CSS fallback animation when 3D isn't available */}
-      {use3d === false && (
+      {/* CSS orbit spinner — rendered in the server HTML so the very first
+          paint animates with zero JavaScript (slow connections see motion
+          during hydration). Once the 3D scene mounts it covers this; if 3D
+          never loads, this IS the animation. */}
+      {use3d !== false && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative flex h-32 w-32 items-center justify-center">
             <div className="preload-orbit absolute inset-0 rounded-full border border-white/10">
