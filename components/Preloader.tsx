@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import PreloaderScene from "./PreloaderScene";
+import dynamic from "next/dynamic";
+
+// The 3D scene is ~700 KB of three.js — loaded on demand only when the
+// device actually qualifies, so it never blocks first paint of the page.
+const PreloaderScene = dynamic(() => import("./PreloaderScene"), { ssr: false });
 
 export default function Preloader({ name }: { name: string }) {
   const [visible, setVisible] = useState(true);
@@ -51,6 +55,9 @@ export default function Preloader({ name }: { name: string }) {
         setTimeout(() => {
           setVisible(false);
           document.body.style.overflow = "";
+          // signal the WebGL journey background that it may mount now —
+          // keeps two three.js scenes from running simultaneously
+          window.dispatchEvent(new Event("preloader-done"));
         }, 3100); // full 2.5s Hollywood plunge + fade
         return;
       }
