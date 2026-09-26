@@ -29,7 +29,7 @@ export default function Skills({ skills }: { skills: Skill[] }) {
                 <li key={s.id}>
                   <div className="mb-1.5 flex items-center justify-between text-sm">
                     <span className="text-slate-300">{s.name}</span>
-                    <span className="text-slate-500">{s.level}%</span>
+                    <span className="text-slate-400">{s.level}%</span>
                   </div>
                   <div className="bar" style={{ ["--w" as never]: `${s.level}%`, ["--d" as never]: `${i * 100}ms` }}>
                     <span />

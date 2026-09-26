@@ -39,7 +39,7 @@ export default async function AllProjectsPage() {
         <section key={cat} className="mt-14">
           <h2 className="font-display text-xl font-semibold text-white">
             {cat}
-            <span className="ml-3 text-sm font-normal text-slate-500">
+            <span className="ml-3 text-sm font-normal text-slate-400">
               {projects.filter((p) => p.category === cat).length} projects
             </span>
           </h2>
@@ -61,7 +61,7 @@ export default async function AllProjectsPage() {
                   {p.featured && <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">★</span>}
                 </div>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">{p.summary}</p>
-                <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+                <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
                   <span>{p.year}</span>
                   <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" data-cursor
                     className="relative z-10 inline-flex min-h-[36px] items-center gap-1 font-semibold text-accent transition hover:brightness-125">

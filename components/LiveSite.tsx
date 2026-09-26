@@ -116,7 +116,7 @@ export default function LiveSite({
         )}
       </div>
 
-      <p className="mt-3 text-xs text-slate-500">
+      <p className="mt-3 text-xs text-slate-400">
         {embeddable
           ? "Live embed of the real client website — scroll inside it or "
           : "This site prevents embedding, so you're seeing a captured preview — "}

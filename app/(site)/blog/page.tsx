@@ -38,7 +38,7 @@ export default async function BlogPage() {
                 style={{ background: `radial-gradient(ellipse 90% 100% at ${i % 2 ? 15 : 85}% 0%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), #0b0d1a` }} />
             )}
             <div className="tilt-inner p-6">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
               </p>
               <h2 className="mt-2 font-display text-xl font-semibold text-white group-hover:text-accent">{post.title}</h2>
@@ -52,7 +52,7 @@ export default async function BlogPage() {
           </Link>
         ))}
       </div>
-      {posts.length === 0 && <p className="mt-12 text-slate-500">No transmissions yet — check back soon.</p>}
+      {posts.length === 0 && <p className="mt-12 text-slate-400">No transmissions yet — check back soon.</p>}
     </main>
   );
 }
