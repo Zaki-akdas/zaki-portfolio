@@ -29,7 +29,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         <span aria-hidden>←</span> All posts
       </Link>
 
-      <p className="mt-8 text-xs text-slate-500">
+      <p className="mt-8 text-xs text-slate-400">
         {new Date(post.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
         {" · "}by {c.profile?.name}
       </p>

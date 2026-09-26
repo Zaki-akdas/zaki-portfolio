@@ -44,7 +44,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
               }`}
             >
               {cat}
-              <span className={`ml-1.5 text-xs ${isActive ? "text-accent/70" : "text-slate-500"}`}>
+              <span className={`ml-1.5 text-xs ${isActive ? "text-accent" : "text-slate-400"}`}>
                 {count}
               </span>
             </button>

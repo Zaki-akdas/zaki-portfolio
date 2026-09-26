@@ -6,7 +6,7 @@ function Row({ items, reverse, speed }: { items: string[]; reverse?: boolean; sp
   return (
     <div className={`marquee-track items-center gap-10 ${reverse ? "reverse" : ""}`} style={{ ["--speed" as never]: speed }}>
       {doubled.map((item, i) => (
-        <span key={i} className="flex shrink-0 items-center gap-10 font-display text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">
+        <span key={i} className="flex shrink-0 items-center gap-10 font-display text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
           {item}
           <span className="text-accent" aria-hidden>✦</span>
         </span>

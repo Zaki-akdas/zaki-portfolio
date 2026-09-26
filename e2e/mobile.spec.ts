@@ -99,7 +99,7 @@ const TOUCH_TARGETS = [
     selectors: [
       "a:has-text('Download résumé')",
       "footer a:has-text('GitHub')",
-      "button[aria-label='Play ambient sound']",
+      "button[aria-label='Play ambient sound: Sound off']",
     ],
   },
   { route: "/projects", min: 44, selectors: ["a:has-text('Back home')"] },
