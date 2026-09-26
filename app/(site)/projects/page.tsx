@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getContentAsync } from "@/lib/store";
-import { thumbOrOriginal } from "@/lib/thumb";
+import { thumbOrOriginal, thumbSrcset } from "@/lib/thumb";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +49,8 @@ export default async function AllProjectsPage() {
               <div key={p.id} className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel transition hover:border-accent/40">
                 {p.cover && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={thumbOrOriginal(p.cover, 400)} alt={`${p.title} website preview`} loading="lazy"
+                  <img src={thumbOrOriginal(p.cover, 400)} srcSet={thumbSrcset(p.cover)} sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
+                    alt={`${p.title} website preview`} loading="lazy"
                     className="zoom-img h-40 w-full border-b border-white/10 object-cover object-top" />
                 )}
                 <div className="flex flex-1 flex-col p-5">
