@@ -43,3 +43,43 @@ jobs:
           name: playwright-test-results
           path: test-results/
           if-no-files-found: ignore
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production build
+        run: npm run build
+
+      # Lighthouse must measure a real production server: `next start` serving
+      # the build above (dev mode would inflate JS cost and distort scores).
+      # No Supabase env needed — the budget gate only loads public pages.
+      - name: Start production server
+        run: |
+          DATA_DIR=.lh-data npx next start -p 3457 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3457/ > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3457/ > /dev/null
+
+      - name: Lighthouse budget check
+        run: PORT=3457 node scripts/lh-budget.cjs
+
+      - name: Upload Lighthouse reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lh-report-*.json
+          if-no-files-found: ignore

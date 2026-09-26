@@ -24,3 +24,8 @@ npm-debug.log*
 test-results/
 
 .vercel
+
+# lighthouse budget gate local artifacts
+.lh-data/
+.lh-report-*.json
+.lh-start.log
