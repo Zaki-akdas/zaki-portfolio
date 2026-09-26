@@ -71,7 +71,7 @@ export type Skill = { id: string; name: string; level: number; category: string 
 export type Project = {
   id: string; slug: string; title: string; summary: string; description: string;
   stack: string[]; category: string; liveUrl: string; repoUrl: string;
-  featured: boolean; order: number; year: string; cover?: string; embed?: boolean;
+  featured: boolean; order: number; year: string; cover?: string; coverSrcset?: string; embed?: boolean;
 };
 export type Service = { id: string; title: string; text: string };
 export type ProcessStep = { step: string; title: string; text: string };

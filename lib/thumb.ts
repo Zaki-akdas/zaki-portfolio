@@ -33,3 +33,42 @@ export function thumbUrl(url: string | null | undefined, width: number, height?:
 export function thumbOrOriginal(url: string | null | undefined, width: number, height?: number): string {
   return (SB_URL && thumbUrl(url, width, height)) || url || "";
 }
+
+// ---- srcset helpers -------------------------------------------------------
+
+// Render-variant widths offered to browsers via `srcset`. Covers ~1x/2x DPR
+// at every card layout width (phones render cards at ~360 CSS px, desktops
+// at ~400-640 CSS px).
+const SRCSET_WIDTHS = [240, 360, 480, 640, 960];
+
+/**
+ * Server-side srcset builder: one transform URL per candidate width.
+ * Returns "" when the cover isn't transformable (caller keeps plain `src`).
+ * URLs embed the ORIGINAL source URL, so a client component can safely
+ * re-derive smaller variants later via `rewidthThumb` (see below).
+ */
+export function thumbSrcset(url: string | null | undefined, height?: number): string {
+  const parts: string[] = [];
+  for (const w of SRCSET_WIDTHS) {
+    const u = thumbUrl(url, w, height);
+    if (u) parts.push(`${u} ${w}w`);
+  }
+  return parts.join(", ");
+}
+
+/**
+ * Client-safe: derive a new transform URL from an ALREADY-TRANSFORMED url.
+ * Matches the render endpoint and swaps the width query param; returns the
+ * input untouched for originals/external URLs. Lets a client component (home
+ * grid) pick per-DPR variants without ever touching server env vars.
+ */
+export function rewidthThumb(renderedUrl: string, width: number): string {
+  if (!renderedUrl.includes("/storage/v1/render/image/")) return renderedUrl;
+  try {
+    const u = new URL(renderedUrl);
+    u.searchParams.set("width", String(width));
+    return u.toString();
+  } catch {
+    return renderedUrl;
+  }
+}

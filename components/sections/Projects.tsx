@@ -74,7 +74,8 @@ export default function Projects({ projects }: { projects: Project[] }) {
               <div className="tilt-inner relative">
                 {p.cover && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.cover} alt={`${p.title} cover`} width={1280} height={853} loading="lazy" className="zoom-img mb-5 h-44 w-full rounded-xl border border-white/10 object-cover" />
+                  <img src={p.cover} srcSet={p.coverSrcset || undefined} sizes="(max-width: 640px) 92vw, (max-width: 640px) 100vw, 45vw"
+                    alt={`${p.title} cover`} width={1280} height={853} loading="lazy" className="zoom-img mb-5 h-44 w-full rounded-xl border border-white/10 object-cover" />
                 )}
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
