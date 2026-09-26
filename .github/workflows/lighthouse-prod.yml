@@ -1,0 +1,38 @@
+name: Production Lighthouse audit
+
+# Weekly audit of the LIVE site. The PR gate (verify.yml) only sees the
+# repo's bundled seed data; this catches performance drift from real
+# content changes — new projects with heavy covers, a failing image
+# transform CDN, etc. — that never touch code.
+on:
+  schedule:
+    # Sundays 03:17 UTC — off the top of the hour to avoid cron crush.
+    - cron: "17 3 * * 0"
+  workflow_dispatch: {}
+
+concurrency:
+  group: lighthouse-prod
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Lighthouse audit of production
+        run: BASE_URL=https://zakiakdas.vercel.app node scripts/lh-budget.cjs
+
+      - name: Upload Lighthouse reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-prod-reports
+          path: .lh-report-*.json
+          if-no-files-found: ignore
