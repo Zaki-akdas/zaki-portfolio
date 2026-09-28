@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { apiGet } from "@/lib/adminApi";
 
 export function Field({
   label,
@@ -58,17 +59,72 @@ export function PageHead({ title, sub, children }: { title: string; sub?: string
 
 export function useSaveState() {
   const [state, setState] = React.useState<"idle" | "saving" | "saved" | "error">("idle");
+  const timers = React.useRef<ReturnType<typeof setTimeout>[]>([]);
+  React.useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  const later = (fn: () => void, ms: number) => {
+    const id = setTimeout(fn, ms);
+    timers.current.push(id);
+  };
   const wrap = async (fn: () => Promise<void>) => {
     setState("saving");
     try {
       await fn();
       setState("saved");
-      setTimeout(() => setState("idle"), 1600);
+      later(() => setState("idle"), 1600);
     } catch {
       setState("error");
-      setTimeout(() => setState("idle"), 2600);
+      later(() => setState("idle"), 2600);
     }
   };
   const label = { idle: "Save changes", saving: "Saving…", saved: "Saved ✓", error: "Error — retry" }[state];
   return { state, wrap, label };
+}
+
+/**
+ * Fetch an admin collection with built-in loading + error state. Surfaces a
+ * message (and a retry) instead of leaving the page stuck on "Loading…" when
+ * the API 503s (Postgres/Redis down) or rejects — the old bare
+ * `apiGet().then()` swallowed those as unhandled rejections.
+ */
+export function useCollection<T>(collection: string, initial: T, transform?: (d: T) => T) {
+  const [data, setData] = React.useState<T>(initial);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const reload = React.useCallback(() => {
+    setLoading(true);
+    apiGet<T>(collection)
+      .then((d) => {
+        const value = (d ?? initial) as T;
+        setData(transform ? transform(value) : value);
+        setError(null);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : `Failed to load ${collection}`))
+      .finally(() => setLoading(false));
+    // transform/initial are stable per call site; collection drives reloads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection]);
+  React.useEffect(() => {
+    reload();
+  }, [reload]);
+  return { data, setData, error, loading, reload };
+}
+
+export function ErrorNote({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  return (
+    <div
+      role="alert"
+      className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
+    >
+      <span>{message}</span>
+      {onRetry && (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="inline-flex min-h-[36px] items-center rounded-md border border-rose-400/40 px-3 py-1 text-xs font-semibold text-rose-100 transition hover:bg-rose-500/20"
+        >
+          Retry
+        </button>
+      )}
+    </div>
+  );
 }

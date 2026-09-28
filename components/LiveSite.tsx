@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import CoverImage from "@/components/CoverImage";
 
 /**
  * Live embedded preview of a client website inside a browser-chrome mockup.
@@ -12,11 +13,13 @@ import { useEffect, useRef, useState } from "react";
 export default function LiveSite({
   url,
   cover,
+  coverSrcset,
   title,
   embeddable,
 }: {
   url: string;
   cover?: string;
+  coverSrcset?: string;
   title: string;
   embeddable: boolean;
 }) {
@@ -70,9 +73,10 @@ export default function LiveSite({
       >
         {/* screenshot: placeholder while loading, permanent fallback if blocked */}
         {cover && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <CoverImage
             src={cover}
+            srcSet={coverSrcset}
+            sizes="(max-width: 896px) 100vw, 896px"
             alt={`${title} website preview`}
             width={1280}
             height={853}

@@ -1,5 +1,7 @@
 import { getContentAsync } from "@/lib/store";
 import { thumbOrOriginal, thumbSrcset } from "@/lib/thumb";
+import { personWebSiteJsonLd } from "@/lib/jsonld";
+import JsonLd from "@/components/JsonLd";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Skills from "@/components/sections/Skills";
@@ -16,6 +18,7 @@ export default async function Home() {
   const c = await getContentAsync();
   return (
     <main id="top">
+      <JsonLd data={personWebSiteJsonLd(c)} />
       <Hero profile={c.profile} settings={c.settings} />
       <About profile={c.profile} />
       <Skills skills={c.skills || []} />

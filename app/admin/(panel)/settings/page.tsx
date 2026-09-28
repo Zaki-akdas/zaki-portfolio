@@ -1,24 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { apiGet, apiPut } from "@/lib/adminApi";
-import { Button, Card, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
+import { Button, Card, ErrorNote, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
 import type { Profile, Settings } from "@/lib/store";
 
 export default function SettingsAdmin() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const profileSave = useSaveState();
   const settingsSave = useSaveState();
 
   const [pw, setPw] = useState({ current: "", next: "" });
   const [pwMsg, setPwMsg] = useState("");
 
-  useEffect(() => {
-    apiGet<Profile>("profile").then(setProfile);
-    apiGet<Settings>("settings").then(setSettings);
+  const load = useCallback(() => {
+    setError(null);
+    Promise.all([apiGet<Profile>("profile"), apiGet<Settings>("settings")])
+      .then(([p, s]) => {
+        setProfile(p);
+        setSettings(s);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load settings"));
   }, []);
 
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (error) return <ErrorNote message={error} onRetry={load} />;
   if (!profile || !settings) return <p className="text-sm text-slate-500">Loading…</p>;
 
   return (

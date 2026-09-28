@@ -11,8 +11,15 @@ export default function SoundToggle() {
   const [on, setOn] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
   const gainRef = useRef<GainNode | null>(null);
+  const suspendTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => () => { ctxRef.current?.close().catch(() => {}); }, []);
+  useEffect(
+    () => () => {
+      if (suspendTimer.current) clearTimeout(suspendTimer.current);
+      ctxRef.current?.close().catch(() => {});
+    },
+    [],
+  );
 
   async function toggle() {
     if (!ctxRef.current) {
@@ -75,9 +82,19 @@ export default function SoundToggle() {
     const master = gainRef.current!;
     if (on) {
       master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
-      setTimeout(() => ctx.suspend(), 450);
+      // Cancel any pending suspend from a prior toggle so a quick off→on
+      // doesn't get silently suspended right after resuming.
+      if (suspendTimer.current) clearTimeout(suspendTimer.current);
+      suspendTimer.current = setTimeout(() => {
+        ctx.suspend();
+        suspendTimer.current = null;
+      }, 450);
       setOn(false);
     } else {
+      if (suspendTimer.current) {
+        clearTimeout(suspendTimer.current);
+        suspendTimer.current = null;
+      }
       await ctx.resume();
       master.gain.linearRampToValueAtTime(0.11, ctx.currentTime + 1.2);
       setOn(true);

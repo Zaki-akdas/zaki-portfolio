@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import path from "path";
 import { isAdminAsync } from "@/lib/auth";
 import { scrubSvg } from "@/lib/svg";
+import { matchesSignature } from "@/lib/fileSignature";
 import { STORAGE_ENABLED, listMedia, uploadMedia, deleteMedia } from "@/lib/supabaseStorage";
 
 export const runtime = "nodejs";
@@ -24,8 +25,12 @@ export async function GET(req: Request) {
   if (!STORAGE_ENABLED) {
     return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
   }
-  const files = await listMedia();
-  return NextResponse.json(files.sort((a, b) => b.mtime - a.mtime));
+  try {
+    const files = await listMedia();
+    return NextResponse.json(files.sort((a, b) => b.mtime - a.mtime));
+  } catch {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
+  }
 }
 
 export async function POST(req: Request) {
@@ -48,6 +53,14 @@ export async function POST(req: Request) {
   const stem = safeName(file.name).replace(/\.[^.]+$/, "");
   const name = `${Date.now().toString(36)}-${stem}.${ext}`;
   const raw = Buffer.from(await file.arrayBuffer());
+  // Reject files whose bytes don't match the declared extension — the extension
+  // is attacker-controlled, so trust the magic bytes before storing publicly.
+  if (!matchesSignature(ext, raw)) {
+    return NextResponse.json(
+      { error: `File contents don't match the .${ext} extension.` },
+      { status: 400 },
+    );
+  }
   // SVGs can carry scripts that would run on our origin if opened directly —
   // strip active content before it is stored anywhere
   const buf = ext === "svg" ? scrubSvg(raw) : raw;
@@ -67,6 +80,10 @@ export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const name = path.basename(searchParams.get("name") || "");
   if (!name || name.startsWith(".")) return NextResponse.json({ error: "Invalid name" }, { status: 400 });
-  await deleteMedia(name);
-  return NextResponse.json({ ok: true });
+  try {
+    await deleteMedia(name);
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: "Media store unavailable" }, { status: 503 });
+  }
 }

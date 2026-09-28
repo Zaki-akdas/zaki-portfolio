@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Project } from "@/lib/store";
+import CoverImage from "@/components/CoverImage";
 
 const HUES = [258, 195, 330, 40, 150];
 
@@ -73,9 +74,8 @@ export default function Projects({ projects }: { projects: Project[] }) {
               />
               <div className="tilt-inner relative">
                 {p.cover && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.cover} srcSet={p.coverSrcset || undefined} sizes="(max-width: 640px) 92vw, (max-width: 640px) 100vw, 45vw"
-                    alt={`${p.title} cover`} width={1280} height={853} loading="lazy" className="zoom-img mb-5 h-44 w-full rounded-xl border border-white/10 object-cover" />
+                  <CoverImage src={p.cover} srcSet={p.coverSrcset} sizes="(max-width: 640px) 92vw, 45vw"
+                    alt={`${p.title} cover`} width={1280} height={853} className="zoom-img mb-5 h-44 w-full rounded-xl border border-white/10 object-cover" />
                 )}
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
