@@ -1,6 +1,7 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { cache } from "react";
 import { KV_ENABLED, KVUnavailableError, cmd, pipeline } from "./kv";
 import { PG_ENABLED, query, withClient } from "./db";
 
@@ -21,6 +22,10 @@ const DATA_DIR = process.env.DATA_DIR
 /** When running with an external DATA_DIR (fresh persistent disk), seed it from the repo's data folder. */
 function seedIfMissing(name: string): boolean {
   if (DATA_DIR === REPO_DATA_DIR) return false;
+  // Never seed auth.json: a dev machine's copy holds the live session-signing
+  // secret and password hash, which must not ship into deployments. Runtimes
+  // regenerate their own via lib/auth.ts (AUTH_SECRET / ADMIN_PASSWORD env win).
+  if (name === "auth") return false;
   const src = path.join(REPO_DATA_DIR, name + ".json");
   const dest = path.join(DATA_DIR, name + ".json");
   try {
@@ -107,7 +112,9 @@ export function saveContent(c: Content) {
 // dev, e2e).
 
 /** Reads one content key durably; falls back to the bundled file on any failure. */
-export async function getContentKeyAsync<K extends keyof Content>(key: K): Promise<Content[K]> {
+export const getContentKeyAsync = cache(async function getContentKeyAsync<K extends keyof Content>(
+  key: K,
+): Promise<Content[K]> {
   if (PG_ENABLED) {
     try {
       const r = await query<{ data: Content[K] }>("select data from portfolio_content where key = $1", [key]);
@@ -118,10 +125,16 @@ export async function getContentKeyAsync<K extends keyof Content>(key: K): Promi
     }
   }
   return getContent()[key];
-}
+});
 
-/** Reads the whole content object durably (all keys), merged over the seed. */
-export async function getContentAsync(): Promise<Content> {
+/**
+ * Reads the whole content object durably (all keys), merged over the seed.
+ * Wrapped in React's per-request cache(): the layout, page, generateMetadata and
+ * OG-image each call this on a single request, so memoizing collapses 3-4
+ * identical Postgres/disk reads into one. cache() is a pass-through outside a
+ * request scope, so writes are never masked across requests.
+ */
+export const getContentAsync = cache(async function getContentAsync(): Promise<Content> {
   if (PG_ENABLED) {
     try {
       const r = await query<{ key: string; data: unknown }>("select key, data from portfolio_content");
@@ -135,7 +148,7 @@ export async function getContentAsync(): Promise<Content> {
     }
   }
   return getContent();
-}
+});
 
 /** Replaces one content key durably (admin PUT path). Falls back to the file when no DATABASE_URL. */
 export async function saveContentKeyAsync<K extends keyof Content>(key: K, value: Content[K]): Promise<void> {

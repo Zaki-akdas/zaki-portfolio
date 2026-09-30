@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { getContentAsync } from "@/lib/store";
+import { resolveSiteUrl } from "@/lib/siteUrl";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap() {
   const c = await getContentAsync();
-  const base = (c.settings?.siteUrl || "https://example.com").replace(/\/$/, "");
+  const base = resolveSiteUrl(c.settings);
   const now = new Date();
 
   const entries: MetadataRoute.Sitemap = [

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiGet, apiPut, uid } from "@/lib/adminApi";
-import { Button, Card, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
+import { useState } from "react";
+import { apiPut, uid } from "@/lib/adminApi";
+import { Button, Card, ErrorNote, Field, PageHead, inputCls, useCollection, useSaveState } from "@/components/admin/ui";
 import type { Post } from "@/lib/store";
 
 const EMPTY: Post = {
@@ -11,13 +11,9 @@ const EMPTY: Post = {
 };
 
 export default function BlogAdmin() {
-  const [items, setItems] = useState<Post[]>([]);
+  const { data: items, setData: setItems, error, reload } = useCollection<Post[]>("posts", []);
   const [editing, setEditing] = useState<Post | null>(null);
   const save = useSaveState();
-
-  useEffect(() => {
-    apiGet<Post[]>("posts").then((p) => setItems(p || []));
-  }, []);
 
   async function persist(next: Post[]) {
     setItems(next);
@@ -46,6 +42,8 @@ export default function BlogAdmin() {
       <PageHead title="Blog / Case studies" sub={`${items.length} posts · markdown supported · ${save.label}`}>
         <Button onClick={() => setEditing({ ...EMPTY })}>+ New post</Button>
       </PageHead>
+
+      {error && <ErrorNote message={error} onRetry={reload} />}
 
       {editing && (
         <Card className="mb-6">

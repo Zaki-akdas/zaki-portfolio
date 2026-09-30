@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Card, PageHead } from "@/components/admin/ui";
+import CoverImage from "@/components/CoverImage";
 
 type MediaFile = { name: string; url: string; size: number; mtime: number };
 
@@ -78,8 +79,7 @@ export default function MediaAdmin() {
         {files.map((f) => (
           <Card key={f.name} className="p-3">
             {IMG_EXT.test(f.name) ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={f.url} alt={f.name} className="h-28 w-full rounded-lg object-cover" />
+              <CoverImage src={f.url} alt={f.name} className="h-28 w-full rounded-lg object-cover" />
             ) : (
               <div className="flex h-28 w-full items-center justify-center rounded-lg bg-[#0d1020] text-3xl">
                 {f.name.endsWith(".pdf") ? "📄" : f.name.endsWith(".glb") ? "🧊" : "🎬"}

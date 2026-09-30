@@ -248,6 +248,19 @@ function makeAccretionTexture() {
 
 const NO_RAYCAST = () => undefined;
 
+/**
+ * useMemo a GPU texture and release it when the owner unmounts (or the factory
+ * deps change). three.js never garbage-collects a CanvasTexture on its own, so
+ * without this every Background remount of the journey leaks one texture per
+ * procedural factory below.
+ */
+function useDisposableTexture(factory: () => THREE.Texture, deps: React.DependencyList): THREE.Texture {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const tex = useMemo(factory, deps);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return tex;
+}
+
 /* ==================================================================== */
 /*  Hover / click manager: manual raycast (DOM sits above the canvas)   */
 /* ==================================================================== */
@@ -257,6 +270,10 @@ function HoverRig() {
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
   const pointer = useMemo(() => new THREE.Vector2(), []);
   const hovered = useRef<THREE.Object3D | null>(null);
+  // The interactive set is static once the scene mounts, so walk the graph
+  // exactly once and reuse it — a per-frame traverse of the whole scene is
+  // pure waste at 60fps.
+  const targets = useRef<THREE.Object3D[] | null>(null);
 
   useEffect(() => {
     const onClick = () => {
@@ -269,9 +286,12 @@ function HoverRig() {
   useFrame(() => {
     pointer.set(view.px, -view.py);
     raycaster.setFromCamera(pointer, camera);
-    const targets: THREE.Object3D[] = [];
-    scene.traverse((o) => { if (o.userData.interactive) targets.push(o); });
-    const hits = raycaster.intersectObjects(targets, true);
+    if (!targets.current) {
+      const found: THREE.Object3D[] = [];
+      scene.traverse((o) => { if (o.userData.interactive) found.push(o); });
+      targets.current = found;
+    }
+    const hits = raycaster.intersectObjects(targets.current, true);
     let root: THREE.Object3D | null = null;
     if (hits.length) {
       let o: THREE.Object3D | null = hits[0].object;
@@ -415,7 +435,7 @@ function GlowSprite({
   fogged?: boolean;
   position?: [number, number, number];
 }) {
-  const tex = useMemo(() => makeGlowTexture(color), [color]);
+  const tex = useDisposableTexture(() => makeGlowTexture(color), [color]);
   return (
     <sprite scale={[scale, scale, 1]} position={position} raycast={NO_RAYCAST}>
       <spriteMaterial map={tex} transparent opacity={opacity} depthWrite={false} blending={THREE.AdditiveBlending} fog={fogged} />
@@ -432,9 +452,9 @@ function EarthPlanet({ lite }: { lite: boolean }) {
   const planet = useRef<THREE.Mesh>(null);
   const clouds = useRef<THREE.Mesh>(null);
   const moonPivot = useRef<THREE.Group>(null);
-  const tex = useMemo(() => makeEarthTexture(), []);
-  const cloudTex = useMemo(() => makeCloudTexture(), []);
-  const moonTex = useMemo(() => makeRockyTexture(220, 6, 58), []);
+  const tex = useDisposableTexture(() => makeEarthTexture(), []);
+  const cloudTex = useDisposableTexture(() => makeCloudTexture(), []);
+  const moonTex = useDisposableTexture(() => makeRockyTexture(220, 6, 58), []);
   const seg = lite ? 28 : 56;
   useCelestial(group);
 
@@ -478,7 +498,7 @@ function EarthPlanet({ lite }: { lite: boolean }) {
 function GasGiant({ lite }: { lite: boolean }) {
   const group = useRef<THREE.Group>(null);
   const planet = useRef<THREE.Mesh>(null);
-  const tex = useMemo(() => makeGasGiantTexture(24), []);
+  const tex = useDisposableTexture(() => makeGasGiantTexture(24), []);
   const seg = lite ? 28 : 48;
   useCelestial(group);
   useFrame((_, dt) => { if (planet.current) planet.current.rotation.y += dt * 0.16; });
@@ -497,8 +517,8 @@ function GasGiant({ lite }: { lite: boolean }) {
 function RingedPlanet({ lite }: { lite: boolean }) {
   const group = useRef<THREE.Group>(null);
   const planet = useRef<THREE.Mesh>(null);
-  const tex = useMemo(() => makeGasGiantTexture(46), []);
-  const ringTex = useMemo(() => makeRingTexture(), []);
+  const tex = useDisposableTexture(() => makeGasGiantTexture(46), []);
+  const ringTex = useDisposableTexture(() => makeRingTexture(), []);
   const seg = lite ? 28 : 48;
   useCelestial(group);
   useFrame((_, dt) => { if (planet.current) planet.current.rotation.y += dt * 0.14; });
@@ -567,7 +587,7 @@ function AsteroidBelt({ count }: { count: number }) {
 function BlackHole({ lite }: { lite: boolean }) {
   const group = useRef<THREE.Group>(null);
   const disk = useRef<THREE.Mesh>(null);
-  const diskTex = useMemo(() => makeAccretionTexture(), []);
+  const diskTex = useDisposableTexture(() => makeAccretionTexture(), []);
   useCelestial(group);
 
   useFrame((_, dt) => {
@@ -648,8 +668,8 @@ const STAR_TINTS = ["#ffffff", "#9db4ff", "#ffd9a6", "#7ee8fa", "#ffffff"];
 
 function ShootingStars({ count }: { count: number }) {
   const group = useRef<THREE.Group>(null);
-  const trailTex = useMemo(() => makeStreakTexture(), []);
-  const headTex = useMemo(() => makeGlowTexture("#ffffff"), []);
+  const trailTex = useDisposableTexture(() => makeStreakTexture(), []);
+  const headTex = useDisposableTexture(() => makeGlowTexture("#ffffff"), []);
   const stars = useMemo(
     () =>
       new Array(count).fill(0).map((_, i) => ({
@@ -751,7 +771,7 @@ function MiniPlanet({
 }) {
   const group = useRef<THREE.Group>(null);
   const mesh = useRef<THREE.Mesh>(null);
-  const tex = useMemo(() => makeRockyTexture(hue, sat, light), [hue, sat, light]);
+  const tex = useDisposableTexture(() => makeRockyTexture(hue, sat, light), [hue, sat, light]);
   const seg = lite ? 16 : 28;
   useCelestial(group);
 
@@ -831,13 +851,21 @@ function Nebulae({ lite }: { lite: boolean }) {
 
 function HoverLabel() {
   const vec = useMemo(() => new THREE.Vector3(), []);
+  // Same static interactive set as HoverRig — resolve it once, then scan only
+  // those handful of nodes each frame instead of the entire scene graph.
+  const targets = useRef<THREE.Object3D[] | null>(null);
   useFrame(({ camera, scene, size }) => {
     const el = document.getElementById("planet-label");
     if (!el) return;
+    if (!targets.current) {
+      const found: THREE.Object3D[] = [];
+      scene.traverse((o) => { if (o.userData.interactive) found.push(o); });
+      targets.current = found;
+    }
     let hovered: THREE.Object3D | null = null;
-    scene.traverse((o) => {
-      if (o.userData.interactive && o.userData.hovered) hovered = o;
-    });
+    for (const o of targets.current) {
+      if (o.userData.hovered) { hovered = o; break; }
+    }
     if (!hovered) { el.style.opacity = "0"; return; }
     const obj = hovered as THREE.Object3D;
     vec.setFromMatrixPosition(obj.matrixWorld);
@@ -862,7 +890,7 @@ function Rocket({ lite }: { lite: boolean }) {
   const exhaustAttr = useRef<THREE.BufferAttribute>(null);
   const prev = useRef({ x: 0, y: 0 });
   const E_COUNT = lite ? 26 : 50;
-  const flameTex = useMemo(() => makeGlowTexture("#ffb15c"), []);
+  const flameTex = useDisposableTexture(() => makeGlowTexture("#ffb15c"), []);
   const exhaust = useMemo(
     () => ({
       arr: new Float32Array(E_COUNT * 3),

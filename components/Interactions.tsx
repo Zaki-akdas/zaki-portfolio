@@ -34,6 +34,12 @@ export default function Interactions() {
     window.addEventListener("resize", onScrollBar, { passive: true });
 
     /* ---------- scroll reveal ---------- */
+    // Hero starts server-rendered as `.in .words-in` (LCP must not wait for
+    // hydration); re-hide it here, pre-paint, then let the observer replay
+    // the staggered entrance exactly as before.
+    document
+      .querySelectorAll(".hero-eager.reveal, .hero-eager.words-container")
+      .forEach((el) => el.classList.remove("in", "words-in"));
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {

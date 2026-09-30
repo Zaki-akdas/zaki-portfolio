@@ -3,7 +3,8 @@
 Your website has a control room at **`/admin`**. No code needed for day-to-day updates.
 
 **Login:** go to `yourdomain.com/admin` → enter your password.
-(Initial password: `admin123` — change it immediately in **Settings → Change admin password**.)
+(Your password is the one set in the `ADMIN_PASSWORD` environment variable, or
+the one you changed in **Settings → Change admin password**.)
 
 ---
 
@@ -51,5 +52,7 @@ Same pattern: add, edit, publish/unpublish, delete. Ratings are the star sliders
   your connection and press save again.
 - The admin panel works on your phone.
 - Contact form and login are rate-limited, so bots can't spam you.
-- If you ever get locked out: delete `data/auth.json` on the server and the
-  password resets to `admin123` on next login. Change it again right away.
+- If you ever get locked out: make sure `ADMIN_PASSWORD` is set in the hosting
+  environment (it always overrides the stored password), or delete
+  `data/auth.json` on the server and restart — it regenerates using
+  `ADMIN_PASSWORD`.

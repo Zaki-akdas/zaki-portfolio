@@ -39,23 +39,37 @@ export default function Background({ effects3d }: { effects3d: boolean }) {
   // Capability detection → pick full / lite / css fallback. The 3D scene
   // itself stays unmounted until the page has painted (allow3d below).
   useEffect(() => {
+    let idleHandle: number | undefined;
+    let fallbackTimer: ReturnType<typeof setTimeout> | undefined;
+    let onDone: (() => void) | undefined;
+
     const start = () => {
       const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
-      if (idle) idle(() => setAllow3d(true));
-      else setTimeout(() => setAllow3d(true), 200);
+      if (idle) idleHandle = idle(() => setAllow3d(true));
+      else fallbackTimer = setTimeout(() => setAllow3d(true), 200);
     };
     const done = (window as unknown as { __preloaderDone?: boolean }).__preloaderDone;
     const preloader = document.querySelector('[aria-label="Loading"]');
     if (!done && preloader && !preloader.classList.contains("pointer-events-none")) {
       // preloader actively running: mount the journey scene after it signals done
-      window.addEventListener("preloader-done", () => setAllow3d(true), { once: true });
-      return;
+      onDone = () => setAllow3d(true);
+      window.addEventListener("preloader-done", onDone, { once: true });
+    } else if (document.readyState === "complete") {
+      // no preloader (disabled or already skipped): mount once painted + idle
+      start();
+    } else {
+      window.addEventListener("load", start, { once: true });
     }
-    // no preloader (disabled or already skipped by a returning visitor):
-    // mount once the page has painted and the browser goes idle
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true });
-    return () => window.removeEventListener("load", start);
+
+    return () => {
+      if (onDone) window.removeEventListener("preloader-done", onDone);
+      window.removeEventListener("load", start);
+      if (idleHandle !== undefined) {
+        const cancel = (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+        cancel?.(idleHandle);
+      }
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+    };
   }, []);
 
   // Capability detection → pick full / lite / css fallback

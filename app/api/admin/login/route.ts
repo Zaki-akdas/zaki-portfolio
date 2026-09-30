@@ -43,6 +43,7 @@ export async function POST(req: Request) {
       res.cookies.set(COOKIE_NAME, result.accessToken, {
         httpOnly: true,
         sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
         path: "/",
         maxAge: result.expiresInSec,
       });
@@ -62,6 +63,7 @@ export async function POST(req: Request) {
   res.cookies.set(COOKIE_NAME, makeToken(), {
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 7 * 24 * 3600,
   });

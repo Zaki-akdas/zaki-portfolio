@@ -8,8 +8,10 @@ preloader, scroll-driven camera storytelling, micro-interactions, and a full adm
 - **Next.js 14 (App Router) + TypeScript**
 - **Three.js via React Three Fiber** — starfield, nebula, ringed planet, scroll-driven camera rig
 - **Tailwind CSS** with CSS-variable theming (accent color editable from admin)
-- **JSON file store** (`data/*.json`) — swap for PostgreSQL/Prisma later without touching the UI
-- Cookie-based admin auth (HMAC-signed session, hashed password)
+- **Tri-mode content store** — Postgres (`DATABASE_URL`) in production, Upstash
+  Redis for messages/rate-limits, JSON files (`data/*.json`) for local dev & e2e.
+  Media uploads go to **Supabase Storage** (public `media` bucket).
+- Cookie-based admin auth (HMAC-signed session, **scrypt**-hashed password)
 
 ## Run locally
 
@@ -21,10 +23,19 @@ npm run dev        # http://localhost:3000
 ## Admin panel
 
 - URL: `/admin`
-- Default password: `admin123` → **change it in Settings after first login**
-- Modules: Dashboard, Projects (CRUD + reorder + featured), Skills, Testimonials
-  (publish/draft), Inbox (contact submissions), Settings (identity, theme accent,
-  3D kill-switch, preloader toggle, availability, SEO meta, password change)
+- Password: set the `ADMIN_PASSWORD` environment variable (required in
+  production), or change it in Settings → Change admin password
+- Modules: Dashboard, Projects (CRUD + reorder + featured), Blog (markdown posts,
+  draft/publish, per-post SEO), Skills, Testimonials (publish/draft), Media
+  (image/PDF upload to Supabase Storage), Inbox (contact submissions), Settings
+  (identity, theme accent, 3D kill-switch, preloader toggle, availability, SEO
+  meta, password change)
+
+## Deployment
+
+Production runs on **Vercel** (auto-deploys every push to `main`) with
+**Supabase Postgres** for durable content/messages and **Supabase Storage** for
+media. See [`DEPLOY.md`](./DEPLOY.md) for env vars and alternatives.
 
 ## Performance & accessibility
 
@@ -36,14 +47,16 @@ npm run dev        # http://localhost:3000
 
 ## Content model
 
-All content lives in `data/content.json` (profile, settings, skills, projects, services,
-process, testimonials). Contact submissions append to `data/messages.json`.
-Admin credentials in `data/auth.json` (auto-generated, salted SHA-256).
+Content (profile, settings, skills, projects, services, process, testimonials,
+blog posts) is one JSONB document per key. In production it lives in the
+`portfolio_content` Postgres table, seeded from the bundled `data/*.json`;
+locally (no `DATABASE_URL`) the JSON files under `data/` are the store. Contact
+submissions and rate limits go to `portfolio_messages` (Postgres) / Upstash
+Redis, falling back to `data/messages.json`. Admin credentials in `data/auth.json`
+(auto-generated, salted **scrypt** hash) — never seeded into deployments.
 
 ## Roadmap (next phases)
 
 - GSAP ScrollTrigger pinned storytelling + Lenis smooth scroll
-- Blog / case-study module (MDX) with per-post SEO
-- Media library with image upload + compression
-- Prisma/PostgreSQL adapter, NextAuth, 2FA
+- 2FA for the admin login
 - Draco-compressed GLB assets and LOD pipeline

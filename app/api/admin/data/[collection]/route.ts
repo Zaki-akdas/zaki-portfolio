@@ -17,6 +17,27 @@ function isContentKey(k: string): k is ContentKey {
   return (CONTENT_KEYS as readonly string[]).includes(k);
 }
 
+// Collections that must be an array of objects vs a single object. A write with
+// the wrong top-level shape would crash the public site on render (e.g. calling
+// `.map` on a non-array), so reject it here rather than persist it. Field-level
+// shapes aren't enforced: the endpoint is already admin-authenticated, and the
+// editors own the per-item contract.
+const ARRAY_KEYS = new Set<string>(["skills", "projects", "services", "process", "testimonials", "posts", "messages"]);
+
+/** Structural sanity check: right top-level container, and objects inside arrays. */
+function shapeError(collection: string, body: unknown): string | null {
+  if (ARRAY_KEYS.has(collection)) {
+    if (!Array.isArray(body)) return "Expected an array";
+    if (body.some((item) => typeof item !== "object" || item === null || Array.isArray(item))) {
+      return "Every array item must be an object";
+    }
+    return null;
+  }
+  if (typeof body !== "object" || body === null || Array.isArray(body)) return "Expected an object";
+  return null;
+}
+
+
 export async function GET(req: Request, { params }: { params: { collection: string } }) {
   if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { collection } = params;
@@ -46,7 +67,8 @@ export async function PUT(req: Request, { params }: { params: { collection: stri
   }
 
   if (collection === "messages") {
-    if (!Array.isArray(body)) return NextResponse.json({ error: "Expected an array" }, { status: 400 });
+    const err = shapeError(collection, body);
+    if (err) return NextResponse.json({ error: err }, { status: 400 });
     try {
       await replaceMessages(body as never);
       return NextResponse.json({ ok: true });
@@ -56,6 +78,8 @@ export async function PUT(req: Request, { params }: { params: { collection: stri
   }
 
   if (isContentKey(collection)) {
+    const err = shapeError(collection, body);
+    if (err) return NextResponse.json({ error: err }, { status: 400 });
     try {
       await saveContentKeyAsync(collection, body as never);
       return NextResponse.json({ ok: true });

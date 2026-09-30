@@ -22,11 +22,14 @@ function getPool(): pg.Pool {
     if (!DB_URL) throw new KVUnavailableError("DATABASE_URL not configured");
     pool = new pg.Pool({
       connectionString: DB_URL,
-      // Supabase's pooler routes by SNI hostname — required, not optional.
-      // Other hosts (direct db.*.supabase.co, plain Postgres) ignore it.
-      ssl: DB_URL.includes("pooler.supabase.com")
-        ? { rejectUnauthorized: false }
-        : { rejectUnauthorized: false, servername: new URL(DB_URL).hostname },
+      // Verify the server certificate by default. Supabase endpoints (pooler
+      // and direct) present certs valid for their hostname; servername pins
+      // SNI, which the pooler requires for routing. Set
+      // DATABASE_TLS_INSECURE=1 only for hosts with self-signed certs.
+      ssl: {
+        rejectUnauthorized: process.env.DATABASE_TLS_INSECURE !== "1",
+        servername: new URL(DB_URL).hostname,
+      },
       max: 3, // small: many warm lambda instances share one Postgres
       connectionTimeoutMillis: 10_000,
     });

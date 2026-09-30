@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiGet, apiPut, uid } from "@/lib/adminApi";
-import { Button, Card, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
+import { useState } from "react";
+import { apiPut, uid } from "@/lib/adminApi";
+import { Button, Card, ErrorNote, Field, PageHead, inputCls, useCollection, useSaveState } from "@/components/admin/ui";
 import type { Testimonial } from "@/lib/store";
 
 export default function TestimonialsAdmin() {
-  const [items, setItems] = useState<Testimonial[]>([]);
+  const { data: items, setData: setItems, error, reload } = useCollection<Testimonial[]>("testimonials", []);
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const save = useSaveState();
-
-  useEffect(() => {
-    apiGet<Testimonial[]>("testimonials").then((t) => setItems(t || []));
-  }, []);
 
   async function persist(next: Testimonial[]) {
     setItems(next);
@@ -34,6 +30,8 @@ export default function TestimonialsAdmin() {
           + New testimonial
         </Button>
       </PageHead>
+
+      {error && <ErrorNote message={error} onRetry={reload} />}
 
       {editing && (
         <Card className="mb-6">

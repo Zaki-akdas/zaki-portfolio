@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getContentAsync } from "@/lib/store";
 import { mdToHtml } from "@/lib/markdown";
+import { coverProps } from "@/lib/thumb";
+import CoverImage from "@/components/CoverImage";
+import { blogPostingJsonLd } from "@/lib/jsonld";
+import JsonLd from "@/components/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +28,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
   return (
     <main className="relative z-10 mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8">
+      <JsonLd data={blogPostingJsonLd(c, post)} />
       <Link href="/blog" data-cursor
         className="inline-flex min-h-[44px] items-center gap-2 text-sm text-slate-400 transition hover:text-white">
         <span aria-hidden>←</span> All posts
@@ -41,8 +46,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       </div>
 
       {post.cover && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.cover} alt="" width={1280} height={853} loading="lazy"
+        <CoverImage {...coverProps(post.cover, 800, "(max-width: 768px) 100vw, 768px")}
+          alt="" width={1280} height={853}
           className="mt-10 w-full rounded-2xl border border-white/10 object-cover" />
       )}
 

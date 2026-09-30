@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiGet, apiPut, uid } from "@/lib/adminApi";
-import { Button, Card, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
+import { useState } from "react";
+import { apiPut, uid } from "@/lib/adminApi";
+import { Button, Card, ErrorNote, Field, PageHead, inputCls, useCollection, useSaveState } from "@/components/admin/ui";
 import type { Project } from "@/lib/store";
 
 const EMPTY: Project = {
@@ -11,13 +11,13 @@ const EMPTY: Project = {
 };
 
 export default function ProjectsAdmin() {
-  const [items, setItems] = useState<Project[]>([]);
+  const { data: items, setData: setItems, error, reload } = useCollection<Project[]>(
+    "projects",
+    [],
+    (p) => (p || []).slice().sort((a, b) => a.order - b.order),
+  );
   const [editing, setEditing] = useState<Project | null>(null);
   const save = useSaveState();
-
-  useEffect(() => {
-    apiGet<Project[]>("projects").then((p) => setItems((p || []).sort((a, b) => a.order - b.order)));
-  }, []);
 
   async function persist(next: Project[]) {
     setItems(next);
@@ -51,6 +51,8 @@ export default function ProjectsAdmin() {
       <PageHead title="Projects" sub={`${items.length} projects · drag order via arrows · ${save.label}`}>
         <Button onClick={() => setEditing({ ...EMPTY, order: items.length + 1 })}>+ New project</Button>
       </PageHead>
+
+      {error && <ErrorNote message={error} onRetry={reload} />}
 
       {editing && (
         <Card className="mb-6">

@@ -1,17 +1,41 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getContentAsync } from "@/lib/store";
 import LiveSite from "@/components/LiveSite";
+import CoverImage from "@/components/CoverImage";
+import { coverProps } from "@/lib/thumb";
+import { projectJsonLd } from "@/lib/jsonld";
+import JsonLd from "@/components/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const c = await getContentAsync();
+  const project = (c.projects || []).find((p) => p.slug === params.slug);
+  if (!project) return { title: "Project not found" };
+  const title = `${project.title} — ${c.profile?.name || "Portfolio"}`;
+  const description = project.summary;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      ...(project.cover ? { images: [{ url: project.cover }] } : {}),
+    },
+  };
+}
 
 export default async function ProjectPage({ params }: { params: { slug: string } }) {
   const c = await getContentAsync();
   const project = (c.projects || []).find((p) => p.slug === params.slug);
   if (!project) notFound();
+  const cover = project.cover ? coverProps(project.cover, 896, "(max-width: 896px) 100vw, 896px") : null;
 
   return (
     <main className="relative z-10 mx-auto max-w-4xl px-5 pb-24 pt-32 sm:px-8">
+      <JsonLd data={projectJsonLd(c, project)} />
       <Link
         href="/#projects"
         className="inline-flex min-h-[44px] items-center gap-2 text-sm text-slate-400 transition hover:text-white"
@@ -52,13 +76,13 @@ export default async function ProjectPage({ params }: { params: { slug: string }
       {project.liveUrl && project.liveUrl !== "#" ? (
         <LiveSite
           url={project.liveUrl}
-          cover={project.cover}
+          cover={cover?.src}
+          coverSrcset={cover?.srcSet}
           title={project.title}
           embeddable={project.embed !== false}
         />
-      ) : project.cover ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={project.cover} alt={`${project.title} cover`}
+      ) : cover ? (
+        <CoverImage {...cover} alt={`${project.title} cover`}
           width={1280} height={853}
           className="mt-12 max-h-96 w-full rounded-2xl border border-white/10 object-cover" />
       ) : (

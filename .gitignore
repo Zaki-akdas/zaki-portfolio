@@ -13,6 +13,7 @@ tsconfig.tsbuildinfo
 data/auth.json
 data/rate-limit.json
 .e2e-data/
+.e2e-storage.json
 
 # runtime uploads (kept on the server's persistent disk, not in git)
 public/uploads/*

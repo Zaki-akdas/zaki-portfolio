@@ -51,7 +51,7 @@ export default function AdminLogin() {
           className="mt-5 w-full min-h-[44px] rounded-lg bg-indigo-500 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400 disabled:opacity-50">
           {busy ? "Signing in…" : "Sign in"}
         </button>
-        <p className="mt-4 text-xs text-slate-500">Default password: <code className="text-slate-400">admin123</code> — change it in Settings after first login.</p>
+        <p className="mt-4 text-xs text-slate-500">Use the password set via the <code className="text-slate-400">ADMIN_PASSWORD</code> environment variable, or the one changed in Settings.</p>
       </form>
     </div>
   );

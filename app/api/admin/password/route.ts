@@ -5,6 +5,12 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   if (!(await isAdminAsync(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (process.env.ADMIN_PASSWORD) {
+    return NextResponse.json(
+      { error: "The ADMIN_PASSWORD environment variable is set and overrides the stored password. Change it there instead." },
+      { status: 400 },
+    );
+  }
   const body = await req.json().catch(() => ({}));
   const current = String(body.current || "");
   const next = String(body.next || "");
