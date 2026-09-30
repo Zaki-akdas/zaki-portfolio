@@ -34,6 +34,16 @@ export function thumbOrOriginal(url: string | null | undefined, width: number, h
   return (SB_URL && thumbUrl(url, width, height)) || url || "";
 }
 
+/**
+ * One-call bundle for <CoverImage> in server components: the transformed `src`
+ * (webp at `width`, falling back to the original), the responsive `srcSet`, and
+ * the caller's `sizes`. Spread it straight onto the component. Returns a bare
+ * `src` when the cover isn't transformable so nothing regresses.
+ */
+export function coverProps(url: string | null | undefined, width: number, sizes: string) {
+  return { src: thumbOrOriginal(url, width), srcSet: thumbSrcset(url), sizes };
+}
+
 // ---- srcset helpers -------------------------------------------------------
 
 // Render-variant widths offered to browsers via `srcset`. Covers ~1x/2x DPR

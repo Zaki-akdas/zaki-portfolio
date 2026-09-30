@@ -25,6 +25,9 @@ export default defineConfig({
     viewport: { width: 1280, height: 800 },
     actionTimeout: 10_000,
     navigationTimeout: 30_000,
+    // Seeds `preloader-seen` before the first navigation (written by
+    // globalSetup) so the ~10s preloader overlay never mounts in tests.
+    storageState: ".e2e-storage.json",
   },
   webServer: {
     command: `npx next dev -H 0.0.0.0 -p ${PORT}`,

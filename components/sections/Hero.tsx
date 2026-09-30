@@ -3,17 +3,25 @@ import type { Profile, Settings } from "@/lib/store";
 
 export default function Hero({ profile, settings }: { profile: Profile; settings: Settings }) {
   const words = (profile.headline || "Crafting stellar digital experiences").split(" ");
+  // The h1 below is the page's LCP element. `.word` starts at translateY(110%)
+  // (hidden) and only becomes visible when Interactions' client-side
+  // IntersectionObserver adds `.words-in` — so until React hydrates, the LCP
+  // candidate is invisible and the paint is delayed. Above-the-fold hero
+  // content starts revealed; Interactions re-hides it before its observer
+  // wires up (same tick, pre-paint on hydration), so the staggered entrance
+  // still plays, but a slow hydrate can no longer hold LCP hostage.
+  const hero = "in words-in hero-eager";
   return (
     <section className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 text-center sm:px-8">
       {/* ambient gradient orbs */}
       <div className="orb h-72 w-72 sm:h-96 sm:w-96" style={{ top: "12%", left: "-8%", background: "var(--accent)" }} aria-hidden />
       <div className="orb h-64 w-64 sm:h-80 sm:w-80" style={{ bottom: "10%", right: "-6%", background: "#4cc9f0", animationDelay: "-8s" }} aria-hidden />
-      <span className="reveal inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-slate-300 sm:text-sm">
+      <span className={`reveal ${hero} inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-slate-300 sm:text-sm`}>
         <span className={`h-2 w-2 rounded-full ${settings.availability === "open" ? "bg-emerald-400" : "bg-amber-400"} animate-pulse`} />
         {settings.availabilityText || "Open for new projects"}
       </span>
 
-      <h1 className="words-container h-hero mt-6 max-w-5xl font-display font-bold text-white">
+      <h1 className={`words-container ${hero} h-hero mt-6 max-w-5xl font-display font-bold text-white`}>
         {words.map((w, i) => (
           <span key={i} className="word-mask mr-[0.28em] last:mr-0">
             <span className="word text-shimmer" style={{ ["--d" as never]: `${i * 90 + 150}ms` }}>
@@ -23,11 +31,11 @@ export default function Hero({ profile, settings }: { profile: Profile; settings
         ))}
       </h1>
 
-      <p className="reveal mx-auto mt-6 max-w-2xl text-base text-slate-400 sm:text-lg" style={{ ["--d" as never]: "500ms" }}>
+      <p className={`reveal ${hero} mx-auto mt-6 max-w-2xl text-base text-slate-400 sm:text-lg`} style={{ ["--d" as never]: "500ms" }}>
         {profile.tagline}
       </p>
 
-      <div className="reveal mt-10 flex flex-wrap items-center justify-center gap-4" style={{ ["--d" as never]: "650ms" }}>
+      <div className={`reveal ${hero} mt-10 flex flex-wrap items-center justify-center gap-4`} style={{ ["--d" as never]: "650ms" }}>
         <Link href="/#projects" data-cursor
           className="magnetic inline-flex min-h-[48px] items-center rounded-full bg-accent px-8 py-3.5 text-sm font-semibold text-ink transition hover:brightness-110">
           Explore my universe

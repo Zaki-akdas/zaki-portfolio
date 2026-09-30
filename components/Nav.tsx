@@ -23,6 +23,11 @@ export default function Nav({
 }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Remember the body's prior overflow so closing the menu restores whatever
+  // was there (e.g. the Preloader's "hidden" lock) instead of blindly clearing
+  // it. On the initial closed mount this is null, so we never touch overflow —
+  // otherwise we'd stomp the preloader's scroll lock the moment Nav mounts.
+  const prevOverflow = useRef<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -32,8 +37,19 @@ export default function Nav({
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (open) {
+      prevOverflow.current = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    } else if (prevOverflow.current !== null) {
+      document.body.style.overflow = prevOverflow.current;
+      prevOverflow.current = null;
+    }
+    return () => {
+      if (prevOverflow.current !== null) {
+        document.body.style.overflow = prevOverflow.current;
+        prevOverflow.current = null;
+      }
+    };
   }, [open]);
 
   // Close menu on Escape key

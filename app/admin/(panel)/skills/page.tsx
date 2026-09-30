@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiGet, apiPut, uid } from "@/lib/adminApi";
-import { Button, Card, Field, PageHead, inputCls, useSaveState } from "@/components/admin/ui";
+import { useState } from "react";
+import { apiPut, uid } from "@/lib/adminApi";
+import { Button, Card, ErrorNote, Field, PageHead, inputCls, useCollection, useSaveState } from "@/components/admin/ui";
 import type { Skill } from "@/lib/store";
 
 export default function SkillsAdmin() {
-  const [items, setItems] = useState<Skill[]>([]);
+  const { data: items, setData: setItems, error, reload } = useCollection<Skill[]>("skills", []);
   const [editing, setEditing] = useState<Skill | null>(null);
   const save = useSaveState();
-
-  useEffect(() => {
-    apiGet<Skill[]>("skills").then((s) => setItems(s || []));
-  }, []);
 
   async function persist(next: Skill[]) {
     setItems(next);
@@ -32,6 +28,8 @@ export default function SkillsAdmin() {
       <PageHead title="Skills" sub={`${items.length} skills · ${save.label}`}>
         <Button onClick={() => setEditing({ id: "", name: "", level: 80, category: "Frontend" })}>+ New skill</Button>
       </PageHead>
+
+      {error && <ErrorNote message={error} onRetry={reload} />}
 
       {editing && (
         <Card className="mb-6">

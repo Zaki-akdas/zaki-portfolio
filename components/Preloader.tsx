@@ -90,6 +90,7 @@ export default function Preloader({ name }: { name: string }) {
     let sceneReady = false;
     let current = 0;
     let raf = 0;
+    let plungeTimer: ReturnType<typeof setTimeout> | undefined;
     const started = performance.now();
 
     const markReady = () => { ready = true; };
@@ -111,7 +112,7 @@ export default function Preloader({ name }: { name: string }) {
       if ((current >= 99.4 && allReady) || elapsed > MAX_MS) {
         setPct(100);
         setLeaving(true); // camera plunge into the event horizon
-        setTimeout(() => {
+        plungeTimer = setTimeout(() => {
           finish();
         }, 3100); // full 2.5s Hollywood plunge + fade
         return;
@@ -122,6 +123,7 @@ export default function Preloader({ name }: { name: string }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      if (plungeTimer) clearTimeout(plungeTimer);
       window.removeEventListener("load", markReady);
       window.removeEventListener("scene-ready", markScene);
       document.body.style.overflow = "";

@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiGet, apiPut } from "@/lib/adminApi";
-import { Button, Card, PageHead, useSaveState } from "@/components/admin/ui";
+import { useState } from "react";
+import { apiPut } from "@/lib/adminApi";
+import { Button, Card, ErrorNote, PageHead, useCollection, useSaveState } from "@/components/admin/ui";
 import type { Message } from "@/lib/store";
 
 export default function MessagesAdmin() {
-  const [items, setItems] = useState<Message[]>([]);
+  const { data: items, setData: setItems, error, reload } = useCollection<Message[]>("messages", []);
   const [open, setOpen] = useState<string | null>(null);
   const save = useSaveState();
-
-  useEffect(() => {
-    apiGet<Message[]>("messages").then((m) => setItems(m || []));
-  }, []);
 
   async function persist(next: Message[]) {
     setItems(next);
@@ -35,6 +31,8 @@ export default function MessagesAdmin() {
           </Button>
         )}
       </PageHead>
+
+      {error && <ErrorNote message={error} onRetry={reload} />}
 
       <Card className="p-0">
         {items.length === 0 && <p className="p-5 text-sm text-slate-500">No messages yet. Contact form submissions land here.</p>}
