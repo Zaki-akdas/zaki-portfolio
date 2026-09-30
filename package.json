@@ -8,7 +8,8 @@
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "verify": "tsc --noEmit && npm run test:e2e"
+    "verify": "tsc --noEmit && npm run test:e2e",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-three/fiber": "^8.16.8",
@@ -26,7 +27,9 @@
     "@types/react-dom": "^18.3.0",
     "@types/three": "0.161.2",
     "autoprefixer": "^10.4.19",
+    "patch-package": "^8.0.1",
     "postcss": "^8.4.38",
+    "postinstall-postinstall": "^2.1.0",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5"
   }
